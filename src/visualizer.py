@@ -4,7 +4,7 @@ import numpy as np
 from typing import Optional
 from .distance_provider import ModularDistanceProvider
 
-ROUTE_COLORS = ['#1f77b4', '#2ca02c', '#d62728', '#9467bd', '#ff7f0e']
+ROUTE_COLORS = ['#1f77b4', '#2ca02c', '#d62728', '#9467bd', '#ff7f0e', '#8c564b', '#e377c2']
 
 def plot_interactive_routes(
     routes_df: pd.DataFrame,
@@ -17,6 +17,8 @@ def plot_interactive_routes(
     serviced containers, and the optimized vehicle routes.
     """
     center_lat, center_lon = dist_provider.depot_coord
+    disp_lat, disp_lon = dist_provider.disposal_coord
+    
     m = folium.Map(location=[center_lat, center_lon], zoom_start=13, tiles='OpenStreetMap')
 
     # 1. Central Yard (Depot) Marker
@@ -26,8 +28,7 @@ def plot_interactive_routes(
         icon=folium.Icon(color='black', icon='home', prefix='fa')
     ).add_to(m)
 
-    # 2. Disposal Depot Marker (approx 3km east of center)
-    disp_lat, disp_lon = center_lat + 0.015, center_lon + 0.035
+    # 2. Disposal Depot Marker (Entsorgungszentrum)
     folium.Marker(
         [disp_lat, disp_lon],
         tooltip="Disposal & Recycling Depot (Unloading Site)",
@@ -50,22 +51,27 @@ def plot_interactive_routes(
         
         for stop_num, idx in enumerate(stop_indices, 1):
             pt = coords[idx]
-            route_path.append([pt[0], pt[1]])
+            route_path.append([float(pt[0]), float(pt[1])])
             
-            # Container marker
-            loc_id = candidates_df.iloc[idx]['Location_id']
-            fill_val = candidates_df.iloc[idx].get('predicted_fill_perc', candidates_df.iloc[idx].get('current_fill_perc', 80))
+            # Container marker info
+            loc_id = str(candidates_df.iloc[idx].get('Location_id', candidates_df.iloc[idx].get('poi_id', f'Bin_{idx}')))
+            street = str(candidates_df.iloc[idx].get('street_name', ''))
+            street_str = f" - {street}" if street and street != 'nan' else ""
+            fill_val = float(candidates_df.iloc[idx].get('predicted_fill_perc', candidates_df.iloc[idx].get('current_fill_perc', 80.0)))
+            reason = str(candidates_df.iloc[idx].get('selection_reason', ''))
+            reason_str = f"<br><i>Status: {reason}</i>" if reason else ""
             
             folium.CircleMarker(
-                location=[pt[0], pt[1]],
+                location=[float(pt[0]), float(pt[1])],
                 radius=7,
                 color=truck_color,
                 fill=True,
                 fill_color=truck_color,
                 fill_opacity=0.85,
-                tooltip=f"Truck {truck_idx+1} | Stop #{stop_num}: {loc_id[:8]}... (Fill: {fill_val}%)"
+                tooltip=f"<b>{row['vehicle']} | Stop #{stop_num}</b>: {loc_id[:12]}{street_str}<br>Fill: {fill_val:.1f}%{reason_str}"
             ).add_to(m)
 
+        # Route to Disposal then back to Yard
         route_path.append([disp_lat, disp_lon])
         route_path.append([center_lat, center_lon])
 
@@ -75,7 +81,7 @@ def plot_interactive_routes(
             color=truck_color,
             weight=4,
             opacity=0.8,
-            tooltip=f"{row['vehicle']} | {row['num_stops']} stops | {row['total_distance_km']} km | {row['shift_hours']} hrs"
+            tooltip=f"<b>{row['vehicle']}</b> | {row['num_stops']} stops | {row['total_distance_km']} km | {row['shift_hours']} hrs | {row['total_weight_kg']} kg"
         ).add_to(m)
 
     m.save(output_html_path)
