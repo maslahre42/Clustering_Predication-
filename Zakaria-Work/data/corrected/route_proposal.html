@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_254503d240cc83fd7e98ce9c5b2e7586 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_254503d240cc83fd7e98ce9c5b2e7586" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_254503d240cc83fd7e98ce9c5b2e7586 = L.map(
+                "map_254503d240cc83fd7e98ce9c5b2e7586",
+                {
+                    center: [49.1427, 9.2109],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_2dad79c105efe51aa7c60ca66b6f6216 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_2dad79c105efe51aa7c60ca66b6f6216.addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            var marker_030147708555e56e6884213921c0694f = L.marker(
+                [49.1427, 9.2109],
+                {
+}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            var div_icon_21b6d1ca36eaee8fe62e604123b75ba1 = L.divIcon({
+  "html": "\u003cdiv style=\"width:360px;background:white;padding:8px;border:1px solid #888\"\u003eSynthetic site assignments. Lines are direct connections; distances are haversine \u00d7 detour, not road navigation.\u003c/div\u003e",
+  "className": "empty",
+});
+        
+    
+                marker_030147708555e56e6884213921c0694f.setIcon(div_icon_21b6d1ca36eaee8fe62e604123b75ba1);
+            
+    
+            var marker_47e9555f3c6022fb28f5bf9deac954ae = L.marker(
+                [49.1427, 9.2109],
+                {
+}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            var icon_906ef50d52e84f98b53e11cd5ab2200c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "home",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_47e9555f3c6022fb28f5bf9deac954ae.bindTooltip(
+                `<div>
+                     Central Yard (Depot - Start/End)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_47e9555f3c6022fb28f5bf9deac954ae.setIcon(icon_906ef50d52e84f98b53e11cd5ab2200c);
+            
+    
+            var marker_ea4b71aae325f10cae43a4ba6bf9f8a5 = L.marker(
+                [49.1577, 9.2459],
+                {
+}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            var icon_c4b4ec14c021e750d77f6f02b43bb816 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "darkred",
+  "iconColor": "white",
+  "icon": "trash",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_ea4b71aae325f10cae43a4ba6bf9f8a5.bindTooltip(
+                `<div>
+                     Disposal & Recycling Depot (Unloading Site)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ea4b71aae325f10cae43a4ba6bf9f8a5.setIcon(icon_c4b4ec14c021e750d77f6f02b43bb816);
+            
+    
+            var circle_marker_02b4badc0150f599c4b265b388b3c4b0 = L.circleMarker(
+                [49.09410276983221, 9.216097254328517],
+                {"bubblingMouseEvents": true, "color": "#1f77b4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_02b4badc0150f599c4b265b388b3c4b0.bindTooltip(
+                `<div>
+                     Truck 1 | Stop #1: 0164cb28... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_219e6795a1630f4c01fd2dbd5df9eb60 = L.circleMarker(
+                [49.102070093738675, 9.237620282761267],
+                {"bubblingMouseEvents": true, "color": "#1f77b4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_219e6795a1630f4c01fd2dbd5df9eb60.bindTooltip(
+                `<div>
+                     Truck 1 | Stop #2: 5bdc5e59... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4bd00d8ac2fe3efcbf9b1b0ae319afda = L.circleMarker(
+                [49.11635782147906, 9.237937144504688],
+                {"bubblingMouseEvents": true, "color": "#1f77b4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_4bd00d8ac2fe3efcbf9b1b0ae319afda.bindTooltip(
+                `<div>
+                     Truck 1 | Stop #3: 4e2ca848... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_d858c822ec4176e38f5b231cf5bd9c38 = L.polyline(
+                [[49.1427, 9.2109], [49.09410276983221, 9.216097254328517], [49.102070093738675, 9.237620282761267], [49.11635782147906, 9.237937144504688], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#1f77b4", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#1f77b4", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_d858c822ec4176e38f5b231cf5bd9c38.bindTooltip(
+                `<div>
+                     Truck #1 | 3 stops | 21.427528722871905 km | 1.5833333333333333 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ddf8e4ee293f6de79b857e5e450cc228 = L.circleMarker(
+                [49.18508498465919, 9.17365258463039],
+                {"bubblingMouseEvents": true, "color": "#2ca02c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_ddf8e4ee293f6de79b857e5e450cc228.bindTooltip(
+                `<div>
+                     Truck 2 | Stop #1: 0c6aa0da... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6ddd84cf776c47e2973413589f2eac30 = L.circleMarker(
+                [49.19076004356297, 9.184551345137772],
+                {"bubblingMouseEvents": true, "color": "#2ca02c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_6ddd84cf776c47e2973413589f2eac30.bindTooltip(
+                `<div>
+                     Truck 2 | Stop #2: 1c52c3ea... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_9349382410bddedff709aca691d3eec3 = L.polyline(
+                [[49.1427, 9.2109], [49.18508498465919, 9.17365258463039], [49.19076004356297, 9.184551345137772], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#2ca02c", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#2ca02c", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_9349382410bddedff709aca691d3eec3.bindTooltip(
+                `<div>
+                     Truck #2 | 2 stops | 19.852666955973582 km | 1.4166666666666667 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4a13bb438c27ba1f2961730e108bb762 = L.circleMarker(
+                [49.15003711094869, 9.167034879352016],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d62728", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_4a13bb438c27ba1f2961730e108bb762.bindTooltip(
+                `<div>
+                     Truck 3 | Stop #1: 18f62831... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a7d623b9f08b3b9e202d043ad9f5520a = L.circleMarker(
+                [49.17377000882578, 9.146709517432255],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d62728", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_a7d623b9f08b3b9e202d043ad9f5520a.bindTooltip(
+                `<div>
+                     Truck 3 | Stop #2: 2e222be0... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_6e4a181ea110ce784b3fc4da4bac9d7b = L.polyline(
+                [[49.1427, 9.2109], [49.15003711094869, 9.167034879352016], [49.17377000882578, 9.146709517432255], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#d62728", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_6e4a181ea110ce784b3fc4da4bac9d7b.bindTooltip(
+                `<div>
+                     Truck #3 | 2 stops | 21.828485990198203 km | 1.4166666666666667 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6531129d0e5635a35799285e1216d136 = L.circleMarker(
+                [49.178980385354535, 9.205077623564177],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9467bd", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_6531129d0e5635a35799285e1216d136.bindTooltip(
+                `<div>
+                     Truck 4 | Stop #1: 19c89409... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_84613d066cabc2e6c830d63bf9a26b6e = L.circleMarker(
+                [49.191028451661566, 9.219893575638011],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9467bd", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_84613d066cabc2e6c830d63bf9a26b6e.bindTooltip(
+                `<div>
+                     Truck 4 | Stop #2: 201db3ed... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ccfc7ac193f41ebd4ca7d1859aaf301a = L.circleMarker(
+                [49.19154807732718, 9.226034291269977],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9467bd", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_ccfc7ac193f41ebd4ca7d1859aaf301a.bindTooltip(
+                `<div>
+                     Truck 4 | Stop #3: 53a56d2e... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_9a469e7a3547ce353b0c350a90eebf76 = L.polyline(
+                [[49.1427, 9.2109], [49.178980385354535, 9.205077623564177], [49.191028451661566, 9.219893575638011], [49.19154807732718, 9.226034291269977], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#9467bd", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_9a469e7a3547ce353b0c350a90eebf76.bindTooltip(
+                `<div>
+                     Truck #4 | 3 stops | 17.289637441697373 km | 1.5833333333333333 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6f6924cd515090b92796e6f610d8d348 = L.circleMarker(
+                [49.13085202342026, 9.252248122829892],
+                {"bubblingMouseEvents": true, "color": "#ff7f0e", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_6f6924cd515090b92796e6f610d8d348.bindTooltip(
+                `<div>
+                     Truck 5 | Stop #1: 1a342cc5... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f3522dba85ebb0935e5acf7e63587297 = L.circleMarker(
+                [49.15916584742085, 9.280442712117555],
+                {"bubblingMouseEvents": true, "color": "#ff7f0e", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_f3522dba85ebb0935e5acf7e63587297.bindTooltip(
+                `<div>
+                     Truck 5 | Stop #2: 0359f633... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_33b0299c0b12472996771733fa538892 = L.polyline(
+                [[49.1427, 9.2109], [49.13085202342026, 9.252248122829892], [49.15916584742085, 9.280442712117555], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#ff7f0e", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#ff7f0e", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_33b0299c0b12472996771733fa538892.bindTooltip(
+                `<div>
+                     Truck #5 | 2 stops | 16.382334829302508 km | 1.1666666666666667 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7e02197424a2b4aeeeee34b0969bce47 = L.circleMarker(
+                [49.168669254825524, 9.229281961527043],
+                {"bubblingMouseEvents": true, "color": "#1f77b4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_7e02197424a2b4aeeeee34b0969bce47.bindTooltip(
+                `<div>
+                     Truck 6 | Stop #1: 1d0394e7... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ec78b0cef2e532a51e153b67f8b74fac = L.circleMarker(
+                [49.1727927130722, 9.241912490474277],
+                {"bubblingMouseEvents": true, "color": "#1f77b4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_ec78b0cef2e532a51e153b67f8b74fac.bindTooltip(
+                `<div>
+                     Truck 6 | Stop #2: 5fdd0601... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_41c1897ba742c4e9b2f932bc10e64008 = L.polyline(
+                [[49.1427, 9.2109], [49.168669254825524, 9.229281961527043], [49.1727927130722, 9.241912490474277], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#1f77b4", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#1f77b4", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_41c1897ba742c4e9b2f932bc10e64008.bindTooltip(
+                `<div>
+                     Truck #6 | 2 stops | 11.641271571086332 km | 1.4166666666666667 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c78579d18aef018ca7968032d1f89331 = L.circleMarker(
+                [49.115136274237535, 9.264175709632086],
+                {"bubblingMouseEvents": true, "color": "#2ca02c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_c78579d18aef018ca7968032d1f89331.bindTooltip(
+                `<div>
+                     Truck 7 | Stop #1: 4434e045... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b407b2ce226947854bd5ce76ed0070d0 = L.circleMarker(
+                [49.12295904437249, 9.284314107723079],
+                {"bubblingMouseEvents": true, "color": "#2ca02c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_b407b2ce226947854bd5ce76ed0070d0.bindTooltip(
+                `<div>
+                     Truck 7 | Stop #2: 1a1377dc... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_35b9f0c33fdca6f4951c83de15350f80 = L.circleMarker(
+                [49.12996262270999, 9.28162263842601],
+                {"bubblingMouseEvents": true, "color": "#2ca02c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_35b9f0c33fdca6f4951c83de15350f80.bindTooltip(
+                `<div>
+                     Truck 7 | Stop #3: 25accc9c... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_ac8920fe4ae317ff16e61f725d730d5d = L.polyline(
+                [[49.1427, 9.2109], [49.115136274237535, 9.264175709632086], [49.12295904437249, 9.284314107723079], [49.12996262270999, 9.28162263842601], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#2ca02c", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#2ca02c", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_ac8920fe4ae317ff16e61f725d730d5d.bindTooltip(
+                `<div>
+                     Truck #7 | 3 stops | 18.882850223430612 km | 1.6666666666666667 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c89cece3345810154bb952a1d246aea4 = L.circleMarker(
+                [49.10844203772026, 9.160873110079919],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d62728", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_c89cece3345810154bb952a1d246aea4.bindTooltip(
+                `<div>
+                     Truck 8 | Stop #1: 5841abbc... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fe338034b1d424ede13b471d187160c1 = L.circleMarker(
+                [49.102817374527035, 9.16264569560749],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d62728", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_fe338034b1d424ede13b471d187160c1.bindTooltip(
+                `<div>
+                     Truck 8 | Stop #2: 589e8bf8... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b37bfa4f65116e3f75ef8f68daa5dba5 = L.circleMarker(
+                [49.099664934410335, 9.180264424457711],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d62728", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_b37bfa4f65116e3f75ef8f68daa5dba5.bindTooltip(
+                `<div>
+                     Truck 8 | Stop #3: 37b96f80... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e66aaf06476619ad9801ff546e7867bb = L.circleMarker(
+                [49.11836318424672, 9.19702324028797],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d62728", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_e66aaf06476619ad9801ff546e7867bb.bindTooltip(
+                `<div>
+                     Truck 8 | Stop #4: 1cdc8b7e... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_458013dc1dba41c9034694231902bbe5 = L.polyline(
+                [[49.1427, 9.2109], [49.10844203772026, 9.160873110079919], [49.102817374527035, 9.16264569560749], [49.099664934410335, 9.180264424457711], [49.11836318424672, 9.19702324028797], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#d62728", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#d62728", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_458013dc1dba41c9034694231902bbe5.bindTooltip(
+                `<div>
+                     Truck #8 | 4 stops | 23.826671656162134 km | 1.75 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5f899b74395575413f59f877d812d8ce = L.circleMarker(
+                [49.1291932231499, 9.18872347002036],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9467bd", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_5f899b74395575413f59f877d812d8ce.bindTooltip(
+                `<div>
+                     Truck 9 | Stop #1: 595ce4a2... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_594a44bbaee41d4de8b60960f35d476b = L.circleMarker(
+                [49.1184731995014, 9.18217474743393],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9467bd", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_594a44bbaee41d4de8b60960f35d476b.bindTooltip(
+                `<div>
+                     Truck 9 | Stop #2: 173e6902... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_988116ab0da0774860800a106fdc4bf7 = L.circleMarker(
+                [49.14158375440562, 9.162165298686032],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9467bd", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            circle_marker_988116ab0da0774860800a106fdc4bf7.bindTooltip(
+                `<div>
+                     Truck 9 | Stop #3: 5982062c... (Predicted maximum bin fill: 100.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_b6309871742283890bd3ba10107b1736 = L.polyline(
+                [[49.1427, 9.2109], [49.1291932231499, 9.18872347002036], [49.1184731995014, 9.18217474743393], [49.14158375440562, 9.162165298686032], [49.1577, 9.2459], [49.1427, 9.2109]],
+                {"bubblingMouseEvents": true, "color": "#9467bd", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#9467bd", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_254503d240cc83fd7e98ce9c5b2e7586);
+        
+    
+            poly_line_b6309871742283890bd3ba10107b1736.bindTooltip(
+                `<div>
+                     Truck #9 | 3 stops | 20.58305232528086 km | 1.5833333333333333 hrs
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+</script>
+</html>

@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "source_sha256": "cc23057e1600361d13dd668ae3f373197765bcb697543088741ba9f521d079ed",
+  "planning_date": "2026-08-17",
+  "forecast_target_date": "2026-08-17",
+  "observation_cutoff": "strictly before planning_date",
+  "source_rows": 11701,
+  "known_bins": 1337,
+  "selected_bins": 207,
+  "selected_sites": 108,
+  "solver_sites": 24,
+  "deferred_sites": 84,
+  "grouping": {
+    "silhouette": 0.2811547577754951,
+    "cluster_sizes": {
+      "1": 368,
+      "2": 341,
+      "3": 261,
+      "0": 260
+    },
+    "grouping_note": "Descriptive groups; no balanced-size or dispatch guarantee."
+  },
+  "synthetic_coordinates": true,
+  "route_status": "optimal",
+  "routing_message": "All supplied sites served; optimality is subject to configured tolerances and termination.",
+  "model_stats": {
+    "sites": 24,
+    "arcs": 600,
+    "legacy_arc_upper_bound": 7200,
+    "formulation": "two_index_cvrp",
+    "effective_volume_capacity_m3": 18.0,
+    "variables": 672,
+    "constraints": 1779,
+    "raw_status": 2,
+    "requested_mip_gap": 0.02
+  },
+  "served_sites": 24,
+  "unserved_solver_sites": 0,
+  "routing_seconds": 6.885939836502075,
+  "configuration": {
+    "container_volume_m3": 3.0,
+    "density_kg_m3": 350.0,
+    "truck_volume_m3": 18.0,
+    "truck_payload_kg": 12000.0,
+    "shift_hours": 8.0,
+    "service_min_per_bin": 5.0,
+    "unloading_min": 15.0,
+    "max_fleet_vehicles": 12,
+    "fixed_travel_min": 10.0
+  },
+  "assumptions": [
+    "Every observation precedes emptying.",
+    "Cycle medians use censored lower bounds, not calibrated probabilities.",
+    "Container volume and payload follow project mentor notes; density, truck volume, depot and disposal are assumptions.",
+    "Synthetic coordinates; haversine/detour distances are not road navigation.",
+    "One load and final unloading per vehicle; no mid-route unload or color-chamber constraints."
+  ],
+  "artifacts": [
+    "cleaned_fill_levels.csv",
+    "container_clusters.csv",
+    "predicted_demands.csv",
+    "bin_decisions.csv",
+    "selected_sites.csv",
+    "deferred_sites.csv",
+    "collection_summary.csv",
+    "routes.csv",
+    "unserved_sites.csv",
+    "forecast_metrics.csv",
+    "forecast_cases.csv",
+    "route_proposal.html"
+  ]
+}
