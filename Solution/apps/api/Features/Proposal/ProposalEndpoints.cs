@@ -22,6 +22,7 @@ public static class ProposalEndpoints
             var observations = await db.Observations.AsNoTracking().Through(HistoricalCutoff.Parse(asOf)).ToListAsync(ct);
             var locations = await db.Locations.AsNoTracking().ToListAsync(ct);
             try { return Results.Ok(await engine.RunAsync("proposal", asOf, settings, observations, locations, cancellationToken: ct)); }
+            catch (DatasetRejectedException ex) { return Results.Json(new { detail = ex.Message, validation = ex.Validation }, statusCode: 400); }
             catch (InvalidOperationException ex) { return Results.Problem(ex.Message, statusCode: 503, title: "Python forecast engine unavailable"); }
         });
         app.MapGet("/api/forecast", async (HistoryDbContext db, IForecastEngine engine, string asOf, string locationId, string material,
@@ -33,6 +34,7 @@ public static class ProposalEndpoints
                 return Results.Problem("Use a valid date, bin, settings and a horizon of 1–150 days.", statusCode: 400);
             var observations = await db.Observations.AsNoTracking().Through(HistoricalCutoff.Parse(asOf)).ToListAsync(ct);
             try { return Results.Ok(await engine.RunAsync("forecast", asOf, settings, observations, [], locationId, material, horizonDays ?? 60, cancellationToken: ct)); }
+            catch (DatasetRejectedException ex) { return Results.Json(new { detail = ex.Message, validation = ex.Validation }, statusCode: 400); }
             catch (InvalidOperationException ex) { return Results.Problem(ex.Message, statusCode: 503); }
         });
         app.MapGet("/api/simulation", async (HistoryDbContext db, IForecastEngine engine, string asOf, string start, string end,
@@ -45,10 +47,40 @@ public static class ProposalEndpoints
             var observations = await db.Observations.AsNoTracking().Through(HistoricalCutoff.Parse(asOf)).ToListAsync(ct);
             var locations = await db.Locations.AsNoTracking().ToListAsync(ct);
             try { return Results.Ok(await engine.RunAsync("simulation", asOf, settings, observations, locations, start: start, end: end, seed: seed ?? 7, cancellationToken: ct)); }
+            catch (DatasetRejectedException ex) { return Results.Json(new { detail = ex.Message, validation = ex.Validation }, statusCode: 400); }
             catch (InvalidOperationException ex) { return Results.Problem(ex.Message, statusCode: 503); }
         });
+        // Uploaded data is scoped to this request; it never changes the source SQLite dataset.
+        foreach (var action in new[] { "proposal", "forecast", "simulation" })
+        {
+            var operation = action;
+            app.MapPost($"/api/{action}", async (IForecastEngine engine,
+                [Microsoft.AspNetCore.Mvc.FromBody] ProposalDatasetInput input,
+                string asOf, [AsParameters] ProposalRequest request, string? locationId, string? material,
+                int? horizonDays, string? start, string? end, int? seed, CancellationToken ct) =>
+            {
+                var settings = request.ToSettings();
+                if (!HistoricalCutoff.IsValid(asOf) || settings.Validate().Count > 0)
+                    return Results.Problem("Use a valid cutoff and operating settings.", statusCode: 400);
+                if (string.IsNullOrWhiteSpace(input.Csv) || System.Text.Encoding.UTF8.GetByteCount(input.Csv) > 2_000_000)
+                    return Results.Problem("Upload a nonempty CSV of at most 2 MB.", statusCode: 400);
+                if (operation == "simulation" && SimulationRules.Validate(asOf, start ?? "", end ?? "", seed ?? 7) is string error)
+                    return Results.Problem(error, statusCode: 400);
+                if (operation == "forecast" && (string.IsNullOrWhiteSpace(locationId) || material is not ("brown" or "green" or "white") || horizonDays is < 1 or > 150))
+                    return Results.Problem("Choose a container, material and forecast horizon of 1–150 days.", statusCode: 400);
+                try
+                {
+                    return Results.Ok(await engine.RunAsync(operation, asOf, settings, [], [], locationId, material,
+                        horizonDays ?? 60, start, end, seed ?? 7, ct, input.Csv));
+                }
+                catch (DatasetRejectedException ex) { return Results.Json(new { detail = ex.Message, validation = ex.Validation }, statusCode: 400); }
+                catch (InvalidOperationException ex) { return Results.Problem(ex.Message, statusCode: 503); }
+            });
+        }
     }
 }
+
+public sealed record ProposalDatasetInput(string Csv);
 
 public static class SimulationRules
 {

@@ -18,6 +18,8 @@ const components = {
   ProposalSettingsForm: 'features/proposal/components/ProposalSettingsForm.vue',
   ForecastExplorer: 'features/proposal/components/ForecastExplorer.vue',
   SimulationResults: 'features/proposal/components/SimulationResults.vue',
+  ProjectValidationResults: 'features/proposal/components/ProjectValidationResults.vue',
+  ProposalDataEvidence: 'features/proposal/components/ProposalDataEvidence.vue',
 }
 
 /** Compile actual components. Resolve runtime imports against their original source. */

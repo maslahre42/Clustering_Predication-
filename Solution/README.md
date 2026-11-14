@@ -179,7 +179,7 @@ Optional backend coverage report:
 dotnet test GarbageCollector.slnx --collect:"XPlat Code Coverage"
 ```
 
-Verified results: **205 API tests, 6 AppHost tests, 113 frontend/tooling tests and 17 Python tests pass (341 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
+Verified results: **205 API tests, 6 AppHost tests, 118 frontend/tooling tests and 29 Python tests pass (358 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
 
 The standard `dotnet test` runner builds but cannot start its communication socket in this restricted environment. A small in-process runner calls the real xUnit discovery/execution API, including theories and async fixtures; it does not replace assertions or manually call test methods. Run both suites without a local test socket:
 
@@ -228,3 +228,5 @@ All analytics respect the inclusive planning cutoff. SQLite and the notebook are
 The backend uses feature folders with shared cutoff/fill domain types and isolated EF persistence. Vue features colocate components, models, query adapters, and styles. API contracts, routes, configuration, and browser effects have explicit owners; components consume narrow workspace capabilities.
 
 See [code structure and change guide](docs/architecture/code-structure.md) for the current tree and where to make common changes. Depot defaults are injectable, and real/synthetic coordinate flags now survive joins, map data, and CSV. Constrained operational routing is connected through Omar’s Python engine. Verified coordinate import and road-network navigation remain future work. Restart the frontend dev server after this component-directory reorganization.
+
+The [combined Python integration](docs/combined-project-integration.md) adds Kaise’s CSV validation and guarded behavioral groups, Zakaria’s median-policy simulation and independent Gurobi checks, and a matched real-observation comparison of all three forecast methods. CSV imports are scoped to the analysis workspace; the original SQLite inventory remains unchanged.

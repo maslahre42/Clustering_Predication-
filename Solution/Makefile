@@ -24,11 +24,11 @@ setup: setup-python ## Install Python engine, restore .NET packages and install 
 	"$(DOTNET)" restore "$(SOLUTION)" --disable-parallel
 	"$(PNPM)" --dir apps/web install --frozen-lockfile
 
-setup-python: ## Install Omar's forecast, OR-Tools and simulation dependencies (Python 3.12+ recommended)
+setup-python: ## Install combined forecast, routing, simulation and validation dependencies (Python 3.12+ recommended)
 	"$(PYTHON)" -m venv .venv
 	"$(PYTHON_ENGINE)" -m pip install -r forecast_service/requirements.txt pytest
 
-test-python: ## Test Omar's engine and the app bridge (setup-python first)
+test-python: ## Test combined engines and the app bridge (setup-python first)
 	"$(PYTHON_ENGINE)" -m pytest -q forecast_service/tests ../Omar-Work/tests
 
 run: ## Start API, frontend and dashboard with Aspire; Ctrl+C stops them

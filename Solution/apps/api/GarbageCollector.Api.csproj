@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="../../forecast_service/worker.py;../../forecast_service/requirements.txt" Link="forecast_service/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../forecast_service/integrations/**/*.py" Link="forecast_service/integrations/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../../../Omar-Work/fillinq/*.py" Link="forecast_service/vendor/fillinq/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

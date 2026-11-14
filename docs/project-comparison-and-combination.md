@@ -1,5 +1,7 @@
 # Project comparison and recommended combination
 
+> Implementation update: selected strengths are now connected in the Nuxt/.NET app. See [combined integration](../Solution/docs/combined-project-integration.md) and [executed verification](../Solution/docs/combined-project-verification.md). The comparison below records the earlier projects and recommendations.
+
 > **Corrected on 14 November 2026:** see [combined-solution-review.md](combined-solution-review.md) for verified corrections to this document (stale Zakaria details, overstated bug impact, missing truck-volume issue, deadline-aware merge plan). The Zakaria column in the configuration table of section 4 was updated to his current values.
 
 > **Later revision to Zakaria's project:** The comparison below predates the correction task. Zakaria's notebook/Gurobi pipeline has since been corrected and optimized; see its [current method](../Zakaria-Work/docs/corrections-and-method.md) and [verification](../Zakaria-Work/docs/verification.md). The original overflow, growth/reset, historical-cutoff, candidate-accounting and solver-status criticisms are historical. Remaining differences such as one load per vehicle, synthetic geography and the simple forecast baseline still apply.

@@ -1,4 +1,6 @@
-# Omar's Python forecasts, route proposals and simulation
+# Combined Python forecasts, route proposals and simulation
+
+The [three-project integration](../combined-project-integration.md) adds Kaise’s strict CSV validation/grouping safeguards/persistence reference and Zakaria’s median-policy simulation/Gurobi checks.
 
 The Nuxt **Forecast, routes & simulation** module now calls Omar's actual Python package. The previous C# forecast and constructive router remain tested reference domain implementations; the public proposal path uses the Python model and OR-Tools.
 
@@ -28,7 +30,7 @@ After changing API code, restart the API/Aspire host. Source Python is loaded af
 
 - `GET /api/proposal?asOf=...`: model, bin reasons, site demand, OR-Tools routes, unserved sites, settings and assumptions. The plan day is the next configured collection day after the inclusive cutoff.
 - `GET /api/forecast?asOf=...&locationId=...&material=...&horizonDays=...`: actual eligible history, expected future fill, 10–90% model band, full probability and approximate median time to full. Horizon is 1–150 days.
-- `GET /api/simulation?asOf=...&start=...&end=...&seed=...`: historical-calendar versus dynamic-policy routed comparison, daily series and a selection-only risk frontier. Start/end must contain 1–31 days and end on or before `asOf`; seed is 0–1,000,000.
+- `GET /api/simulation?asOf=...&start=...&end=...&seed=...`: historical-calendar, Omar-policy and Zakaria-policy routed comparison, matched real-reading forecast evaluation and bounded independent optimization check, daily series and a selection-only risk frontier. Start/end must contain 1–31 days and end on or before `asOf`; seed is 0–1,000,000.
 
 All accept the same optional `ProposalRequest` operating overrides, including seven collection-day flags. Numeric ranges and a nonempty collection calendar are validated before invoking Python. Endpoint tests exercise actual ASP.NET query binding and prove later observations never enter the worker snapshot.
 
@@ -44,7 +46,7 @@ OR-Tools groups selected materials into physical sites, enforces payload and opt
 
 ## Simulation meaning
 
-The app runs Omar's actual `Twin`, `run_baseline` and `run_policy`, with corrected served-stop accounting. Both scenarios:
+The app runs Omar's actual `Twin`, `run_baseline` and `run_policy`, with corrected served-stop accounting. All three scenarios:
 
 - use only bins known before the simulation starts;
 - start with identical emptying state;
@@ -53,7 +55,7 @@ The app runs Omar's actual `Twin`, `run_baseline` and `run_policy`, with correct
 - reset only bins at sites actually served by their routes;
 - retain missed mandatory stop-day counts.
 
-The twin and frozen planner are fitted strictly **before the simulation start**. Recorded future visit dates within the bounded test window define the historical schedule, not training features. Overflow duration is clipped to the evaluation window so pre-period full days are not counted as new simulation-period cost.
+The twin and frozen planners are fitted strictly **before the simulation start**. Recorded future visit dates within the bounded test window define the historical schedule, not training features. Overflow duration is clipped to the evaluation window so pre-period full days are not counted as new simulation-period cost.
 
 Results compare site visits, bins emptied, truck-days, working hours, collection fill, below-40% collections, container-days full, full-cycle events and missed mandatory service. The daily chart shows served site visits. The frontier varies mandatory risk threshold without routing/capacity limits and is labeled separately; it must not be mistaken for the routed scenario table.
 

@@ -79,3 +79,22 @@ test('settings form shows source labels, reports edits and blocks an invalid app
   assert.equal(button(invalid, 'Apply').props.disabled, true)
   assert.match(invalid.text(), /greater than 0/)
 })
+
+test('combined-project validation reports matched cases and distinguishes the bounded one-load check',async t=>{
+  const comparison={targets:10,evaluated:10,commonNumericCases:6,commonCensoredCases:2,unknownTargets:0,note:'Identical targets; lower bounds excluded from MAE.',
+    models:[{name:'omar',label:'Omar',available:10,mae:12,bias:-2,lowerBoundShortfall:5},{name:'zakaria',label:'Zakaria',available:10,mae:14,bias:3,lowerBoundShortfall:7},{name:'kaise',label:'Kaise persistence',available:8,mae:20,bias:-5,lowerBoundShortfall:15}]}
+  const optimization={date:'2026-08-10',sites:['A','B'],status:'solver_unavailable',message:'Configure a valid license.',scope:'one-load-per-truck',complete:false,note:'Sample only; one load per truck.'}
+  const m=mount(t,await component('ProjectValidationResults'),{comparison,optimization})
+  assert.match(m.text(),/6 shared uncensored numeric cases/)
+  assert.match(m.text(),/Kaise persistence/);assert.match(m.text(),/12.00/)
+  assert.match(m.text(),/solver_unavailable/);assert.match(m.text(),/Sample only/)
+})
+
+test('data evidence exposes failed grouping gates and preserves unknown and overfull counts',async t=>{
+  const evidence={rows:20,bins:5,dateMin:'2026-01-01',dateMax:'2026-02-01',unknown:2,overfull:3,warnings:[],source:'uploaded-csv',fingerprint:'abc123456789000',
+    grouping:{method:'rule_tiers',gate:{silhouette:true,separability:false},eligible:4,insufficient:1,note:'Reset-aware rates.',profiles:[{label:'low_pressure',n_series:4,feature_medians:{mean_fill_pct:30,median_rate_pct_per_day:2}}],labels:[]}}
+  const m=mount(t,await component('ProposalDataEvidence'),{evidence},undefined,await controls())
+  assert.match(m.text(),/2 unknown readings/);assert.match(m.text(),/3 overfull/)
+  assert.match(m.text(),/Descriptive pressure tiers/);assert.match(m.text(),/failed — tiers used/)
+  assert.match(m.text(),/uploaded-csv/)
+})

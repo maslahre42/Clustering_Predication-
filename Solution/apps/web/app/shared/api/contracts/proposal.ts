@@ -1,3 +1,4 @@
+import type { DatasetEvidence } from './comparison'
 export type BinDecision = 'due' | 'neighbour' | 'optional' | 'skipped' | 'no_forecast'
 export type UnservedReason = 'exceeds_truck_capacity' | 'exceeds_shift' | 'fleet_limit' | 'optional_not_scheduled' | 'missing_coordinates' | 'solver_no_solution'
 
@@ -39,5 +40,6 @@ export interface CollectionProposal {
   asOf: string; planDate: string; windowEnd: string; settings: ProposalSettings; model: ProposalModel
   bins: ProposalBin[]; stops: ProposalStop[]
   plan: { routes: ProposalRoute[]; unserved: ProposalUnserved[]; totals: ProposalTotals }
+  dataset?: DatasetEvidence
   assumptions: string[]
 }

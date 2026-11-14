@@ -44,7 +44,7 @@ class Twin:
         a = np.empty(n)
         for i, (c, m) in enumerate(zip(cont["container"], cont["material"])):
             j = truth.cidx.get(c)
-            a[i] = truth.a[j] if j is not None else truth.m[truth.midx[m]]
+            a[i] = truth.a[j] if j is not None else truth.m[truth.midx[m]] if m in truth.midx else truth.m.mean()
         season = truth.b[self.days.month.to_numpy() - 1] + truth.g * __import__("fillinq.calendar_features", fromlist=["DAILY"]).DAILY["vacation"].reindex(self.days).fillna(0).to_numpy()
         daily = np.exp(a[:, None] + season[None, :])
         self.CR = np.cumsum(daily, axis=1)
@@ -69,13 +69,13 @@ class Twin:
 
 
 def _kpis(rec: dict, n_days: int) -> dict:
-    f = np.array(rec["fill"]) if rec["fill"] else np.array([0.0])
+    f = np.array(rec["fill"],dtype=float)
     return {
         "site_visits": int(rec["stops"]),
         "bin_collections": int(len(rec["fill"])),
-        "mean_fill_at_collection_pct": float(np.minimum(f, 100).mean()),
-        "share_collections_below_40pct": float((f < 40).mean()),
-        "share_collections_at_or_over_100pct": float((f >= 100).mean()),
+        "mean_fill_at_collection_pct": float(np.minimum(f, 100).mean()) if len(f) else 0.0,
+        "share_collections_below_40pct": float((f < 40).mean()) if len(f) else 0.0,
+        "share_collections_at_or_over_100pct": float((f >= 100).mean()) if len(f) else 0.0,
         "overflow_bin_days": float(rec["overflow_days"]),
         "overflow_events": int(rec["overflow_events"]),
     }
@@ -131,7 +131,16 @@ def run_baseline(tw: Twin, locs=None, cfg: OpsConfig | None = None, route=False,
         rec["stops"] += grp["site"].nunique()
         row = {"date": date, "stops": int(grp["site"].nunique()), "bins": int(len(idx))}
         if route:
-            plan = plan_routes(_stop_table(tw, idx, f, locs, cfg), cfg, time_limit_s=time_limit)
+            # The recorded calendar is known, future true fill is not. Estimate its loads
+            # with the same frozen pre-period model, rather than giving baseline an oracle.
+            expected = tw.truth.predict(tw.cont.iloc[idx]['container'],tw.days[le[idx]],
+                                        pd.DatetimeIndex([date]*len(idx)))['mean_fill'].to_numpy()
+            if date.day_of_week not in cfg.working_weekdays:
+                row.update(stops=0,bins=0,km=0.0,hours=0.0,trucks=0,dropped_mandatory=int(grp['site'].nunique()))
+                rec['stops'] -= int(grp['site'].nunique())
+                daily.append(row)
+                continue
+            plan = plan_routes(_stop_table(tw, idx, expected, locs, cfg), cfg, time_limit_s=time_limit)
             visited = {s for r in plan.routes for s, _, _ in r["stops"]}
             served = grp["site"].isin(visited).to_numpy()
             idx = idx[served]
