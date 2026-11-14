@@ -4,8 +4,9 @@ import type { MonthlyAnalytics } from '~/shared/api/contracts/analytics';
 import { GLASS_OPTIONS } from '~/shared/config/materials';
 import { MONTHLY_COLUMNS } from '../config/tableColumns';
 import { createMonthlyTable } from '../state/createMonthlyTable';
+import { monthCoverage } from '../domain/patterns';
 
-const props = defineProps<{ months: MonthlyAnalytics[] }>();
+const props = defineProps<{ months: MonthlyAnalytics[]; asOf: string; firstDate?: string | null }>();
 const { material, page, pages, rows, sortBy, sortDirection, sort } = createMonthlyTable(toRef(props, 'months'));
 </script>
 <template>
@@ -13,7 +14,7 @@ const { material, page, pages, rows, sortBy, sortDirection, sort } = createMonth
     <div class="section-heading">
       <div>
         <h2>Monthly collection comparison</h2>
-        <p>The last month may be partial at your selected cutoff. These are collection-event statistics, not network-wide daily fill estimates.</p>
+        <p>Collections recorded through {{ asOf }} (the date selected at the top). Partial months show only the available period. Counts are bin emptyings; several bins can share one site visit.</p>
       </div>
       <UiSelect v-model="material" label="Glass fraction" list-label="Glass fractions" :options="GLASS_OPTIONS" density="compact" />
     </div>
@@ -31,7 +32,7 @@ const { material, page, pages, rows, sortBy, sortDirection, sort } = createMonth
         </tr>
       </template>
       <tr v-for="row in rows" :key="`${row.month}:${row.material}`">
-        <td>{{ row.month }}</td>
+        <td>{{ row.month }}<small v-if="monthCoverage(row.month, asOf, firstDate)">{{ monthCoverage(row.month, asOf, firstDate) }}</small></td>
         <td>
           <GlassFractionBadge :material="row.material" />
         </td>

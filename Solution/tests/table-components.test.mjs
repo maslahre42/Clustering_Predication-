@@ -15,7 +15,7 @@ test('monthly table sorts the whole dataset and resets the page when filtering o
     month: `2026-${String(index + 1).padStart(2, '0')}`, material: index % 2 ? 'brown' : 'green',
     collections: index + 1, overfullCount: 0, numericReadings: 1, meanNumericFill: 50,
   }))
-  const m = mount(t, await component('MonthlyCollectionTable'), { months }, undefined, await analyticsComponents())
+  const m = mount(t, await component('MonthlyCollectionTable'), { months, asOf: '2027-03-31' }, undefined, await analyticsComponents())
   const button = label => m.all().find(n => n.tag === 'button' && n.props['aria-label'] === label)
   button('Next page').props.onClick(); await nextTick()
   assert.equal(button('Previous page').props.disabled, false)
@@ -27,6 +27,14 @@ test('monthly table sorts the whole dataset and resets the page when filtering o
   m.find('select').props.onChange({ target: { value: 'brown' } }); await nextTick()
   assert.equal(m.all().filter(n => n.tag === 'td')[2].text, '14')
   assert.equal(button('Next page').props.disabled, true)
+})
+
+test('monthly table labels the exact partial cutoff beside the reported count', async t => {
+  const months = [{ month: '2026-09', material: 'brown', collections: 9, overfullCount: 0, numericReadings: 9, meanNumericFill: 260 / 9 }]
+  const m = mount(t, await component('MonthlyCollectionTable'), { months, asOf: '2026-09-08' }, undefined, await analyticsComponents())
+  assert.match(m.text(), /Partial · 2026-09-01–2026-09-08/)
+  assert.match(m.text(), /28\.9%/)
+  assert.equal(m.all().filter(n => n.tag === 'td')[2].text, '9')
 })
 test('material statistics filter rows and sort the low-fill distribution column', async t => {
   const makeRow = (material, low) => ({ material, collections: 5, overfullCount: 1, numericReadings: 4,

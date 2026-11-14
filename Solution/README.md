@@ -1,5 +1,7 @@
 # Garbage Collector
 
+**Challenge handover:** [demo guide, deliverables and current verification](docs/challenge-demo-guide.md). The connected prototype includes CSV upload, historical pattern charts and review flags, forecasts/groups, configurable multi-load routes and fleet recommendations, simulation, and collector export. Latest checks: **370 tests passed**, type checking and both builds passed. The guide records live verification and prototype limits.
+
 **Forecasts and simulation:** open **Forecast, routes & simulation** in the sidebar, then **Forecast curves** or **Simulation & backtest** at the top. This now runs Omar's actual Python seasonal model, OR-Tools router and digital twin. Run `make setup-python PYTHON=python3.12` once for an existing checkout, then restart the API/Aspire host. New `make setup` includes Python setup. [Method, parameters, limits and API](docs/architecture/proposal.md).
 
 Local ASP.NET Core 10 + Nuxt 4/Vue foundation for historical glass-bin collections in Heilbronn.
@@ -151,14 +153,18 @@ See [PROJECT_IDEA.md](PROJECT_IDEA.md) for the product plan and remaining decisi
 
 ## Verification status
 
-Verified:
+Current verification: **370 tests passed** (209 API, 6 AppHost, 126 frontend/tooling, 29 Python), plus Vue/TypeScript checking, .NET solution build and Nuxt production build. The source SQLite file remains byte-identical to its committed version.
 
-- `pnpm typecheck` passed.
-- `pnpm build` passed, producing the Nuxt Node server in `apps/web/.output`.
-- `dotnet build apps/api/GarbageCollector.Api.csproj --no-restore` passed with zero warnings and errors after patched dependencies were restored.
-- The source database passed its integrity check: 11,701 observations, 449 locations, no missing location references, and no duplicate location/material/date readings.
+Live API and browser checks cover the real-data challenge workflow, partial-month statistics, forecast and route feasibility, simulation, uploads, manifest export and draft clearing. See [the challenge handover](docs/challenge-demo-guide.md) for settings, measured results, artifacts and limitations. Physical printing, production hosting and real road operations are separate checks.
 
-Live HTTP and browser checks remain incomplete: the implementation environment blocks local server binding and socket connections (`EPERM`). In your terminal, start the API and frontend as described above, then run `python3 scripts/smoke-test.py` from the repository root. This checks health, pagination, bin identity, inclusive date filtering, and invalid-query responses.
+Against a running API:
+
+```sh
+python3 scripts/smoke-test.py
+python3 scripts/challenge-smoke.py --report /tmp/challenge-evidence.json
+```
+
+The second command expects the bundled source dataset and takes longer because it executes forecasts, route search and simulation. To build alongside the dev server without sharing Nuxt's build directory, use `NUXT_BUILD_DIR=.nuxt/challenge-build make build-web`.
 
 ## Unit tests
 
@@ -179,9 +185,9 @@ Optional backend coverage report:
 dotnet test GarbageCollector.slnx --collect:"XPlat Code Coverage"
 ```
 
-Verified results: **205 API tests, 6 AppHost tests, 118 frontend/tooling tests and 29 Python tests pass (358 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
+Verified results: **209 API tests, 6 AppHost tests, 126 frontend/tooling tests and 29 Python tests pass (370 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
 
-The standard `dotnet test` runner builds but cannot start its communication socket in this restricted environment. A small in-process runner calls the real xUnit discovery/execution API, including theories and async fixtures; it does not replace assertions or manually call test methods. Run both suites without a local test socket:
+For environments where the standard `dotnet test` runner cannot start its communication socket, a fallback is included. A small in-process runner calls the real xUnit discovery/execution API, including theories and async fixtures; it does not replace assertions or manually call test methods. Run both suites without a local test socket:
 
 ```sh
 ./scripts/test.sh

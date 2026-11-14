@@ -4,7 +4,7 @@ import { createProposalDataset } from '../state/createProposalDataset';
 import type { ProposalSettings } from '~/shared/api/contracts/proposal';
 import { downloadCsv } from '~/shared/browser/download';
 import { useCollectionProposal } from '../composables/useCollectionProposal';
-import { REASON_LABELS, formatHours, proposalCsv, proposalSummary, servedBinKeys, servedOrder } from '../domain/proposal';
+import { REASON_LABELS, formatHours, proposalCsv, proposalSummary } from '../domain/proposal';
 import { DEFAULT_PROPOSAL_SETTINGS } from '../domain/settings';
 import { createProposalSettings } from '../state/createProposalSettings';
 
@@ -36,7 +36,7 @@ const unservedByReason = computed(() => {
 });
 function exportSheet() { if (data.value) downloadCsv(proposalCsv(data.value), `route-proposal-${data.value.planDate}.csv`); }
 function useAsPlan() {
-  if (!data.value || dataset.value) return;
+  if (!data.value || dataset.value || settings.dirty.value) return;
   if (!plan.applyProposal(data.value)) return;
   view.value = 'manifest';
 }
@@ -46,21 +46,32 @@ function useAsPlan() {
     <header class="section-title">
       <div>
         <p class="eyebrow">FORECAST & ROUTE PROPOSAL</p>
-        <h1>What to empty next, and with how many trucks.</h1>
-        <nav class="proposal-actions" aria-label="Forecast and simulation sections"><a href="#route-proposal">Routes</a><a href="#forecast-explorer">Forecast curves</a><a href="#simulation">Simulation & backtest</a></nav>
+        <h1>Plan your next collection.</h1>
+        <nav class="proposal-workflow" aria-label="Forecast and simulation sections"><a href="#proposal-setup"><span>1</span> Set your options</a><a href="#route-proposal"><span>2</span> Review routes</a><a href="#simulation"><span>3</span> Test a scenario</a></nav>
         <p v-if="ready && data">Uses collection records through {{ asOf }} only. Proposal for the next collection day: <strong>{{ data.planDate }}</strong>.</p>
         <p v-else>Uses collection records through {{ asOf }} only.</p>
       </div>
     </header>
-    <UiCard class="analytics-panel">
-      <h2>Analysis dataset</h2>
-      <p><strong>{{ dataset ? dataset.name : 'Original SQLite observations' }}</strong>. Routes, forecast curves and simulation in this module use the same selected dataset and cutoff. Uploads remain local to this workspace and do not replace the historical inventory.</p>
-      <label>Upload readings CSV (up to 2 MB)<input type="file" accept=".csv,text/csv" :disabled="upload.reading.value" @change="selectFile" /></label>
-      <p>Required columns: Location_id, material_type, date, fill_level_perc. Dates: YYYY-MM-DD. Materials: brown, green, white. Fill: integer 0–100 or overfull.</p>
-      <UiButton v-if="dataset" label="Use original dataset" mode="outline" @click="upload.clear" />
-      <p v-if="upload.error.value" role="alert">{{ upload.error.value }}</p>
-      <div v-if="validationIssues.length" role="alert"><p>Upload rejected. No rows were silently removed. Correct the file and upload it again.</p><ul><li v-for="(issue, i) in validationIssues" :key="i">Row {{ issue.row_number }} · {{ issue.rule_id }}: {{ issue.message }}</li></ul></div>
-    </UiCard>
+    <section id="proposal-setup" class="proposal-setup" aria-label="Set your options">
+      <UiCard class="proposal-dataset">
+        <div class="proposal-dataset-current"><span class="eyebrow">DATA SOURCE</span><strong>{{ dataset ? dataset.name : 'Original collection records' }}</strong><span>History through {{ asOf }}</span></div>
+        <details class="proposal-disclosure">
+          <summary>Import a different CSV <span>Optional</span></summary>
+          <div class="proposal-disclosure-content">
+            <p>Use your own readings for routes, forecasts and simulation. The original inventory stays unchanged.</p>
+            <label>Readings CSV (up to 2 MB)<input type="file" accept=".csv,text/csv" :disabled="upload.reading.value" @change="selectFile" /></label>
+            <p>Required columns: Location_id, material_type, date, fill_level_perc. Dates: YYYY-MM-DD. Materials: brown, green, white. Fill: integer 0–100 or overfull.</p>
+          </div>
+        </details>
+        <UiButton v-if="dataset" label="Use original dataset" mode="outline" @click="upload.clear" />
+        <p v-if="upload.error.value" role="alert">{{ upload.error.value }}</p>
+        <div v-if="validationIssues.length" role="alert"><p>Upload rejected. No rows were silently removed. Correct the file and upload it again.</p><ul><li v-for="(issue, i) in validationIssues" :key="i">Row {{ issue.row_number }} · {{ issue.rule_id }}: {{ issue.message }}</li></ul></div>
+      </UiCard>
+      <ProposalSettingsForm :settings="settings.draft.value" :errors="settings.errors.value" :dirty="settings.dirty.value"
+        @number="settings.setNumber" @flag="settings.setFlag" @apply="apply" @reset="reset" />
+    </section>
+    <div class="proposal-section-heading"><p class="eyebrow">2 · REVIEW ROUTES</p><h2>Your collection proposal</h2><p>Calculated with your applied options. Review the route before accepting it.</p></div>
+    <UiInfoCard v-if="settings.dirty.value" headline="You have unapplied changes" color="warning" role="status"><p>Apply your options above to update these routes and enable simulation.</p></UiInfoCard>
     <WorkspaceState v-if="error" state="error" title="Proposal unavailable" :description="problem || 'Check the API connection, the selected date and the operating numbers.'" action="Retry" @action="refresh()" />
     <WorkspaceState v-else-if="status === 'pending'" state="loading" title="Forecasting fill levels and planning routes" description="Later observations are excluded from the forecast." />
     <template v-else-if="ready && data && summary">
@@ -73,7 +84,7 @@ function useAsPlan() {
           <MetricCard label="WORKING TIME" :value="formatHours(data.plan.totals.hours)" :caption="`All trucks together · about ${data.plan.totals.weightT.toFixed(1)} t of glass`" compact />
         </div>
         <UiInfoCard v-if="summary.unservedMandatory" headline="Some urgent stops do not fit" color="danger" role="alert">
-          <p>{{ summary.unservedMandatory }} stops that must be emptied are not in the plan. Add trucks or lengthen the shift below.</p>
+          <p>{{ summary.unservedMandatory }} stops that must be emptied are not in the plan. Add trucks or lengthen the shift in your options above.</p>
         </UiInfoCard>
         <UiCard id="route-proposal" class="analytics-panel">
           <h2>Proposed routes for {{ data.planDate }}</h2>
@@ -83,19 +94,22 @@ function useAsPlan() {
             <li v-for="[reason, count] in unservedByReason" :key="reason">{{ count }} stops not served — {{ reason }}</li>
           </ul>
           <div class="proposal-actions">
-            <UiButton label="Use as collection plan" :disabled="!data.plan.routes.length || !!dataset" @click="useAsPlan" />
+            <UiButton label="Use as collection plan" :disabled="!data.plan.routes.length || !!dataset || settings.dirty.value" @click="useAsPlan" />
             <UiButton label="Download route sheet (CSV)" mode="outline" :disabled="!data.plan.routes.length" @click="exportSheet" />
           </div>
           <p v-if="dataset">Export uploaded-data routes here. The collection manifest uses the original inventory; switch back to the original dataset to accept a plan there.</p>
         </UiCard>
-        <ProposalDataEvidence v-if="data.dataset" :evidence="data.dataset" />
-        <ProposalSettingsForm :settings="settings.draft.value" :errors="settings.errors.value" :dirty="settings.dirty.value"
-          @number="settings.setNumber" @flag="settings.setFlag" @apply="apply" @reset="reset" />
+        <ForecastAnalysis :as-of="asOf" :settings="stored" :settings-dirty="settings.dirty.value" :proposal="data" :dataset="dataset" />
+        <div class="proposal-section-heading"><p class="eyebrow">SUPPORTING DETAILS</p><h2>Understand the forecast</h2><p>Inspect overflow risk, data quality and model assumptions.</p></div>
+        <details class="proposal-disclosure proposal-support"><summary>Containers most likely to overflow</summary>
         <UiCard class="analytics-panel">
           <h2>Containers most likely to overflow</h2>
           <p>Overflow risk is the chance that a container is full by {{ data.windowEnd }}, the collection day after the plan date.</p>
           <ProposalRiskTable :proposal="data" />
         </UiCard>
+        </details>
+        <details v-if="data.dataset" class="proposal-disclosure proposal-support"><summary>Data quality & behavioral groups</summary><ProposalDataEvidence :evidence="data.dataset" /></details>
+        <details class="proposal-disclosure proposal-support"><summary>How the forecast works & assumptions</summary>
         <UiCard class="analytics-panel proposal-model">
           <h2>How the forecast works</h2>
           <p>Omar’s Python model learns from {{ data.model.cycles.toLocaleString('en-US') }} filling periods ({{ data.model.censoredCycles.toLocaleString('en-US') }} censored). Container rates borrow from glass-type averages, with month and school-vacation effects. Engine: {{ data.model.engine || 'C# baseline' }}.</p>
@@ -109,8 +123,8 @@ function useAsPlan() {
           <h3>Assumptions</h3>
           <ul><li v-for="text in data.assumptions" :key="text">{{ text }}</li></ul>
         </UiCard>
+        </details>
       </template>
     </template>
-    <ForecastAnalysis v-if="ready && data && data.bins.length" :as-of="asOf" :settings="stored" :proposal="data" :dataset="dataset" />
   </div>
 </template>

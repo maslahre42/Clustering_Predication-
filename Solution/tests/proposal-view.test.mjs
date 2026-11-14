@@ -80,6 +80,45 @@ test('settings form shows source labels, reports edits and blocks an invalid app
   assert.match(invalid.text(), /greater than 0/)
 })
 
+test('settings prioritize trucks and working time while advanced options stay collapsed', async t => {
+  const m = mount(t, await component('ProposalSettingsForm'), {
+    settings: { ...DEFAULT_PROPOSAL_SETTINGS }, errors: {}, dirty: false,
+  }, undefined, await controls())
+  const groups = m.all().filter(n => n.tag === 'details')
+  const text = n => [n.text, ...n.children.map(text)].join(' ')
+  assert.equal(groups.filter(n => n.props.open).length, 2)
+  assert.ok(groups.filter(n => n.props.open).every(n => /Trucks|Working time/.test(text(n))))
+  assert.ok(groups.filter(n => !n.props.open).some(n => /Selection rule/.test(text(n))))
+})
+
+test('invalid advanced settings expand so their errors can be corrected', async t => {
+  const m = mount(t, await component('ProposalSettingsForm'), {
+    settings: { ...DEFAULT_PROPOSAL_SETTINGS, depotLatitude: 100 },
+    errors: { depotLatitude: 'Must be at most 90.' }, dirty: true,
+  }, undefined, await controls())
+  const text = n => [n.text, ...n.children.map(text)].join(' ')
+  const group = m.all().find(n => n.tag === 'details' && /Travel and depot/.test(text(n)))
+  assert.equal(group.props.open, true)
+  assert.match(text(group), /Must be at most 90/)
+})
+
+test('simulation waits for applied settings and appears before optional forecast exploration', async t => {
+  const Analysis = await component('ForecastAnalysis')
+  const components = { ...await controls(), SimulationResults: { render: () => null }, ForecastExplorer: { render: () => null } }
+  const props = { asOf: '2026-08-20', settings: { ...DEFAULT_PROPOSAL_SETTINGS }, proposal: sampleProposal(), dataset: null }
+  const m = mount(t, Analysis, { ...props, settingsDirty: true }, undefined, components)
+  const text = n => [n.text, ...n.children.map(text)].join(' ')
+  const run = m.all().find(n => n.tag === 'button' && /Run simulation/.test(text(n)))
+  assert.equal(run.props.disabled, true)
+  // Guard the request handler as well as the disabled appearance.
+  assert.doesNotThrow(() => run.props.onClick())
+  assert.match(m.text(), /Apply your collection settings above/)
+  assert.ok(m.text().indexOf('Simulation & backtest') < m.text().indexOf('Explore a container'))
+  assert.equal(m.find('details').props.open, undefined)
+  const applied = mount(t, Analysis, { ...props, settingsDirty: false }, undefined, components)
+  assert.equal(applied.all().find(n => n.tag === 'button' && /Run simulation/.test(text(n))).props.disabled, false)
+})
+
 test('combined-project validation reports matched cases and distinguishes the bounded one-load check',async t=>{
   const comparison={targets:10,evaluated:10,commonNumericCases:6,commonCensoredCases:2,unknownTargets:0,note:'Identical targets; lower bounds excluded from MAE.',
     models:[{name:'omar',label:'Omar',available:10,mae:12,bias:-2,lowerBoundShortfall:5},{name:'zakaria',label:'Zakaria',available:10,mae:14,bias:3,lowerBoundShortfall:7},{name:'kaise',label:'Kaise persistence',available:8,mae:20,bias:-5,lowerBoundShortfall:15}]}

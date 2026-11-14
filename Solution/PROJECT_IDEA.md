@@ -2,7 +2,7 @@
 
 Last consolidated: 14 November 2026.
 
-This document records the agreed product, the implementation that exists, and the remaining work. Proposed modules and integrations are explicitly identified as planned. See [README.md](README.md) for local setup and [UI component architecture](docs/architecture/ui-components.md) for the detailed frontend breakdown.
+This document records product decisions and remaining operational extensions. The [challenge handover](docs/challenge-demo-guide.md) is the current deliverable checklist and verified demo path; [the integration contract](docs/combined-project-integration.md) describes the connected Python engines. See [README.md](README.md) for local setup and [UI component architecture](docs/architecture/ui-components.md) for the detailed frontend breakdown.
 
 ## 1. Purpose and challenge scope
 
@@ -10,14 +10,14 @@ Garbage Collector helps waste collection teams inspect glass-bin history, choose
 
 The initial region is Heilbronn. Each location has separate **brown, green, and white glass bins**. The primary user is a dispatcher or collection planner; collector-facing manifests support the hand-off. Mobile field reporting, driver dispatch, and collection-completion recording are future capabilities.
 
-The application is a reusable, functioning template backed by actual historical data. Simulated forecasts and fabricated current fill levels have been removed. A colleague is developing the forecast model separately.
+The application uses actual historical observations and clearly labeled predictions. Omar's forecast, selection, multi-load routing and simulation are connected through a request-local Python worker, with Kaise's validation/grouping and Zakaria's corrected reference policy and bounded optimization check.
 
 The challenge has two connected decisions:
 
-1. **Which bins need collection?** Future forecast and prioritization integration.
+1. **Which bins need collection?** Cutoff-safe forecasts and risk-based prioritization.
 2. **How should the selected bins be collected efficiently?** Route planning and operational constraints.
 
-Routing can be demonstrated independently of forecasting by using a manually chosen set of bins. Challenge deliverables mentioned in the notebook include data ingestion, pattern visualization, a routing engine, and documentation; the official rubric still needs to be checked before treating these as a complete acceptance checklist.
+Routing can also be demonstrated using a manually chosen set of bins. The uploaded challenge brief's ingestion, pattern visualization, configurable routing/fleet and documentation deliverables are mapped to the running prototype in the handover guide.
 
 ## 2. Architecture decisions
 
@@ -31,11 +31,11 @@ Routing can be demonstrated independently of forecasting by using a manually cho
 | UI system | **Project-owned Vue components and CSS**, following `idea of UI:UX`; no Onyx dependency |
 | Map display | Leaflet using OpenStreetMap data/tiles |
 | API | REST/JSON with an OpenAPI document |
-| Frontend/backend connection | Nuxt server proxies allowlisted `/api/*` GET requests to ASP.NET |
+| Frontend/backend connection | Nuxt server proxies allowlisted GET requests and analysis POST requests to ASP.NET |
 | Current route preview | Nearest-neighbor/manual ordering and straight-line geographic distance, calculated in the frontend |
-| Target operational routing | Backend integration with a road-routing engine and a constrained optimizer; providers not yet selected |
+| Constrained routing | Python OR-Tools multi-load routes with total payload/volume and shift constraints; road-network travel and separate compartments remain extensions |
 
-Use one backend application with clear feature boundaries. Separate processes or microservices are not currently required. The colleague's forecasting implementation may remain independent behind an agreed exchange contract.
+Use one backend application with clear feature boundaries. The API invokes a request-local Python subprocess through JSON; frontend code does not implement the optimization model.
 
 ## 3. Confirmed data semantics
 
@@ -49,7 +49,7 @@ Use one backend application with clear feature boundaries. Separate processes or
 
 ### Historical observations
 
-The original history was manually collected in Excel and has already been transferred into SQLite. The notebook refers to a CSV export of that history. The application consumes SQLite directly; it does not currently import Excel or CSV itself.
+The original history was manually collected in Excel and transferred into SQLite. The application reads SQLite and supports request-local CSV upload for forecasts, routes and simulation. Uploads do not change the source database or the original history/inventory modules.
 
 **Every recorded fill level was taken immediately before emptying the corresponding bin.** Each row therefore represents a pre-emptying measurement and a collection occurrence on that date.
 
@@ -151,14 +151,14 @@ The coordinate import should use a separate administrative/import path. Routine 
 | --- | --- |
 | History | Implemented: query validation, inclusive date/location/material filtering, stable pagination, numeric parsing and overflow flags |
 | Planning snapshot | Implemented: latest eligible observation and collection count per location/material |
-| Historical analytics | Implemented: material/monthly comparisons, distributions, intervals, and sparse-history indicators |
+| Historical analytics | Implemented: material/monthly comparisons and charts, exact partial periods, distributions, intervals, cycle rates, review flags and sparse-history indicators |
 | Planning workspace | Implemented: search, material and historical-fill filters, grouped location cards, map inspection, individual/group selection |
 | Location details | Implemented: source metadata, glass-bin cards, actual observation chart and audit history |
 | Collection manifest | Implemented: grouped stops, manual reordering, draft notes, nearest-neighbor reset, CSV export and browser print/PDF |
 | System status | Implemented: actual API health and snapshot availability; unavailable integrations labeled honestly |
-| Forecasts | Integration-pending view exists; the colleague's model is not connected |
-| Operational routing | Planned: road paths, travel-time matrix, vehicle constraints, and route evaluation |
-| Import and saved plans | Planned: controlled imports and durable plan storage |
+| Forecasts | Implemented: seasonal cycle model, uncertainty curves, risk-based selection, behavioral groups and matched held-out references |
+| Operational routing | Implemented: multi-load OR-Tools routes and constrained simulation; road-network paths and compartment constraints remain planned |
+| Import and saved plans | Request-local validated CSV upload implemented; durable imports and saved-plan storage remain planned |
 
 ## 7. Data flow and responsibility split
 
@@ -171,14 +171,15 @@ flowchart LR
     EF --> SQLite[(SQLite source data)]
     Browser --> Map[Leaflet and OpenStreetMap]
     Browser --> Preview[Current draft route preview]
-    Forecast[Colleague's forecast output] -. planned import .-> API
-    API -. planned integration .-> Router[Road-routing engine]
-    API -. planned integration .-> Optimizer[Constrained stop-order optimizer]
+    API --> Worker[Request-local Python worker]
+    Worker --> Forecast[Seasonal forecast and reference models]
+    Worker --> Optimizer[OR-Tools multi-load optimizer]
+    Worker --> Simulation[Shared-demand policy simulation]
 ```
 
-The backend owns persistence access and historical interpretation/validation. Nuxt's server proxy forwards allowlisted reads; it is not a second database or forecasting backend.
+The backend owns persistence access and historical interpretation/validation. Nuxt's server proxy forwards allowlisted requests; it is not a second database or forecasting backend.
 
-The frontend owns presentation, transient workspace state, and the current geographic route preview. Move operational optimization, constraints, and persisted-plan validation behind backend services as those features are implemented. Do not duplicate their business rules in individual Vue components.
+The frontend owns presentation, transient workspace state, and the manual geographic route preview. Forecasts, constrained routes and simulations run behind the API. Do not duplicate their business rules in individual Vue components.
 
 ### Existing API surface
 
@@ -190,6 +191,7 @@ The frontend owns presentation, transient workspace state, and the current geogr
 | `GET /api/planning?asOf=yyyy-MM-dd` | Required cutoff; eligible bins, latest readings, overflow flags, counts, and date bounds |
 | `GET /api/history` | Optional location, material, date bounds and cutoff; page defaults to 1, page size to 50, maximum 200 |
 | `GET /api/analytics?asOf=yyyy-MM-dd` | Required cutoff; historical material/monthly metrics |
+| `GET/POST /api/proposal`, `/api/forecast`, `/api/simulation` | Original-data or uploaded-data routes, per-bin curves and shared-setting evaluation; see the integration contract |
 | `GET /openapi/v1.json` | Backend OpenAPI contract |
 
 History dates use `yyyy-MM-dd`; material values are `brown`, `green`, and `white`. DTOs expose parsed domain information rather than requiring the frontend to interpret raw database entities. A generated TypeScript API client is a possible later improvement, not currently implemented.
@@ -205,6 +207,7 @@ Implemented metrics:
 - Median interval between consecutive **distinct recorded collection dates**, calculated within each location/material pair and pooled by material. Single-observation bins contribute no interval.
 - Descriptive fill bands: 0–30%, above 30/below 70%, 70/below 100%, exactly 100%, overfull, and unknown.
 - Monthly collection comparisons, with explicit partial-month caveats at the selected cutoff.
+- Interactive monthly charts, reset-aware numeric cycle medians with separate censored-cycle counts, and transparent historical review flags linked to location history.
 - Known-bin coverage and the number of bins with fewer than three observations. This is a coverage indicator, not forecast confidence.
 
 The fill slider filters the latest historical pre-emptying reading. Overfull matches even a 100% threshold and sorts above numeric 100%, without becoming a numeric percentage or current urgency claim.
@@ -218,11 +221,11 @@ Notebook assumptions requiring correction or validation:
 - Whole-dataset clustering or scaling leaks future information into a past replay; fit using eligible historical inputs only if adopted later.
 - Vehicle capacities, glass densities, speeds, compartment splits, and service times are example assumptions until confirmed.
 
-## 9. Forecast integration contract — planned
+## 9. Forecast integration contract
 
-The colleague owns model development. Keep observations, forecasts, and collection plans separate. Do not invent predictions while waiting for the model.
+The implemented JSON/stdin bridge, uncertainty semantics, settings and evaluation isolation are documented in [the forecast architecture](docs/architecture/proposal.md) and [combined integration](docs/combined-project-integration.md). Keep observations, forecasts and collection plans separate.
 
-Agree on CSV, JSON, or API delivery before implementation. A proposed forecast record includes:
+Any future archived forecast format should include:
 
 - Location UUID and material type.
 - Target date/time and prediction unit.
@@ -233,7 +236,7 @@ Agree on CSV, JSON, or API delivery before implementation. A proposed forecast r
 
 For historical replay, inputs and training must respect the decision cutoff. Archived forecasts must have been available at the relevant decision time. A newly generated retrospective backtest can instead use only the eligible historical prefix; label it as a backtest and preserve its actual generation timestamp rather than pretending it existed in the past. Preserve original model output and provenance. Show observed values and predictions with distinct dates and visual labels.
 
-Near-full/urgent thresholds, treatment of stale predictions, and prediction horizons remain to be agreed. Emptying events and any assumed reset level must be handled explicitly by the forecasting model.
+Current risk thresholds and prediction horizons are configurable. Each recorded visit resets its bin under the stated emptying assumption; unknown visits supply no numeric cycle rate. Archived forecast persistence remains future work.
 
 ## 10. Map, road routing, optimization, and evaluation
 
@@ -344,7 +347,7 @@ There is no implemented `packages/api-client`, deployment infrastructure directo
 - Run relevant tests before considering a logic change complete. Report blocked execution and unverified behavior explicitly.
 - Type-check and build after relevant application changes. Documentation-only edits do not introduce executable application logic.
 
-Most recently verified: **185 passing tests: 93 API, 6 AppHost and 86 frontend/tooling**, plus successful frontend type checking and production build. Backend tests include rules/analytics and isolated SQLite history-reader tests.
+Most recently verified: **370 passing tests: 209 API, 6 AppHost, 126 frontend/tooling and 29 Python**, plus frontend type checking and .NET/Nuxt builds. See the challenge handover for live API and browser verification.
 
 Run the full suite:
 
@@ -354,7 +357,7 @@ Run the full suite:
 
 The script uses the actual xUnit discovery/execution API in-process because the standard VSTest communication socket is blocked in the implementation environment. Standard `dotnet test GarbageCollector.slnx` remains available in a normal local terminal. NuGet vulnerability auditing stays enabled; an unavailable audit feed can produce `NU1900` warnings.
 
-Live browser interactions, responsive screenshots, external map tiles, HTTP smoke checks, and print layout still require verification outside those socket restrictions. Passing unit tests is not a claim that these checks have been completed.
+Live API and browser checks are recorded separately in the challenge handover. External map-provider availability and physical print output are not established by unit tests.
 
 ## 15. Deployment and operational boundaries
 
@@ -372,12 +375,12 @@ Do not present the current prototype as operationally validated while these depl
 
 | Priority | Milestone | Acceptance evidence |
 | --- | --- | --- |
-| 1 | Validate full browser workflow | Planner → details → manifest → export/print works; cutoff changes clear drafts; mobile/error states reviewed |
+| 1 | Extend browser verification | Automated challenge path covers analytics → details → forecasts → simulation → manifest → CSV and draft reset; extend road-map and physical-print review |
 | 2 | Import real coordinates when delivered | UUID coverage report, coordinate validation, verified real/synthetic flags, no source-history changes |
 | 3 | Configure actual depot and road routing | Real road geometry and travel-time matrix; unreachable stops handled explicitly |
 | 4 | Add confirmed fleet/service constraints | Feasible plans respecting the supplied capacities and operating limits |
 | 5 | Benchmark routing | Reproducible comparison using identical stops, depot and assumptions |
-| 6 | Integrate colleague's forecasts | Agreed contract, provenance, emptying/reset semantics, and decision-time isolation tests |
+| 6 | Extend independent forecast validation | Connected models and cutoff tests exist; use longer held-out periods and measured post-emptying levels |
 | 7 | Add durable plans and import tooling | Explicit migrations, backups, tested imports; user roles as required |
 
 Useful later design additions: saved plans, configurable start/finish depots, drag-and-drop stop ordering with keyboard alternatives, a selected-only map/list, undo, collapsible panels, and an improved collector printout. These are candidates, not completed features.

@@ -22,3 +22,17 @@
 
 .analytics-table-filter { display: flex; justify-content: flex-end; margin-bottom: 16px; }
 .analytics-table-filter > .ui-field { min-width: 180px; }
+
+.analytics-chart-controls { display: flex; flex-wrap: wrap; gap: 12px; }
+.analytics-trend { list-style: none; padding: 0; margin: 20px 0; }
+.analytics-trend li { display: grid; grid-template-columns: minmax(130px, 1fr) minmax(80px, 2fr) minmax(170px, 1fr); align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--surface-border); }
+.analytics-trend small { display: block; color: var(--text-secondary); font-size: 11px; margin-top: 4px; overflow-wrap: anywhere; }
+.analytics-trend-track { height: 16px; background: var(--surface-subtle); border-radius: 3px; overflow: hidden; }
+.analytics-trend-track span { display: block; height: 100%; border-radius: 3px; }
+.analytics-partial .analytics-trend-track { border: 1px dashed var(--text-secondary); }
+.analytics-trend-value { text-align: right; }
+@media (max-width: 700px) {
+  .analytics-trend li { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+  .analytics-trend-track { grid-column: 1 / -1; grid-row: 2; }
+  .analytics-trend-value { grid-column: 2; grid-row: 1; }
+}

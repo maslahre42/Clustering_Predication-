@@ -14,8 +14,11 @@ const components = {
   HistoryTable: 'features/history/components/HistoryTable.vue',
   MonthlyCollectionTable: 'features/analytics/components/MonthlyCollectionTable.vue',
   MaterialAnalyticsTable: 'features/analytics/components/MaterialAnalyticsTable.vue',
+  CollectionPatternTrends: 'features/analytics/components/CollectionPatternTrends.vue',
+  CollectionPatternEvidence: 'features/analytics/components/CollectionPatternEvidence.vue',
   ProposalRoutesTable: 'features/proposal/components/ProposalRoutesTable.vue',
   ProposalSettingsForm: 'features/proposal/components/ProposalSettingsForm.vue',
+  ForecastAnalysis: 'features/proposal/components/ForecastAnalysis.vue',
   ForecastExplorer: 'features/proposal/components/ForecastExplorer.vue',
   SimulationResults: 'features/proposal/components/SimulationResults.vue',
   ProjectValidationResults: 'features/proposal/components/ProjectValidationResults.vue',
@@ -48,6 +51,9 @@ export async function component(name) {
 export function descendants(n) { return [n, ...n.children.flatMap(descendants)] }
 const node = (tag, text = '') => ({
   tag, text, props: {}, children: [], parent: null, focused: false,
+  listeners: {},
+  addEventListener(event, handler) { (this.listeners[event] ??= []).push(handler) },
+  removeEventListener(event, handler) { this.listeners[event] = (this.listeners[event] ?? []).filter(value => value !== handler) },
   focus() { this.focused = true },
   querySelector(selector) {
     const date = selector.match(/data-date="([^"]+)"/)

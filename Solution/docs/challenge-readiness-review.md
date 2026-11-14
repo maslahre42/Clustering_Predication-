@@ -1,5 +1,7 @@
 # WasteRouting.AI readiness review
 
+**Historical review:** this document records issues found before integration. For the current connected implementation, corrected semantics, executed checks and remaining prototype limits, use the [challenge handover](challenge-demo-guide.md) and [integration contract](combined-project-integration.md).
+
 Reviewed 14 November 2026 against [the challenge brief](../challenge.pdf).
 
 **Assessment: there is a credible hackathon prototype here, with useful evidence and reusable code. The main work is correcting evaluation and routing edge cases, then presenting one connected workflow. The current evidence does not establish operational savings or production readiness.** The brief explicitly welcomes a prototype concept; it does not require a finished production deployment.

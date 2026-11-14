@@ -21,4 +21,9 @@ export default defineNuxtConfig({
     },
   },
   devtools: { enabled: false },
+  vite: {
+    server: {
+      allowedHosts: ['habits-includes-vocational-board.trycloudflare.com'],
+    },
+  },
 })

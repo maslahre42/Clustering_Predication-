@@ -16,3 +16,8 @@
 **/TestResults/
 **/aspire-output/
 **/.aspire/
+
+# Cluster access credentials belong outside the repository.
+*.kubeconfig
+kubeconfig*.yaml
+kubeconfig*.yml
