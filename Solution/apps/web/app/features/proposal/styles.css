@@ -1,0 +1,20 @@
+.proposal-trucks { display: flex; flex-wrap: wrap; gap: 12px; list-style: none; padding: 0; margin: 0 0 18px; }
+.proposal-trucks > li { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; background: var(--surface-subtle); border-radius: 6px; font-size: 12px; }
+.proposal-trucks strong { font-size: 14px; }
+.proposal-empty { padding: 18px; background: var(--surface-subtle); border-radius: 6px; }
+.proposal-actions, .proposal-settings-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.proposal-unserved { margin: 16px 0 0; padding-left: 18px; font-size: 12px; color: var(--text-secondary); }
+.proposal-settings { margin-bottom: 22px; }
+.proposal-settings > p { margin: 12px 0 8px; }
+.proposal-settings fieldset { border: 0; padding: 0; margin: 18px 0 0; min-width: 0; }
+.proposal-settings legend { font-size: 12px; font-weight: 650; margin-bottom: 10px; }
+.proposal-settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+.proposal-setting { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.proposal-setting > .ui-field { width: 100%; }
+.proposal-setting small { font-size: 11px; color: var(--text-secondary); }
+.proposal-setting .proposal-setting-error { color: var(--fill-overfull); font-weight: 600; }
+.proposal-model dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; margin: 16px 0; font-size: 12px; align-items: center; }
+.proposal-model h3 { margin-top: 18px; font-size: 13px; }
+.proposal-model ul { margin: 10px 0 0; padding-left: 18px; font-size: 12px; color: var(--text-secondary); }
+.proposal-routes td .fraction-badge { margin-right: 6px; }
+.proposal-settings fieldset > .ui-checkbox { margin-right: 20px; }

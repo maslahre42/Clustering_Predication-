@@ -127,7 +127,7 @@ This is a reusable application template with actual historical data, not a simul
 - Changing the cutoff recreates the planning/history views and clears selected bins and routes. Records are never deleted from SQLite.
 - Counts, date bounds, known bins, latest readings, and selectable collection stops come only from eligible observations. Bins first observed after the cutoff do not appear.
 - History filters also respect the same cutoff, including when requesting a later `to` date.
-- Fill values are actual pre-emptying measurements, never estimates of current fill. Urgency and simulated forecasts have been removed. The colleague's real forecasting integration remains separate future work.
+- Fill values in planning, history and analytics are actual pre-emptying measurements, never estimates of current fill. Forecasts exist only in the **Forecast & route proposal** module (`GET /api/proposal`), where every number is labelled as a prediction; see [method and evidence](docs/architecture/proposal.md).
 - Select individual bins or add the actual recorded collections from the selected day. Bins at the same location share one stop.
 - Location names use existing UUIDs rather than invented station names. Coordinates and central depot remain synthetic, explicitly labeled. Route preview uses nearest-neighbor order and straight lines, not driving directions or a globally optimal route.
 - Export a dated CSV plan with source collection dates and historical percentages. Plans are held in memory.

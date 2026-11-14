@@ -27,7 +27,7 @@ const { view, inspectedLocation } = workspace.navigation
         />
         <LazyCollectionManifest v-else-if="view === 'manifest'" />
         <LazyCollectionAnalyticsView v-else-if="view === 'analytics'" :key="asOf" />
-        <LazyForecastIntegration v-else-if="view === 'forecasts'" />
+        <LazyCollectionProposalView v-else-if="view === 'forecasts'" />
         <LazySystemStatus v-else />
       </main>
       <footer class="workspace-footer">

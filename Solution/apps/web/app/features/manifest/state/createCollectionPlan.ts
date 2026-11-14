@@ -43,9 +43,18 @@ export function createCollectionPlan(sources: PlanSources, configuration: Worksp
     routeOrder.value = order
   }
   function clearPlan() { selectedKeys.value = []; routeOrder.value = []; notes.value = {} }
+  /** Replace the manual selection with a route proposal. Unknown bins are ignored; the plan stays editable. */
+  function applyProposal(keys: string[], order: string[]) {
+    if (!sources.ready.value) return
+    const known = new Set(sources.bins.value.map(bin => bin.key))
+    selectedKeys.value = [...new Set(keys.filter(key => known.has(key)))]
+    const stopIds = new Set(selectedBins.value.map(bin => bin.locationId))
+    routeOrder.value = order.filter(id => stopIds.has(id))
+    notes.value = {}
+  }
   function addDayCollections() {
     for (const bin of sources.filteredBins.value.filter(bin => bin.lastCollection === sources.asOf.value)) toggleBin(bin.key, true)
   }
   return { depot, selectedKeys, routeOrder, notes, selectedBins, stops, routePoints, distance,
-    toggleBin, toggleLocation, removeStop, moveStop, clearPlan, addDayCollections }
+    toggleBin, toggleLocation, removeStop, moveStop, clearPlan, addDayCollections, applyProposal }
 }

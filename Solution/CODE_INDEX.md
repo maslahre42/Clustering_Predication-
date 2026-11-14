@@ -17,6 +17,7 @@ Use the matching row, then read only the listed files and their direct dependenc
 | History table and API ordering | `features/history/components/HistoryTable.vue`; backend `Features/History/` (see below) | `table-components.test.mjs`, API `History/History*Tests.cs` |
 | Shared sort behavior | `shared/state/createTableSort.ts`, `shared/domain/table.ts`, `shared/ui/controls/UiSortableHeader.vue` | `table-state.test.mjs`, `table-sorting.test.mjs` |
 | Analytics tables | `features/analytics/state/`, `config/tableColumns.ts`, `components/*Table.vue` | `table-state.test.mjs`, `table-components.test.mjs` |
+| Forecast, selection, routes (proposal) | `features/proposal/` (`domain/`, `state/`, `components/`), `shared/api/contracts/proposal.ts`; backend `Features/Proposal/` (see below) | `proposal-*.test.mjs`; API `Proposal/*Tests.cs` |
 | Analytics metrics and loading | `features/analytics/composables/useHistoricalAnalytics.ts`, `components/`; backend `Features/Analytics/` | API `Analytics/CollectionAnalyticsTests.cs` |
 | Bin identity, joins, location details | `features/inventory/domain/catalog.ts`, `types.ts`, `components/` | `workspace.test.mjs`, `coordinates.test.mjs` |
 | Fill labels, material icons | `shared/domain/fill.ts`, `shared/ui/HistoricalFillMeter.vue`, `GlassFractionBadge.vue`, `icons.ts`, `styles.css` | `historical-fill-states.test.mjs`; API `Domain/RecordedFillTests.cs` |
@@ -36,6 +37,16 @@ Use the matching row, then read only the listed files and their direct dependenc
 - `HistoryQuery.cs`: SQL filters, cutoff, and date/location/material ordering.
 - `HistoryFillOrdering.cs`: parsed numeric/overfull/unknown ordering.
 - `Domain/Collections/`: shared cutoff and fill rules; reused by planning/analytics.
+
+## Proposal backend ownership
+
+- `ProposalEndpoints.cs`: `GET /api/proposal?asOf=…` plus optional operating numbers; validation responses.
+- `OperationsSettings.cs`: every operating number with its default, range checks, request overrides, collection calendar.
+- `FillingCycles.cs`: visits → filling cycles (a visit empties the bin; full/overfull are lower bounds).
+- `FillRateModel.cs`: fill rate per bin with pooling per glass type; expected fill and overflow probability.
+- `CollectionPolicy.cs`: one decision per bin (due, neighbour, optional, skipped, no forecast) and site stops with weight/volume.
+- `RoutePlanner.cs`: trucks, loads, shift, unloading trips, unserved stops with reasons.
+- `CollectionProposal.cs`: composes the above for the first collection day after the cutoff. See [method and evidence](docs/architecture/proposal.md).
 
 ## Checks and runtime
 

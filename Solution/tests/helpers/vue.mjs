@@ -14,6 +14,8 @@ const components = {
   HistoryTable: 'features/history/components/HistoryTable.vue',
   MonthlyCollectionTable: 'features/analytics/components/MonthlyCollectionTable.vue',
   MaterialAnalyticsTable: 'features/analytics/components/MaterialAnalyticsTable.vue',
+  ProposalRoutesTable: 'features/proposal/components/ProposalRoutesTable.vue',
+  ProposalSettingsForm: 'features/proposal/components/ProposalSettingsForm.vue',
 }
 
 /** Compile actual components. Resolve runtime imports against their original source. */

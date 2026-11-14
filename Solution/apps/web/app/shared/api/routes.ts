@@ -4,5 +4,6 @@ export const API_ROUTES = {
   planning: '/api/planning',
   locations: '/api/locations',
   analytics: '/api/analytics',
+  proposal: '/api/proposal',
   health: '/api/health',
 } as const

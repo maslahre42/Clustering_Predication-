@@ -1,5 +1,7 @@
 # Project comparison and recommended combination
 
+> **Corrected on 14 November 2026:** see [combined-solution-review.md](combined-solution-review.md) for verified corrections to this document (stale Zakaria details, overstated bug impact, missing truck-volume issue, deadline-aware merge plan). The Zakaria column in the configuration table of section 4 was updated to his current values.
+
 > **Later revision to Zakaria's project:** The comparison below predates the correction task. Zakaria's notebook/Gurobi pipeline has since been corrected and optimized; see its [current method](../Zakaria-Work/docs/corrections-and-method.md) and [verification](../Zakaria-Work/docs/verification.md). The original overflow, growth/reset, historical-cutoff, candidate-accounting and solver-status criticisms are historical. Remaining differences such as one load per vehicle, synthetic geography and the simple forecast baseline still apply.
 
 Reviewed on 14 November 2026 against the [challenge brief](../Readme%20Challenge.pdf), the matching [Solution challenge copy](../Solution/challenge.pdf), current source and the [contributor reports](contributors/README.md).
@@ -157,11 +159,11 @@ Reconcile rather than average conflicting defaults:
 
 | Quantity | Monir | Omar | Kaise | Zakaria modular pipeline |
 | --- | --- | --- | --- | --- |
-| Container size | Not used for constrained routing | 3 m³ | 1.9 m³ | 2.5 m³ |
-| Density | Not used | 350 kg/m³ | 500 kg/m³ | 380 kg/m³ |
-| Truck payload | Not used | 12,000 kg | 10,000 kg | 9,000 kg |
+| Container size | Not used for constrained routing | 3 m³ | 1.9 m³ | 3 m³ |
+| Density | Not used | 350 kg/m³ | 500 kg/m³ | 350 kg/m³ |
+| Truck payload | Not used | 12,000 kg | 10,000 kg | 12,000 kg |
 | Truck volume | Not used | Unknown/disabled | 12 m³ | 18 m³ |
-| Shift | Not enforced | 8 h | 8 h | 7.5 h |
+| Shift | Not enforced | 8 h | 8 h | 8 h |
 
 Choose confirmed challenge-specific inputs where available; label remaining values as assumptions and allow validated changes. Internally use one consistent unit set, such as liters, kilograms and minutes. Record configuration versions with results. A fixed ten-minute travel assumption and coordinate-based travel are separate modes, not two interchangeable descriptions of the same route.
 

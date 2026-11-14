@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   components: [
     { path: '~/components', pathPrefix: false },
     { path: '~/shared/ui', pathPrefix: false },
-    ...['planning', 'history', 'inventory', 'map', 'manifest', 'analytics', 'system'].map(feature => ({
+    ...['planning', 'history', 'inventory', 'map', 'manifest', 'analytics', 'system', 'proposal'].map(feature => ({
       path: `~/features/${feature}/components`, pathPrefix: false,
     })),
   ],
