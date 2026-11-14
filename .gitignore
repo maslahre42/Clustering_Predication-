@@ -1,1 +1,14 @@
 .DS_Store
+**/bin/
+**/obj/
+**/node_modules/
+**/.nuxt/
+**/.output/
+.env
+*.db-wal
+*.db-shm
+*.db-journal
+
+**/TestResults/
+**/aspire-output/
+**/.aspire/
