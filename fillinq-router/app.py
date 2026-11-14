@@ -15,7 +15,8 @@ import streamlit as st
 from streamlit_folium import st_folium
 
 from fillinq.calendar_features import DAILY
-from fillinq.config import MATERIALS, OpsConfig
+from fillinq.config import (MATERIALS, PARAMS, SETTINGS_PATH, WEEKDAY_NAMES, OpsConfig, config_from_dict,
+                            load_settings, save_settings)
 from fillinq.data import build_intervals, load_readings, quality_report
 from fillinq.forecast import RateModel
 from fillinq.geo import get_locations
@@ -60,7 +61,7 @@ def _results(name):
 
 # ----------------------------------------------------------------- sidebar
 st.sidebar.title("♻️ WasteRouting.AI")
-PAGES = ["1 Data", "2 Patterns", "3 Forecast", "4 Route planner", "5 Backtest", "6 Guide"]
+PAGES = ["1 Data", "2 Patterns", "3 Forecast", "4 Settings", "5 Route planner", "6 Backtest", "7 Guide"]
 _q = st.query_params.get("page", "1")
 _start = int(_q) - 1 if str(_q).isdigit() and 1 <= int(_q) <= len(PAGES) else 0
 page = st.sidebar.radio("Page", PAGES, index=_start)
@@ -82,12 +83,11 @@ else:
 locs, synthetic = get_locations(df["site"].unique(), loc_path)
 if synthetic:
     st.sidebar.warning("PreZero has no container coordinates. Driving time uses their rule of 10 minutes between "
-                       "containers; map positions are SYNTHETIC (illustrative). "
-                       "stops, fill levels and overflow results do not.")
+                       "containers. Map positions are synthetic and only illustrate the routes.")
 
 
 # ================================================================ 1 DATA
-if page.startswith("1"):
+if page.endswith("Data"):
     st.title("Data ingestion and quality")
     c = st.columns(4)
     c[0].metric("Readings", f"{qual['readings']:,}")
@@ -118,7 +118,7 @@ if page.startswith("1"):
     st.dataframe(cov.T, width="stretch")
 
 # ============================================================ 2 PATTERNS
-elif page.startswith("2"):
+elif page.endswith("Patterns"):
     st.title("Patterns")
     ms = monthly_summary(df)
     fig = go.Figure()
@@ -162,7 +162,7 @@ elif page.startswith("2"):
     st.download_button("Download site groups (CSV)", cl.to_csv(index=False), "site_groups.csv")
 
 # ============================================================ 3 FORECAST
-elif page.startswith("3"):
+elif page.endswith("Forecast"):
     st.title("Forecast")
     fm = _results("forecast_metrics.json")
     if fm:
@@ -204,37 +204,97 @@ elif page.startswith("3"):
     st.info(f"Median time to full: **{ttf:.0f} days** (80% range {ttf_lo:.0f} to {ttf_hi:.0f}). "
             f"Estimated fill rate {np.exp(model.a[model.cidx[cont]]) if cont in model.cidx else float('nan'):.1f}% per day.")
 
-# ========================================================= 4 ROUTE PLANNER
-elif page.startswith("4"):
+# ============================================================= 4 SETTINGS
+elif page.endswith("Settings"):
+    st.title("Settings: your operating numbers")
+    cur, default = load_settings(), OpsConfig()
+    st.markdown(
+        "Every number the route planner uses is on this page. Change a value, press **Save settings**, and the "
+        "Route planner uses it from then on. The settings are stored in `settings.json`, so they stay after a restart.")
+    badge = {"PreZero": ":green-background[From PreZero]", "Assumption": ":orange-background[Our assumption]",
+             "Planner": ":blue-background[Planning rule]"}
+    st.markdown(f"{badge['PreZero']} given by PreZero on 14 Nov 2026 &nbsp; {badge['Assumption']} our guess, please replace "
+                f"with the real number &nbsp; {badge['Planner']} how careful the planner is")
+    upl = st.file_uploader("Load a settings file (optional)", type="json", help="A settings.json downloaded from this page.")
+    if upl is not None and st.session_state.get("_loaded_settings") != upl.file_id:
+        try:
+            save_settings(config_from_dict(json.load(upl)))
+            st.session_state["_loaded_settings"] = upl.file_id
+            st.rerun()
+        except (ValueError, TypeError):
+            st.error("This file is not a valid settings file.")
+    new = {}
+    with st.form("settings"):
+        for group, items in PARAMS:
+            st.subheader(group)
+            for key, label, unit, lo, hi, step, source, text in items:
+                c1, c2, c3 = st.columns([4, 2, 2])
+                val = getattr(cur, key)
+                c1.markdown(f"**{label}** ({unit})" + (f"  \n{text}" if text else ""))
+                if isinstance(getattr(default, key), int):
+                    new[key] = int(c2.number_input(label, int(lo), int(hi), int(min(max(val, lo), hi)), int(step),
+                                                   key=f"set_{key}", label_visibility="collapsed"))
+                else:
+                    new[key] = float(c2.number_input(label, float(lo), float(hi), float(min(max(val, lo), hi)), float(step),
+                                                     key=f"set_{key}", label_visibility="collapsed"))
+                dv = getattr(default, key)
+                c3.markdown(badge[source] + ("" if abs(val - dv) < 1e-9 else f"  \nchanged, was {dv:g}"))
+        st.subheader("Collection days")
+        days = st.multiselect("Days on which trucks collect", WEEKDAY_NAMES,
+                              [WEEKDAY_NAMES[i] for i in cur.working_weekdays], key="set_days")
+        st.caption(badge["PreZero"] + " Monday to Friday. The plan for the last day before a break looks ahead to the next collection day.")
+        saved = st.form_submit_button("Save settings", type="primary")
+    if saved:
+        if not days:
+            st.error("Choose at least one collection day.")
+        else:
+            d = cur.to_dict()
+            d.update(new)
+            d["working_weekdays"] = [WEEKDAY_NAMES.index(x) for x in days]
+            save_settings(config_from_dict(d))
+            st.session_state["_saved_msg"] = True
+            st.rerun()
+    if st.session_state.pop("_saved_msg", False):
+        st.success("Saved. The Route planner now uses these numbers.")
+    full_t = cur.container_volume_m3 * cur.glass_density_t_m3
+    per_load = cur.truck_payload_t / full_t if full_t > 0 else float("nan")
+    if cur.truck_volume_m3 > 0:
+        per_load = min(per_load, cur.truck_volume_m3 / cur.container_volume_m3)
+    st.info(f"**What these numbers mean together:** a full container holds about **{full_t:.2f} t** of glass, so one load "
+            f"takes about **{per_load:.0f} full containers**. Visiting one container costs about "
+            f"**{cur.fixed_travel_min + cur.service_min_per_stop + cur.service_min_per_bin:.0f} minutes** "
+            f"(driving plus emptying), so one truck manages roughly "
+            f"**{max(cur.shift_hours * 60 - cur.unload_min - 2 * cur.fixed_travel_min, 0) / max(cur.fixed_travel_min + cur.service_min_per_stop + cur.service_min_per_bin, 1):.0f} single-container stops** per shift before unloading trips.")
+    c1, c2 = st.columns(2)
+    out = cur.to_dict()
+    out["working_weekdays"] = list(cur.working_weekdays)
+    c1.download_button("Download these settings (JSON)", json.dumps(out, indent=2), "settings.json")
+    if c2.button("Reset everything to the PreZero values"):
+        if os.path.exists(SETTINGS_PATH):
+            os.remove(SETTINGS_PATH)
+        for k_ in [x for x in st.session_state if str(x).startswith("set_")]:
+            del st.session_state[k_]
+        st.rerun()
+    st.caption("The Backtest page was calculated in advance. After changing settings, run `python run_backtest.py` "
+               "(about 10 minutes) to recalculate it; the page warns you when its results are out of date.")
+
+# ========================================================= 5 ROUTE PLANNER
+elif page.endswith("Route planner"):
     st.title("Route planner")
-    with st.sidebar.expander("Operating variables", expanded=True):
-        d = OpsConfig()
-        cfg = OpsConfig(
-            container_volume_m3=st.number_input("Container volume (m3)", 0.5, 10.0, d.container_volume_m3, 0.5),
-            glass_density_t_m3=st.number_input("Glass density (t/m3)", 0.1, 1.5, d.glass_density_t_m3, 0.05),
-            truck_volume_m3=st.number_input("Truck volume per trip (m3, 0 = no volume limit)", 0.0, 60.0, d.truck_volume_m3, 1.0),
-            truck_payload_t=st.number_input("Truck payload per trip (t)", 2.0, 30.0, d.truck_payload_t, 0.5),
-            max_vehicles=int(st.number_input("Max trucks", 1, 30, d.max_vehicles)),
-            shift_hours=st.number_input("Shift length (h)", 4.0, 12.0, d.shift_hours, 0.5),
-            fixed_travel_min=st.number_input("Minutes of driving between containers (0 = use coordinates)", 0.0, 60.0, d.fixed_travel_min, 1.0),
-            avg_speed_kph=st.number_input("Average speed (km/h)", 10.0, 60.0, d.avg_speed_kph, 1.0),
-            service_min_per_stop=st.number_input("Minutes per stop", 0.0, 20.0, d.service_min_per_stop, 0.5),
-            service_min_per_bin=st.number_input("Minutes per container", 0.0, 20.0, d.service_min_per_bin, 0.5),
-            unload_min=st.number_input("Unloading time at disposal (min)", 0.0, 60.0, d.unload_min, 1.0),
-            vehicle_fixed_cost_min=st.number_input("Fleet-size priority (min per extra truck)", 0.0, 1000.0, d.vehicle_fixed_cost_min, 30.0),
-            lookahead_days=int(st.number_input("Look-ahead (days)", 1, 7, d.lookahead_days)),
-            must_p=st.slider("Overflow risk that makes a stop mandatory", 0.1, 0.95, d.must_p, 0.01),
-        )
-    st.caption("Container size, payload, shift, working days and the 10-minute driving rule come from PreZero. "
-               "Glass density and unloading time are still our assumptions. "
-               + ("Map positions are synthetic." if synthetic else "Using the uploaded site locations."))
+    cfg = load_settings()
+    st.markdown(
+        f"**Settings in use:** {cfg.truck_payload_t:g} t per load · {cfg.shift_hours:g} h shift · "
+        f"{cfg.fixed_travel_min:g} min between containers · {cfg.service_min_per_bin:g} min per container · "
+        f"container {cfg.container_volume_m3:g} m3 · up to {cfg.max_vehicles} trucks · "
+        f"collection on {', '.join(WEEKDAY_NAMES[i][:3] for i in cfg.working_weekdays)}.  \n"
+        "Change them on the **Settings** page.")
     dmin, dmax = df["date"].min().date(), df["date"].max().date()
     default_day = pd.Timestamp("2026-08-17").date() if dmin < pd.Timestamp("2026-08-17").date() < dmax else dmax
     c1, c2 = st.columns([1, 2])
     plan_day = c1.date_input("Planning day", default_day, help="The planner only uses readings from BEFORE this day.")
     tl = c2.slider("Solver time (seconds)", 2, 30, 6)
     if pd.Timestamp(plan_day).dayofweek not in cfg.working_weekdays:
-        st.warning("This is a Saturday or Sunday. PreZero collects Monday to Friday, so pick a weekday for a real plan.")
+        st.warning("This day is not a collection day in the settings, so pick a collection day for a real plan.")
     known = df[df["date"] < pd.Timestamp(plan_day)]
     last_readings = known.groupby("container")["date"].max()
     state = df.drop_duplicates("container")[["container", "site", "material"]].copy()
@@ -307,13 +367,20 @@ elif page.startswith("4"):
             fill_now=lambda x: x["fill_now"].round(0), p_over_window=lambda x: x["p_over_window"].round(2),
             p_over_now=lambda x: x["p_over_now"].round(2)), hide_index=True, width="stretch")
 
-# ============================================================== 5 BACKTEST
-elif page.startswith("5"):
+# ============================================================== 6 BACKTEST
+elif page.endswith("Backtest"):
     st.title("Backtest: fixed schedule vs. forecast-driven collection")
     fr, rs, meta = _results("frontier.csv"), _results("routed_summary.csv"), _results("meta.json")
     if fr is None or meta is None:
         st.warning("No results yet. Run `python run_backtest.py` once (about 10 minutes) and reload this page.")
     else:
+        used, now = meta.get("settings"), load_settings().to_dict()
+        if used:
+            diff = [f"{k_}: calculated with {used[k_]}, now {now[k_]}" for k_ in now
+                    if k_ in used and k_ not in ("opt_p",) and list(np.atleast_1d(used[k_])) != list(np.atleast_1d(now[k_]))]
+            if diff:
+                st.warning("These results were calculated with different settings (" + "; ".join(diff) +
+                           "). Run `python run_backtest.py` to recalculate them.")
         st.markdown(
             f"Replay of **{meta['start']} to {meta['end']}**. A simulated twin generates the true fill of every container; "
             "both policies are scored on the same random world. **Historical schedule** = the real visit calendar of the data. "
@@ -351,7 +418,7 @@ elif page.startswith("5"):
                    "wasted half-empty visits; it does not remove overflow events entirely, because individual filling cycles are "
                    "unpredictable without live sensors. Working time uses PreZero's rule of 10 minutes between containers.")
 
-# ================================================================== 6 GUIDE
+# ================================================================== 7 GUIDE
 else:
     st.title("Guide: architecture and how to use")
     st.markdown(open(os.path.join(HERE, "README.md")).read())

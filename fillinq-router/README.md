@@ -43,7 +43,12 @@ shift length. When full they drive to the disposal site and continue (multi-trip
 unload and the drive to the depot. A fixed cost per truck makes the solver use as few trucks as possible, so
 the number of trucks used is the **fleet recommendation**.
 
-**Configurable variables** (sidebar of the route planner, defaults in `fillinq/config.py`): glass density,
+**Settings page.** Every operating number is shown on the Settings page of the dashboard with its unit, an
+explanation and a label saying whether it came from PreZero or is our assumption. Change a value and press
+Save: it is written to `settings.json`, the Route planner uses it at once, and `python run_backtest.py`
+uses it for the next backtest. Settings can be downloaded, uploaded and reset.
+
+**Configurable variables** (Settings page, defaults in `fillinq/config.py`): glass density,
 container volume, truck volume and payload, number of trucks, shift length, minutes of driving between
 containers, speed, minutes per stop and per container, unloading time, depot and disposal location, look-ahead and risk threshold.
 

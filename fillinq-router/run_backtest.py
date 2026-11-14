@@ -11,7 +11,9 @@ from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import pandas as pd
 
-from fillinq.config import OpsConfig
+from dataclasses import replace
+
+from fillinq.config import load_settings
 from fillinq.data import load_readings, build_intervals, quality_report
 from fillinq.forecast import RateModel, cross_validate, forward_test
 from fillinq.geo import get_locations
@@ -44,7 +46,7 @@ def _setup():
 def _routed(args):
     name, p, time_limit = args
     df, iv, truth, tw, planner, locs, _ = _setup()
-    cfg = OpsConfig(opt_p=1.01)
+    cfg = replace(load_settings(), opt_p=1.01)
     t = time.time()
     if p is None:
         r = run_baseline(tw, locs, cfg, route=True, time_limit=time_limit)
@@ -55,6 +57,14 @@ def _routed(args):
     r.update(name=name, km=float(daily["km"].sum()), hours=float(daily["hours"].sum()),
              truck_days=int(daily["trucks"].sum()), seconds=round(time.time() - t))
     return r
+
+
+def _write_meta(synthetic):
+    st = load_settings().to_dict()
+    st["working_weekdays"] = list(st["working_weekdays"])
+    json.dump({"synthetic_locations": bool(synthetic), "start": START, "end": END,
+               "planner_train_end": PLANNER_TRAIN_END, "scenarios": SCENARIOS, "settings": st},
+              open(os.path.join(OUT, "meta.json"), "w"), indent=2)
 
 
 def main():
@@ -74,6 +84,7 @@ def main():
         old = old[~old["name"].isin(names)] if len(old) else old
         pd.concat([old, pd.DataFrame(res)]).to_csv(path, index=False)
         print(pd.DataFrame(res).T.to_string())
+        _write_meta(not os.path.exists(LOCS))
         return
     df, iv, truth, tw, planner, locs, synthetic = _setup()
     json.dump(quality_report(df), open(os.path.join(OUT, "quality.json"), "w"), indent=2)
@@ -86,7 +97,7 @@ def main():
     print("forecast metrics done", flush=True)
 
     # 2. frontier: visits vs overflow for many thresholds (no routing)
-    cfg = OpsConfig()
+    cfg = load_settings()
     base = run_baseline(tw); base.pop("daily")
     rows = [dict(policy="historical schedule", threshold=np.nan, **base)]
     for name, pl in (("dynamic (model trained until Mar)", planner), ("dynamic (model trained on all data)", truth)):
@@ -103,9 +114,7 @@ def main():
             res = list(ex.map(_routed, jobs))
         pd.DataFrame(res).to_csv(os.path.join(OUT, "routed_summary.csv"), index=False)
         print(pd.DataFrame(res).T.to_string())
-    json.dump({"synthetic_locations": bool(synthetic), "start": START, "end": END,
-               "planner_train_end": PLANNER_TRAIN_END, "scenarios": SCENARIOS},
-              open(os.path.join(OUT, "meta.json"), "w"), indent=2)
+    _write_meta(synthetic)
 
 
 if __name__ == "__main__":
