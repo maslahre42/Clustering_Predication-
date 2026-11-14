@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PreZero Smart Waste Digital Twin | City of Heilbronn</title>
+  
+  <!-- MapLibre GL JS & CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --panel-bg: rgba(13, 20, 36, 0.88);
+      --panel-border: rgba(255, 255, 255, 0.1);
+      --accent-green: #00d26a;
+      --accent-green-glow: rgba(0, 210, 106, 0.35);
+      --accent-amber: #f59e0b;
+      --accent-crimson: #ef4444;
+      --accent-crimson-glow: rgba(239, 68, 68, 0.45);
+      --accent-cyan: #06b6d4;
+      --accent-purple: #a855f7;
+      --text-main: #f9fafb;
+      --text-muted: #94a3b8;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Cybernetic Grid & Vignette */
+    .viewport-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(circle at 50% 50%, transparent 65%, rgba(10, 14, 23, 0.75) 100%);
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Top Executive Navigation Bar */
+    .top-header {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      z-index: 10;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo-badge {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #00A859 0%, #00d26a 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--accent-green-glow);
+    }
+
+    .brand-logo-badge svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+
+    .brand-text h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--accent-green);
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* Segmented Mode Selector */
+    .mode-switcher {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mode-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .mode-btn.active.mode-past {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-crimson-glow);
+    }
+
+    .mode-btn.active.mode-future {
+      background: linear-gradient(135deg, #00A859 0%, #00d26a 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-green-glow);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--panel-border);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.tour-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Top KPI HUD Overlay */
+    .kpi-hud-strip {
+      position: absolute;
+      top: 92px;
+      left: 20px;
+      right: 20px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      z-index: 9;
+      pointer-events: none;
+    }
+
+    .kpi-card {
+      pointer-events: auto;
+      background: var(--panel-bg);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-green);
+      border-radius: 4px 0 0 4px;
+    }
+
+    .kpi-card.crimson::before { background: var(--accent-crimson); }
+    .kpi-card.amber::before { background: var(--accent-amber); }
+    .kpi-card.cyan::before { background: var(--accent-cyan); }
+    .kpi-card.purple::before { background: var(--accent-purple); }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .kpi-value {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .kpi-unit {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .kpi-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+    }
+
+    .kpi-badge.badge-green {
+      background: rgba(0, 210, 106, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(0, 210, 106, 0.3);
+    }
+
+    .kpi-badge.badge-red {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-crimson);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Bottom Interactive Timeline Bar */
+    .bottom-timeline {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1080px, calc(100% - 40px));
+      background: var(--panel-bg);
+      backdrop-filter: blur(22px);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 16px 24px;
+      z-index: 10;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+    }
+
+    .timeline-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .timeline-clock {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .current-day-badge {
+      padding: 4px 12px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .status-ticker {
+      font-size: 12px;
+      color: var(--accent-green);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulsing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse-dot 1.5s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    .playback-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-green);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #0b0f19;
+      box-shadow: 0 0 20px var(--accent-green-glow);
+      transition: all 0.2s ease;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.08);
+      background: #05f07a;
+    }
+
+    .play-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .ctrl-icon-btn {
+      width: 34px;
+      height: 34px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .ctrl-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .speed-pills {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .speed-btn {
+      padding: 4px 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .speed-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    /* Scrub Bar Slider */
+    .scrub-container {
+      position: relative;
+      width: 100%;
+      height: 28px;
+      display: flex;
+      align-items: center;
+    }
+
+    .scrub-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+    }
+
+    .scrub-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 0 20px var(--accent-green);
+      border: 2px solid var(--accent-green);
+      transition: transform 0.15s ease;
+    }
+
+    .scrub-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    /* Milestone Marker Jump Points */
+    .milestones-strip {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .milestone-node {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .milestone-node:hover {
+      color: var(--accent-green);
+      background: rgba(0, 210, 106, 0.1);
+    }
+
+    .milestone-node.event-past {
+      color: var(--accent-amber);
+    }
+
+    .milestone-node.event-dynamic {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    /* Floating Camera Presets (Bottom Left) */
+    .camera-presets-dock {
+      position: absolute;
+      bottom: 24px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .dock-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .dock-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(3px);
+    }
+
+    .dock-btn.active {
+      color: var(--accent-green);
+      border-color: rgba(0, 210, 106, 0.4);
+    }
+
+    /* Container Detail Inspector Drawer */
+    .inspector-drawer {
+      position: absolute;
+      top: 172px;
+      right: 20px;
+      width: 320px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 20px;
+      z-index: 10;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      transform: translateX(360px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .inspector-drawer.open {
+      transform: translateX(0);
+    }
+
+    .inspector-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .inspector-title h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .inspector-title p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .close-inspector-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 2px;
+    }
+
+    .close-inspector-btn:hover {
+      color: #fff;
+    }
+
+    .inspector-gauge-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .gauge-fill-bar-bg {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 10px 0 6px;
+    }
+
+    .gauge-fill-bar-val {
+      height: 100%;
+      width: 80%;
+      background: var(--accent-green);
+      border-radius: 6px;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .inspector-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .inspector-stat-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+
+    .inspector-stat-item .lbl {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .inspector-stat-item .val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    /* Hackathon Presentation Tour Modal */
+    .tour-modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 14, 23, 0.75);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tour-modal-backdrop.active {
+      display: flex;
+    }
+
+    .tour-card {
+      width: min(640px, calc(100% - 40px));
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      animation: modal-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modal-pop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .tour-step-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #818cf8;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .tour-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .tour-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tour-metrics-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 24px;
+    }
+
+    .tour-metric-box {
+      text-align: center;
+    }
+
+    .tour-metric-box .num {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .tour-metric-box .txt {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .tour-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tour-nav-btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .tour-nav-btn.primary {
+      background: var(--accent-green);
+      color: #0b0f19;
+      box-shadow: 0 4px 16px var(--accent-green-glow);
+    }
+
+    .tour-nav-btn.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    /* Custom 3D Vehicle Marker Elements */
+    .truck-marker-node {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--accent-green), 0 0 40px rgba(0, 210, 106, 0.5);
+      cursor: pointer;
+      transition: transform 0.15s linear;
+    }
+
+    .truck-marker-node.mode-past {
+      background: var(--accent-crimson);
+      box-shadow: 0 0 20px var(--accent-crimson), 0 0 40px var(--accent-crimson-glow);
+    }
+
+    .truck-marker-node svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+    }
+
+    /* Legend Overlay */
+    .map-legend {
+      position: absolute;
+      top: 172px;
+      left: 20px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      z-index: 9;
+      font-size: 11px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .legend-item:last-child { margin-bottom: 0; }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- WebGL Map Container -->
+  <div id="map"></div>
+  <div class="viewport-overlay"></div>
+
+  <!-- Top Executive Header -->
+  <header class="top-header">
+    <div class="brand-group">
+      <div class="brand-logo-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+      </div>
+      <div class="brand-text">
+        <h1>PreZero Digital Twin Simulator</h1>
+        <p>City of Heilbronn &bull; Autonomous Predictive Waste Dispatch</p>
+      </div>
+    </div>
+
+    <!-- Segmented Mode Switcher -->
+    <div class="mode-switcher">
+      <button id="btn-mode-past" class="mode-btn mode-past" onclick="setSimulationMode('past')">
+        <span>🕰️</span> The Past (Fixed Schedule)
+      </button>
+      <button id="btn-mode-future" class="mode-btn mode-future active" onclick="setSimulationMode('future')">
+        <span>🚀</span> The Future (PreZero Dynamic AI)
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button id="btn-audio-toggle" class="action-btn" onclick="toggleAudio()" title="Sound FX Toggle">
+        <span id="audio-icon">🔊</span> Audio
+      </button>
+      <button class="action-btn tour-btn" onclick="startPresentationTour()">
+        <span>🎓</span> Jury Pitch Tour
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Live Real-Time KPI HUD -->
+  <div class="kpi-hud-strip">
+    <div class="kpi-card" id="card-distance">
+      <div class="kpi-label">
+        <span>Distance Driven</span>
+        <span>🚚</span>
+      </div>
+      <div class="kpi-value-row">
+        <span class="kpi-value" id="kpi-distance">0.0</span>
+        <span class="kpi-unit">km</span>
+      </div>
+      <div class="kpi-badge badge-green" id="badge-distance">-61.0% vs Baseline</div>
+    </div>
+
+    <div class="kpi-card" id="card-co2">
+      <div class="kpi-label">
+        <span>CO2 Footprint</span>
+        <span>🌱</span>
+      </div>
+      <div class="kpi-value-row">
+        <span class="kpi-value" id="kpi-co2">0.0</span>
+        <span class="kpi-unit">kg</span>
+      </div>
+      <div class="kpi-badge badge-green" id="badge-co2">-112.4 kg Saved</div>
+    </div>
+
+    <div class="kpi-card crimson" id="card-overflow">
+      <div class="kpi-label">
+        <span id="label-overflow">Active Overflows</span>
+        <span>⚠️</span>
+      </div>
+      <div class="kpi-value-row">
+        <span class="kpi-value" id="kpi-overflow">0</span>
+        <span class="kpi-unit" id="unit-overflow">bins</span>
+      </div>
+      <div class="kpi-badge badge-green" id="badge-overflow">100% Zero-Overflow</div>
+    </div>
+
+    <div class="kpi-card amber" id="card-premature">
+      <div class="kpi-label">
+        <span>Premature Runs Wasted</span>
+        <span>⏱️</span>
+      </div>
+      <div class="kpi-value-row">
+        <span class="kpi-value" id="kpi-premature">0</span>
+        <span class="kpi-unit">(&lt;40% Fill)</span>
+      </div>
+      <div class="kpi-badge badge-green" id="badge-premature">0 Wasted Stops</div>
+    </div>
+
+    <div class="kpi-card purple" id="card-efficiency">
+      <div class="kpi-label">
+        <span>Payload Efficiency</span>
+        <span>⚡</span>
+      </div>
+      <div class="kpi-value-row">
+        <span class="kpi-value" id="kpi-efficiency">276.7</span>
+        <span class="kpi-unit">kg / km</span>
+      </div>
+      <div class="kpi-badge badge-green" id="badge-efficiency">+182.6% Higher Yield</div>
+    </div>
+  </div>
+
+  <!-- Map Legend -->
+  <div class="map-legend">
+    <div style="font-weight: 700; color: #fff; margin-bottom: 8px; text-transform: uppercase;">3D Container Fill</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #00d26a;"></div> Safe (&lt; 60%)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #f59e0b;"></div> Warning (60 - 79%)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #ef4444;"></div> Alert (80 - 99%)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #ff0055; box-shadow: 0 0 8px #ff0055;"></div> Overflow (&gt;= 100%)</div>
+  </div>
+
+  <!-- Camera Presets Dock -->
+  <div class="camera-presets-dock">
+    <button class="dock-btn active" onclick="setCameraView('overview')">🏙️ City Orbit (3D Pitch 58°)</button>
+    <button class="dock-btn" onclick="setCameraView('follow')">🚛 Chase Active Fleet</button>
+    <button class="dock-btn" onclick="setCameraView('downtown')">📍 Downtown Density Hub</button>
+    <button class="dock-btn" onclick="setCameraView('depot')">🏭 Böllinger Höfe Depot</button>
+    <button class="dock-btn" onclick="setCameraView('topdown')">🗺️ 2D Tactical Plan</button>
+  </div>
+
+  <!-- Interactive Container Inspector Drawer -->
+  <div id="inspector-drawer" class="inspector-drawer">
+    <div class="inspector-header">
+      <div class="inspector-title">
+        <h3 id="insp-name">Container Telemetry</h3>
+        <p id="insp-id">Select any 3D pillar on map</p>
+      </div>
+      <button class="close-inspector-btn" onclick="closeInspector()">&times;</button>
+    </div>
+
+    <div class="inspector-gauge-box">
+      <div style="display: flex; justify-content: space-between; font-size: 11px;">
+        <span style="color: var(--text-muted); text-transform: uppercase;">Current Fill Level</span>
+        <span id="insp-fill-text" style="font-family: var(--font-mono); font-weight: 700; color: #fff;">0.0%</span>
+      </div>
+      <div class="gauge-fill-bar-bg">
+        <div id="insp-fill-bar" class="gauge-fill-bar-val"></div>
+      </div>
+      <div id="insp-status-badge" style="font-size: 11px; font-weight: 700; color: var(--accent-green); text-transform: uppercase;">Normal</div>
+    </div>
+
+    <div class="inspector-stat-grid">
+      <div class="inspector-stat-item">
+        <div class="lbl">Cluster Tier</div>
+        <div class="val" id="insp-tier" style="font-size: 11px;">Tier 2: Steady</div>
+      </div>
+      <div class="inspector-stat-item">
+        <div class="lbl">Fill Velocity</div>
+        <div class="val" id="insp-velocity">+2.8% / day</div>
+      </div>
+      <div class="inspector-stat-item">
+        <div class="lbl">TimeToOverflow</div>
+        <div class="val" id="insp-overflow-time">4.2 days</div>
+      </div>
+      <div class="inspector-stat-item">
+        <div class="lbl">AI Dispatch Action</div>
+        <div class="val" id="insp-action" style="color: var(--accent-green);">Optimized</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Timeline & Playback Controller -->
+  <div class="bottom-timeline">
+    <div class="timeline-top-row">
+      <div class="timeline-clock">
+        <div class="current-day-badge" id="current-day-display">Day 1 &bull; 08:00 AM</div>
+        <div class="status-ticker">
+          <div class="pulsing-dot" id="ticker-dot"></div>
+          <span id="ticker-text">Predictive Fleet Operations Nominal</span>
+        </div>
+      </div>
+
+      <div class="playback-controls">
+        <button class="ctrl-icon-btn" onclick="resetSimulation()" title="Reset to Day 1">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+        </button>
+        <button id="play-btn" class="play-btn" onclick="togglePlay()" title="Play / Pause (Spacebar)">
+          <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="speed-pills">
+          <button class="speed-btn" onclick="setSpeed(1)">1x</button>
+          <button class="speed-btn active" onclick="setSpeed(2)">2x</button>
+          <button class="speed-btn" onclick="setSpeed(5)">5x</button>
+          <button class="speed-btn" onclick="setSpeed(10)">10x</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrub Bar -->
+    <div class="scrub-container">
+      <input type="range" id="timeline-slider" class="scrub-slider" min="1" max="28" step="0.05" value="1" oninput="onScrub(this.value)">
+    </div>
+
+    <!-- Key Milestone Quick Jumps -->
+    <div class="milestones-strip">
+      <span class="milestone-node" onclick="jumpToDay(1)">Day 1: Start</span>
+      <span class="milestone-node event-dynamic" onclick="jumpToDay(6)">Day 6: AI Dispatch 1</span>
+      <span class="milestone-node event-past" onclick="jumpToDay(8)">Day 8: Fixed Round A</span>
+      <span class="milestone-node event-past" onclick="jumpToDay(14)">Day 14: Overflow Crisis</span>
+      <span class="milestone-node event-dynamic" onclick="jumpToDay(18)">Day 18: AI Dispatch 2</span>
+      <span class="milestone-node event-past" onclick="jumpToDay(22)">Day 22: Fixed Round B</span>
+      <span class="milestone-node" onclick="jumpToDay(28)">Day 28: Month Final</span>
+    </div>
+  </div>
+
+  <!-- Hackathon Presentation Tour Modal -->
+  <div id="tour-modal" class="tour-modal-backdrop">
+    <div class="tour-card">
+      <div class="tour-step-badge" id="tour-step-badge">Hackathon Jury Walkthrough &bull; Step 1 of 4</div>
+      <h2 id="tour-title">Heilbronn Glass Waste Network & IoT Digital Twin</h2>
+      <p id="tour-body">
+        Welcome to the City of Heilbronn PreZero Digital Twin. Our operations research model monitors 109 physical glass container stations mapped via OpenStreetMap and OSRM turn-by-turn road matrices.
+      </p>
+
+      <div class="tour-metrics-summary" id="tour-metrics">
+        <div class="tour-metric-box">
+          <div class="num">109</div>
+          <div class="txt">Physical Stations</div>
+        </div>
+        <div class="tour-metric-box">
+          <div class="num">28 Days</div>
+          <div class="txt">Municipal Cycle</div>
+        </div>
+        <div class="tour-metric-box">
+          <div class="num">OSRM Table</div>
+          <div class="txt">Road Matrix Cache</div>
+        </div>
+      </div>
+
+      <div class="tour-footer">
+        <button class="tour-nav-btn secondary" onclick="closeTour()">Close Walkthrough</button>
+        <button id="tour-next-btn" class="tour-nav-btn primary" onclick="nextTourStep()">Next: The Baseline Failure &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMBEDDED SIMULATION DATA PAYLOAD -->
+  <script>
+    const SIMULATION_DATA = {"metadata":{"title":"PreZero Smart Waste Digital Twin Simulator","city":"Heilbronn","country":"Germany","num_containers":109,"depot_coord":[9.2109,49.1427],"disposal_coord":[9.245,49.165],"timeline_days":28,"baseline_summary":{"total_distance_km":217.0,"total_co2_kg":184.4,"overflow_rate_pct":44.0,"premature_visits_count":7,"efficiency_kg_km":97.9},"dynamic_summary":{"total_distance_km":84.7,"total_co2_kg":72.0,"overflow_rate_pct":0.0,"overflows_prevented":20,"premature_visits_count":0,"efficiency_kg_km":276.7,"co2_reduction_pct":61.0,"distance_saved_pct":61.0,"efficiency_gain_pct":182.6}},"containers":[{"idx":0,"id":3383,"name":"Achtungstra\u00dfe","lon":9.212454,"lat":49.139363,"polygon":[[9.212811,49.139363],[9.212706,49.139528],[9.212454,49.139597],[9.212202,49.139528],[9.212097,49.139363],[9.212202,49.139198],[9.212454,49.139129],[9.212706,49.139198],[9.212811,49.139363]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.24,"init_fill":20.0},{"idx":1,"id":3396,"name":"Alexanderstra\u00dfe / Dittmarstra\u00dfe","lon":9.233404,"lat":49.133826,"polygon":[[9.233761,49.133826],[9.233656,49.133991],[9.233404,49.13406],[9.233152,49.133991],[9.233047,49.133826],[9.233152,49.133661],[9.233404,49.133592],[9.233656,49.133661],[9.233761,49.133826]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.6,"init_fill":80.0},{"idx":2,"id":3397,"name":"Am Seelesberg","lon":9.246999,"lat":49.138529,"polygon":[[9.247356,49.138529],[9.247251,49.138694],[9.246999,49.138763],[9.246747,49.138694],[9.246642,49.138529],[9.246747,49.138364],[9.246999,49.138295],[9.247251,49.138364],[9.247356,49.138529]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":2.15,"init_fill":80.0},{"idx":3,"id":3464,"name":"Amsterdamer Stra\u00dfe","lon":9.1802,"lat":49.118449,"polygon":[[9.180557,49.118449],[9.180452,49.118614],[9.1802,49.118683],[9.179948,49.118614],[9.179843,49.118449],[9.179948,49.118284],[9.1802,49.118215],[9.180452,49.118284],[9.180557,49.118449]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":5.31,"init_fill":100.0},{"idx":4,"id":3472,"name":"Am Wasserturm","lon":9.153609,"lat":49.117165,"polygon":[[9.153966,49.117165],[9.153861,49.11733],[9.153609,49.117399],[9.153357,49.11733],[9.153252,49.117165],[9.153357,49.117],[9.153609,49.116931],[9.153861,49.117],[9.153966,49.117165]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":1.52,"init_fill":20.0},{"idx":5,"id":3398,"name":"Badener Stra\u00dfe","lon":9.24902,"lat":49.134036,"polygon":[[9.249377,49.134036],[9.249272,49.134201],[9.24902,49.13427],[9.248768,49.134201],[9.248663,49.134036],[9.248768,49.133871],[9.24902,49.133802],[9.249272,49.133871],[9.249377,49.134036]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.54,"init_fill":60.0},{"idx":6,"id":3467,"name":"Bensheimer Stra\u00dfe","lon":9.106483,"lat":49.182183,"polygon":[[9.10684,49.182183],[9.106736,49.182348],[9.106483,49.182417],[9.10623,49.182348],[9.106126,49.182183],[9.10623,49.182018],[9.106483,49.181949],[9.106736,49.182018],[9.10684,49.182183]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":0.56,"init_fill":40.0},{"idx":7,"id":3419,"name":"Binswanger Stra\u00dfe / Alfred-Minner-Stra\u00dfe","lon":9.228188,"lat":49.162226,"polygon":[[9.228545,49.162226],[9.228441,49.162391],[9.228188,49.16246],[9.227935,49.162391],[9.227831,49.162226],[9.227935,49.162061],[9.228188,49.161992],[9.228441,49.162061],[9.228545,49.162226]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":2.17,"init_fill":100.0},{"idx":8,"id":3384,"name":"Bismarckstra\u00dfe / Gymnasiumstra\u00dfe","lon":9.224879,"lat":49.140257,"polygon":[[9.225236,49.140257],[9.225131,49.140422],[9.224879,49.140491],[9.224627,49.140422],[9.224522,49.140257],[9.224627,49.140092],[9.224879,49.140023],[9.225131,49.140092],[9.225236,49.140257]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.17,"init_fill":100.0},{"idx":9,"id":3399,"name":"Bismarckstra\u00dfe / Kernerstra\u00dfe","lon":9.23427,"lat":49.14013,"polygon":[[9.234627,49.14013],[9.234522,49.140295],[9.23427,49.140364],[9.234018,49.140295],[9.233913,49.14013],[9.234018,49.139965],[9.23427,49.139896],[9.234522,49.139965],[9.234627,49.14013]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":4.52,"init_fill":100.0},{"idx":10,"id":3400,"name":"Bl\u00fccherstra\u00dfe / Karl-J\u00e4ger-Stra\u00dfe","lon":9.229419,"lat":49.13163,"polygon":[[9.229776,49.13163],[9.229671,49.131795],[9.229419,49.131864],[9.229167,49.131795],[9.229062,49.13163],[9.229167,49.131465],[9.229419,49.131396],[9.229671,49.131465],[9.229776,49.13163]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.15,"init_fill":30.0},{"idx":11,"id":3474,"name":"B\u00f6ckinger Stra\u00dfe / Leinbachstra\u00dfe","lon":9.204201,"lat":49.166148,"polygon":[[9.204558,49.166148],[9.204454,49.166313],[9.204201,49.166382],[9.203948,49.166313],[9.203844,49.166148],[9.203948,49.165983],[9.204201,49.165914],[9.204454,49.165983],[9.204558,49.166148]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.98,"init_fill":80.0},{"idx":12,"id":3475,"name":"B\u00f6llinger Stra\u00dfe","lon":9.200612,"lat":49.174295,"polygon":[[9.200969,49.174295],[9.200865,49.17446],[9.200612,49.174529],[9.200359,49.17446],[9.200255,49.174295],[9.200359,49.17413],[9.200612,49.174061],[9.200865,49.17413],[9.200969,49.174295]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.85,"init_fill":100.0},{"idx":13,"id":3483,"name":"Bottwarbahnstra\u00dfe","lon":9.195768,"lat":49.121896,"polygon":[[9.196125,49.121896],[9.19602,49.122061],[9.195768,49.12213],[9.195516,49.122061],[9.195411,49.121896],[9.195516,49.121731],[9.195768,49.121662],[9.19602,49.121731],[9.196125,49.121896]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.5,"init_fill":40.0},{"idx":14,"id":3461,"name":"Brechhausstra\u00dfe","lon":9.175561,"lat":49.155365,"polygon":[[9.175918,49.155365],[9.175814,49.15553],[9.175561,49.155599],[9.175308,49.15553],[9.175204,49.155365],[9.175308,49.1552],[9.175561,49.155131],[9.175814,49.1552],[9.175918,49.155365]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":4.08,"init_fill":60.0},{"idx":15,"id":3439,"name":"Bruchsaler Stra\u00dfe / G\u00fcglinger Stra\u00dfe","lon":9.182297,"lat":49.14456,"polygon":[[9.182654,49.14456],[9.182549,49.144725],[9.182297,49.144794],[9.182045,49.144725],[9.18194,49.14456],[9.182045,49.144395],[9.182297,49.144326],[9.182549,49.144395],[9.182654,49.14456]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.5,"init_fill":100.0},{"idx":16,"id":3440,"name":"Bruchsaler Stra\u00dfe / Stettener Stra\u00dfe","lon":9.180039,"lat":49.142054,"polygon":[[9.180396,49.142054],[9.180291,49.142219],[9.180039,49.142288],[9.179787,49.142219],[9.179682,49.142054],[9.179787,49.141889],[9.180039,49.14182],[9.180291,49.141889],[9.180396,49.142054]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":2.97,"init_fill":110.0},{"idx":17,"id":3462,"name":"D\u00f6rnlestra\u00dfe","lon":9.174541,"lat":49.157651,"polygon":[[9.174898,49.157651],[9.174794,49.157816],[9.174541,49.157885],[9.174288,49.157816],[9.174184,49.157651],[9.174288,49.157486],[9.174541,49.157417],[9.174794,49.157486],[9.174898,49.157651]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":2.44,"init_fill":100.0},{"idx":18,"id":3401,"name":"Einsteinstra\u00dfe / Reutlinger Stra\u00dfe","lon":9.24445,"lat":49.133129,"polygon":[[9.244807,49.133129],[9.244702,49.133294],[9.24445,49.133363],[9.244198,49.133294],[9.244093,49.133129],[9.244198,49.132964],[9.24445,49.132895],[9.244702,49.132964],[9.244807,49.133129]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.16,"init_fill":110.0},{"idx":19,"id":6798,"name":"Ernst-Abbe-Stra\u00dfe, au\u00dferhalb des Recyclinghofs","lon":9.126528,"lat":49.180958,"polygon":[[9.126885,49.180958],[9.126781,49.181123],[9.126528,49.181192],[9.126275,49.181123],[9.126171,49.180958],[9.126275,49.180793],[9.126528,49.180724],[9.126781,49.180793],[9.126885,49.180958]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":0.8,"init_fill":70.0},{"idx":20,"id":4455,"name":"Fasanenweg / Limesstra\u00dfe","lon":9.194274,"lat":49.14633,"polygon":[[9.194631,49.14633],[9.194526,49.146495],[9.194274,49.146564],[9.194022,49.146495],[9.193917,49.14633],[9.194022,49.146165],[9.194274,49.146096],[9.194526,49.146165],[9.194631,49.14633]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":5.26,"init_fill":70.0},{"idx":21,"id":3385,"name":"Friedensplatz / Moltkestra\u00dfe","lon":9.228051,"lat":49.141168,"polygon":[[9.228408,49.141168],[9.228303,49.141333],[9.228051,49.141402],[9.227799,49.141333],[9.227694,49.141168],[9.227799,49.141003],[9.228051,49.140934],[9.228303,49.141003],[9.228408,49.141168]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":6.25,"init_fill":90.0},{"idx":22,"id":3402,"name":"Friedrich-D\u00fcrr-Stra\u00dfe / Gildenstra\u00dfe","lon":9.206843,"lat":49.128794,"polygon":[[9.2072,49.128794],[9.207095,49.128959],[9.206843,49.129028],[9.206591,49.128959],[9.206486,49.128794],[9.206591,49.128629],[9.206843,49.12856],[9.207095,49.128629],[9.2072,49.128794]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":2.86,"init_fill":70.0},{"idx":23,"id":3420,"name":"Gaswerkstra\u00dfe","lon":9.220006,"lat":49.151259,"polygon":[[9.220363,49.151259],[9.220259,49.151424],[9.220006,49.151493],[9.219753,49.151424],[9.219649,49.151259],[9.219753,49.151094],[9.220006,49.151025],[9.220259,49.151094],[9.220363,49.151259]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":3.81,"init_fill":80.0},{"idx":24,"id":3484,"name":"Gotenstra\u00dfe / Damaschkestra\u00dfe","lon":9.184128,"lat":49.116995,"polygon":[[9.184485,49.116995],[9.18438,49.11716],[9.184128,49.117229],[9.183876,49.11716],[9.183771,49.116995],[9.183876,49.11683],[9.184128,49.116761],[9.18438,49.11683],[9.184485,49.116995]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.88,"init_fill":40.0},{"idx":25,"id":3421,"name":"Gottlieb-Daimler-Stra\u00dfe","lon":9.213599,"lat":49.153924,"polygon":[[9.213956,49.153924],[9.213852,49.154089],[9.213599,49.154158],[9.213346,49.154089],[9.213242,49.153924],[9.213346,49.153759],[9.213599,49.15369],[9.213852,49.153759],[9.213956,49.153924]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.14,"init_fill":100.0},{"idx":26,"id":3441,"name":"Gro\u00dfgartacher Stra\u00dfe","lon":9.176645,"lat":49.13999,"polygon":[[9.177002,49.13999],[9.176897,49.140155],[9.176645,49.140224],[9.176393,49.140155],[9.176288,49.13999],[9.176393,49.139825],[9.176645,49.139756],[9.176897,49.139825],[9.177002,49.13999]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.75,"init_fill":10.0},{"idx":27,"id":3442,"name":"Gro\u00dfgartacher Stra\u00dfe / Wilhelm-Leuschner-Stra\u00dfe","lon":9.193595,"lat":49.141123,"polygon":[[9.193952,49.141123],[9.193847,49.141288],[9.193595,49.141357],[9.193343,49.141288],[9.193238,49.141123],[9.193343,49.140958],[9.193595,49.140889],[9.193847,49.140958],[9.193952,49.141123]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":0.48,"init_fill":30.0},{"idx":28,"id":3443,"name":"Gr\u00fcnewaldstra\u00dfe","lon":9.191893,"lat":49.143977,"polygon":[[9.19225,49.143977],[9.192145,49.144142],[9.191893,49.144211],[9.191641,49.144142],[9.191536,49.143977],[9.191641,49.143812],[9.191893,49.143743],[9.192145,49.143812],[9.19225,49.143977]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":2.5,"init_fill":30.0},{"idx":29,"id":3485,"name":"G\u00fcldensteinstra\u00dfe / Thomastra\u00dfe","lon":9.200595,"lat":49.119099,"polygon":[[9.200952,49.119099],[9.200847,49.119264],[9.200595,49.119333],[9.200343,49.119264],[9.200238,49.119099],[9.200343,49.118934],[9.200595,49.118865],[9.200847,49.118934],[9.200952,49.119099]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.88,"init_fill":100.0},{"idx":30,"id":3436,"name":"Hahnen\u00e4ckerstra\u00dfe","lon":9.147576,"lat":49.198923,"polygon":[[9.147933,49.198923],[9.147829,49.199088],[9.147576,49.199157],[9.147323,49.199088],[9.147219,49.198923],[9.147323,49.198758],[9.147576,49.198689],[9.147829,49.198758],[9.147933,49.198923]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.37,"init_fill":70.0},{"idx":31,"id":3403,"name":"Happelstra\u00dfe / Ludwig-Pfau-Stra\u00dfe","lon":9.224267,"lat":49.132279,"polygon":[[9.224624,49.132279],[9.224519,49.132444],[9.224267,49.132513],[9.224015,49.132444],[9.22391,49.132279],[9.224015,49.132114],[9.224267,49.132045],[9.224519,49.132114],[9.224624,49.132279]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.2,"init_fill":80.0},{"idx":32,"id":3404,"name":"Happenbacher Stra\u00dfe / Gruppenbacher Stra\u00dfe","lon":9.226773,"lat":49.125483,"polygon":[[9.22713,49.125483],[9.227025,49.125648],[9.226773,49.125717],[9.226521,49.125648],[9.226416,49.125483],[9.226521,49.125318],[9.226773,49.125249],[9.227025,49.125318],[9.22713,49.125483]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.0,"init_fill":100.0},{"idx":33,"id":3486,"name":"Hauptstra\u00dfe","lon":9.189229,"lat":49.117733,"polygon":[[9.189586,49.117733],[9.189481,49.117898],[9.189229,49.117967],[9.188977,49.117898],[9.188872,49.117733],[9.188977,49.117568],[9.189229,49.117499],[9.189481,49.117568],[9.189586,49.117733]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.32,"init_fill":110.0},{"idx":34,"id":3445,"name":"Heckenstra\u00dfe / Friedrichstra\u00dfe","lon":9.190193,"lat":49.136901,"polygon":[[9.19055,49.136901],[9.190445,49.137066],[9.190193,49.137135],[9.189941,49.137066],[9.189836,49.136901],[9.189941,49.136736],[9.190193,49.136667],[9.190445,49.136736],[9.19055,49.136901]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.82,"init_fill":90.0},{"idx":35,"id":3446,"name":"Heidelberger Stra\u00dfe / Friedhof","lon":9.186507,"lat":49.144895,"polygon":[[9.186864,49.144895],[9.186759,49.14506],[9.186507,49.145129],[9.186255,49.14506],[9.18615,49.144895],[9.186255,49.14473],[9.186507,49.144661],[9.186759,49.14473],[9.186864,49.144895]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.85,"init_fill":90.0},{"idx":36,"id":3447,"name":"Heidelberger Stra\u00dfe / Im Kreuzgrund","lon":9.180653,"lat":49.148871,"polygon":[[9.18101,49.148871],[9.180905,49.149036],[9.180653,49.149105],[9.180401,49.149036],[9.180296,49.148871],[9.180401,49.148706],[9.180653,49.148637],[9.180905,49.148706],[9.18101,49.148871]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.9,"init_fill":100.0},{"idx":37,"id":3448,"name":"Heidelberger Stra\u00dfe / Platanenstra\u00dfe","lon":9.182047,"lat":49.147529,"polygon":[[9.182404,49.147529],[9.182299,49.147694],[9.182047,49.147763],[9.181795,49.147694],[9.18169,49.147529],[9.181795,49.147364],[9.182047,49.147295],[9.182299,49.147364],[9.182404,49.147529]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":0.83,"init_fill":50.0},{"idx":38,"id":3405,"name":"Herbert-Hoover-Stra\u00dfe","lon":9.229685,"lat":49.124002,"polygon":[[9.230042,49.124002],[9.229937,49.124167],[9.229685,49.124236],[9.229433,49.124167],[9.229328,49.124002],[9.229433,49.123837],[9.229685,49.123768],[9.229937,49.123837],[9.230042,49.124002]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.88,"init_fill":100.0},{"idx":39,"id":3406,"name":"Herbert-Hoover-Stra\u00dfe / Ludwig-Pfau-Schule","lon":9.224285,"lat":49.124084,"polygon":[[9.224642,49.124084],[9.224537,49.124249],[9.224285,49.124318],[9.224033,49.124249],[9.223928,49.124084],[9.224033,49.123919],[9.224285,49.12385],[9.224537,49.123919],[9.224642,49.124084]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.72,"init_fill":60.0},{"idx":40,"id":3449,"name":"Hofstattstra\u00dfe / Glockenstra\u00dfe","lon":9.187283,"lat":49.128828,"polygon":[[9.18764,49.128828],[9.187535,49.128993],[9.187283,49.129062],[9.187031,49.128993],[9.186926,49.128828],[9.187031,49.128663],[9.187283,49.128594],[9.187535,49.128663],[9.18764,49.128828]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":1.32,"init_fill":70.0},{"idx":41,"id":3450,"name":"Hofweg / Im Kreuzgrund","lon":9.185487,"lat":49.15077,"polygon":[[9.185844,49.15077],[9.185739,49.150935],[9.185487,49.151004],[9.185235,49.150935],[9.18513,49.15077],[9.185235,49.150605],[9.185487,49.150536],[9.185739,49.150605],[9.185844,49.15077]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.54,"init_fill":100.0},{"idx":42,"id":3407,"name":"Hohenstaufenstra\u00dfe / Beethovenstra\u00dfe","lon":9.221544,"lat":49.127193,"polygon":[[9.221901,49.127193],[9.221796,49.127358],[9.221544,49.127427],[9.221292,49.127358],[9.221187,49.127193],[9.221292,49.127028],[9.221544,49.126959],[9.221796,49.127028],[9.221901,49.127193]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.54,"init_fill":70.0},{"idx":43,"id":3451,"name":"Holunderweg","lon":9.188984,"lat":49.147176,"polygon":[[9.189341,49.147176],[9.189236,49.147341],[9.188984,49.14741],[9.188732,49.147341],[9.188627,49.147176],[9.188732,49.147011],[9.188984,49.146942],[9.189236,49.147011],[9.189341,49.147176]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.89,"init_fill":100.0},{"idx":44,"id":3465,"name":"Hoss\u00e4ckerweg / Albert-Debold-Stra\u00dfe","lon":9.168671,"lat":49.113393,"polygon":[[9.169028,49.113393],[9.168923,49.113558],[9.168671,49.113627],[9.168419,49.113558],[9.168314,49.113393],[9.168419,49.113228],[9.168671,49.113159],[9.168923,49.113228],[9.169028,49.113393]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.25,"init_fill":60.0},{"idx":45,"id":3476,"name":"Im Fleischbeil / Neckartalstra\u00dfe","lon":9.200773,"lat":49.156349,"polygon":[[9.20113,49.156349],[9.201026,49.156514],[9.200773,49.156583],[9.20052,49.156514],[9.200416,49.156349],[9.20052,49.156184],[9.200773,49.156115],[9.201026,49.156184],[9.20113,49.156349]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.24,"init_fill":110.0},{"idx":46,"id":3408,"name":"Im Wannental, au\u00dferhalb des Recyclinghofs","lon":9.24037,"lat":49.139758,"polygon":[[9.240727,49.139758],[9.240622,49.139923],[9.24037,49.139992],[9.240118,49.139923],[9.240013,49.139758],[9.240118,49.139593],[9.24037,49.139524],[9.240622,49.139593],[9.240727,49.139758]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":4.55,"init_fill":30.0},{"idx":47,"id":4452,"name":"Jakob-Saame-Stra\u00dfe / Hermann-L\u00f6ns-Stra\u00dfe","lon":9.188638,"lat":49.168027,"polygon":[[9.188995,49.168027],[9.188891,49.168192],[9.188638,49.168261],[9.188385,49.168192],[9.188281,49.168027],[9.188385,49.167862],[9.188638,49.167793],[9.188891,49.167862],[9.188995,49.168027]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.44,"init_fill":100.0},{"idx":48,"id":3423,"name":"K\u00e4ferflugstra\u00dfe / Schickhardtstra\u00dfe","lon":9.227622,"lat":49.155346,"polygon":[[9.227979,49.155346],[9.227875,49.155511],[9.227622,49.15558],[9.227369,49.155511],[9.227265,49.155346],[9.227369,49.155181],[9.227622,49.155112],[9.227875,49.155181],[9.227979,49.155346]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.09,"init_fill":110.0},{"idx":49,"id":3468,"name":"Kapellenweg","lon":9.116266,"lat":49.18185,"polygon":[[9.116623,49.18185],[9.116519,49.182015],[9.116266,49.182084],[9.116013,49.182015],[9.115909,49.18185],[9.116013,49.181685],[9.116266,49.181616],[9.116519,49.181685],[9.116623,49.18185]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":1.3,"init_fill":30.0},{"idx":50,"id":3424,"name":"Katzensteige / Beutingerstra\u00dfe","lon":9.248035,"lat":49.145472,"polygon":[[9.248392,49.145472],[9.248287,49.145637],[9.248035,49.145706],[9.247783,49.145637],[9.247678,49.145472],[9.247783,49.145307],[9.248035,49.145238],[9.248287,49.145307],[9.248392,49.145472]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.94,"init_fill":90.0},{"idx":51,"id":3425,"name":"Kernerstra\u00dfe","lon":9.234042,"lat":49.141228,"polygon":[[9.234399,49.141228],[9.234294,49.141393],[9.234042,49.141462],[9.23379,49.141393],[9.233685,49.141228],[9.23379,49.141063],[9.234042,49.140994],[9.234294,49.141063],[9.234399,49.141228]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.93,"init_fill":110.0},{"idx":52,"id":3452,"name":"Klingenberger Stra\u00dfe / Hohlstra\u00dfe","lon":9.190406,"lat":49.131728,"polygon":[[9.190763,49.131728],[9.190658,49.131893],[9.190406,49.131962],[9.190154,49.131893],[9.190049,49.131728],[9.190154,49.131563],[9.190406,49.131494],[9.190658,49.131563],[9.190763,49.131728]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.05,"init_fill":100.0},{"idx":53,"id":3487,"name":"Kolpingstra\u00dfe","lon":9.201212,"lat":49.126034,"polygon":[[9.201569,49.126034],[9.201464,49.126199],[9.201212,49.126268],[9.20096,49.126199],[9.200855,49.126034],[9.20096,49.125869],[9.201212,49.1258],[9.201464,49.125869],[9.201569,49.126034]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.17,"init_fill":80.0},{"idx":54,"id":3426,"name":"Krugstra\u00dfe","lon":9.239137,"lat":49.148486,"polygon":[[9.239494,49.148486],[9.239389,49.148651],[9.239137,49.14872],[9.238885,49.148651],[9.23878,49.148486],[9.238885,49.148321],[9.239137,49.148252],[9.239389,49.148321],[9.239494,49.148486]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":2.74,"init_fill":110.0},{"idx":55,"id":3454,"name":"L\u00e4ngelterstra\u00dfe / Besch\u00fctzende Werkst\u00e4tte","lon":9.17048,"lat":49.13739,"polygon":[[9.170837,49.13739],[9.170732,49.137555],[9.17048,49.137624],[9.170228,49.137555],[9.170123,49.13739],[9.170228,49.137225],[9.17048,49.137156],[9.170732,49.137225],[9.170837,49.13739]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":1.01,"init_fill":80.0},{"idx":56,"id":3455,"name":"Leibnizstra\u00dfe","lon":9.179273,"lat":49.138843,"polygon":[[9.17963,49.138843],[9.179525,49.139008],[9.179273,49.139077],[9.179021,49.139008],[9.178916,49.138843],[9.179021,49.138678],[9.179273,49.138609],[9.179525,49.138678],[9.17963,49.138843]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.21,"init_fill":100.0},{"idx":57,"id":3456,"name":"Leonhardstra\u00dfe / Teichstra\u00dfe","lon":9.193679,"lat":49.137957,"polygon":[[9.194036,49.137957],[9.193931,49.138122],[9.193679,49.138191],[9.193427,49.138122],[9.193322,49.137957],[9.193427,49.137792],[9.193679,49.137723],[9.193931,49.137792],[9.194036,49.137957]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.33,"init_fill":100.0},{"idx":58,"id":3427,"name":"Lessingstra\u00dfe / Nordstra\u00dfe","lon":9.22649,"lat":49.150814,"polygon":[[9.226847,49.150814],[9.226742,49.150979],[9.22649,49.151048],[9.226238,49.150979],[9.226133,49.150814],[9.226238,49.150649],[9.22649,49.15058],[9.226742,49.150649],[9.226847,49.150814]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.32,"init_fill":90.0},{"idx":59,"id":3409,"name":"Liebigstra\u00dfe / B\u00f6nnigheimer Stra\u00dfe","lon":9.207611,"lat":49.132157,"polygon":[[9.207968,49.132157],[9.207863,49.132322],[9.207611,49.132391],[9.207359,49.132322],[9.207254,49.132157],[9.207359,49.131992],[9.207611,49.131923],[9.207863,49.131992],[9.207968,49.132157]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":0.89,"init_fill":50.0},{"idx":60,"id":3388,"name":"Lohtorstra\u00dfe / Gerberstra\u00dfe","lon":9.217626,"lat":49.143374,"polygon":[[9.217983,49.143374],[9.217878,49.143539],[9.217626,49.143608],[9.217374,49.143539],[9.217269,49.143374],[9.217374,49.143209],[9.217626,49.14314],[9.217878,49.143209],[9.217983,49.143374]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":1.72,"init_fill":100.0},{"idx":61,"id":3410,"name":"Lothringer Stra\u00dfe / Fichtestra\u00dfe","lon":9.236897,"lat":49.133162,"polygon":[[9.237254,49.133162],[9.237149,49.133327],[9.236897,49.133396],[9.236645,49.133327],[9.23654,49.133162],[9.236645,49.132997],[9.236897,49.132928],[9.237149,49.132997],[9.237254,49.133162]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":6.31,"init_fill":110.0},{"idx":62,"id":3457,"name":"Ludwigsburger Stra\u00dfe / Im Haselter","lon":9.190835,"lat":49.140066,"polygon":[[9.191192,49.140066],[9.191087,49.140231],[9.190835,49.1403],[9.190583,49.140231],[9.190478,49.140066],[9.190583,49.139901],[9.190835,49.139832],[9.191087,49.139901],[9.191192,49.140066]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.84,"init_fill":100.0},{"idx":63,"id":3458,"name":"Maasstra\u00dfe","lon":9.186939,"lat":49.153881,"polygon":[[9.187296,49.153881],[9.187192,49.154046],[9.186939,49.154115],[9.186686,49.154046],[9.186582,49.153881],[9.186686,49.153716],[9.186939,49.153647],[9.187192,49.153716],[9.187296,49.153881]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":0.86,"init_fill":50.0},{"idx":64,"id":3463,"name":"Maihaldenstra\u00dfe","lon":9.166512,"lat":49.164274,"polygon":[[9.166869,49.164274],[9.166765,49.164439],[9.166512,49.164508],[9.166259,49.164439],[9.166155,49.164274],[9.166259,49.164109],[9.166512,49.16404],[9.166765,49.164109],[9.166869,49.164274]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":6.92,"init_fill":110.0},{"idx":65,"id":3477,"name":"Marienburger Stra\u00dfe / Elbinger Stra\u00dfe","lon":9.196244,"lat":49.159001,"polygon":[[9.196601,49.159001],[9.196497,49.159166],[9.196244,49.159235],[9.195991,49.159166],[9.195887,49.159001],[9.195991,49.158836],[9.196244,49.158767],[9.196497,49.158836],[9.196601,49.159001]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.29,"init_fill":110.0},{"idx":66,"id":3488,"name":"Mauerstra\u00dfe","lon":9.200159,"lat":49.12313,"polygon":[[9.200516,49.12313],[9.200411,49.123295],[9.200159,49.123364],[9.199907,49.123295],[9.199802,49.12313],[9.199907,49.122965],[9.200159,49.122896],[9.200411,49.122965],[9.200516,49.12313]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.35,"init_fill":100.0},{"idx":67,"id":3489,"name":"Max-Planck-Stra\u00dfe","lon":9.204978,"lat":49.121772,"polygon":[[9.205335,49.121772],[9.20523,49.121937],[9.204978,49.122006],[9.204726,49.121937],[9.204621,49.121772],[9.204726,49.121607],[9.204978,49.121538],[9.20523,49.121607],[9.205335,49.121772]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":3.65,"init_fill":100.0},{"idx":68,"id":3490,"name":"Max-von-Laue-Stra\u00dfe","lon":9.211754,"lat":49.120033,"polygon":[[9.212111,49.120033],[9.212006,49.120198],[9.211754,49.120267],[9.211502,49.120198],[9.211397,49.120033],[9.211502,49.119868],[9.211754,49.119799],[9.212006,49.119868],[9.212111,49.120033]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":4.34,"init_fill":110.0},{"idx":69,"id":3437,"name":"Michael-Vehe-Stra\u00dfe","lon":9.142925,"lat":49.1905,"polygon":[[9.143282,49.1905],[9.143178,49.190665],[9.142925,49.190734],[9.142672,49.190665],[9.142568,49.1905],[9.142672,49.190335],[9.142925,49.190266],[9.143178,49.190335],[9.143282,49.1905]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":3.33,"init_fill":60.0},{"idx":70,"id":3389,"name":"Mozartstra\u00dfe","lon":9.209556,"lat":49.141473,"polygon":[[9.209913,49.141473],[9.209808,49.141638],[9.209556,49.141707],[9.209304,49.141638],[9.209199,49.141473],[9.209304,49.141308],[9.209556,49.141239],[9.209808,49.141308],[9.209913,49.141473]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":3.48,"init_fill":70.0},{"idx":71,"id":3466,"name":"Nuss\u00e4ckerstra\u00dfe","lon":9.172305,"lat":49.114135,"polygon":[[9.172662,49.114135],[9.172557,49.1143],[9.172305,49.114369],[9.172053,49.1143],[9.171948,49.114135],[9.172053,49.11397],[9.172305,49.113901],[9.172557,49.11397],[9.172662,49.114135]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":0.66,"init_fill":80.0},{"idx":72,"id":3390,"name":"Olgastra\u00dfe","lon":9.207453,"lat":49.136862,"polygon":[[9.20781,49.136862],[9.207705,49.137027],[9.207453,49.137096],[9.207201,49.137027],[9.207096,49.136862],[9.207201,49.136697],[9.207453,49.136628],[9.207705,49.136697],[9.20781,49.136862]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":2.27,"init_fill":80.0},{"idx":73,"id":3469,"name":"Paul-Gerhardt-Stra\u00dfe / Pater-Kolbe-Stra\u00dfe","lon":9.118537,"lat":49.184528,"polygon":[[9.118894,49.184528],[9.11879,49.184693],[9.118537,49.184762],[9.118284,49.184693],[9.11818,49.184528],[9.118284,49.184363],[9.118537,49.184294],[9.11879,49.184363],[9.118894,49.184528]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":0.79,"init_fill":100.0},{"idx":74,"id":3428,"name":"Pestalozzistra\u00dfe","lon":9.223167,"lat":49.14984,"polygon":[[9.223524,49.14984],[9.223419,49.150005],[9.223167,49.150074],[9.222915,49.150005],[9.22281,49.14984],[9.222915,49.149675],[9.223167,49.149606],[9.223419,49.149675],[9.223524,49.14984]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.98,"init_fill":100.0},{"idx":75,"id":3478,"name":"Pfaffenstra\u00dfe / Im Riedgrund","lon":9.180505,"lat":49.183494,"polygon":[[9.180862,49.183494],[9.180758,49.183659],[9.180505,49.183728],[9.180252,49.183659],[9.180148,49.183494],[9.180252,49.183329],[9.180505,49.18326],[9.180758,49.183329],[9.180862,49.183494]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":5.0,"init_fill":100.0},{"idx":76,"id":3429,"name":"Pf\u00fchlstra\u00dfe / M\u00f6rikestra\u00dfe","lon":9.236403,"lat":49.144633,"polygon":[[9.23676,49.144633],[9.236655,49.144798],[9.236403,49.144867],[9.236151,49.144798],[9.236046,49.144633],[9.236151,49.144468],[9.236403,49.144399],[9.236655,49.144468],[9.23676,49.144633]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":0.52,"init_fill":90.0},{"idx":77,"id":3491,"name":"Port-Talbot-Stra\u00dfe","lon":9.208086,"lat":49.120984,"polygon":[[9.208443,49.120984],[9.208338,49.121149],[9.208086,49.121218],[9.207834,49.121149],[9.207729,49.120984],[9.207834,49.120819],[9.208086,49.12075],[9.208338,49.120819],[9.208443,49.120984]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.6,"init_fill":100.0},{"idx":78,"id":3430,"name":"Rauchstra\u00dfe","lon":9.227886,"lat":49.153033,"polygon":[[9.228243,49.153033],[9.228139,49.153198],[9.227886,49.153267],[9.227633,49.153198],[9.227529,49.153033],[9.227633,49.152868],[9.227886,49.152799],[9.228139,49.152868],[9.228243,49.153033]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.58,"init_fill":60.0},{"idx":79,"id":3431,"name":"Rauchstra\u00dfe / K\u00e4ferflugstra\u00dfe","lon":9.223925,"lat":49.153707,"polygon":[[9.224282,49.153707],[9.224178,49.153872],[9.223925,49.153941],[9.223672,49.153872],[9.223568,49.153707],[9.223672,49.153542],[9.223925,49.153473],[9.224178,49.153542],[9.224282,49.153707]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":1.63,"init_fill":60.0},{"idx":80,"id":3492,"name":"Robert-Bosch-Stra\u00dfe / Eckenerstra\u00dfe","lon":9.206553,"lat":49.118369,"polygon":[[9.20691,49.118369],[9.206805,49.118534],[9.206553,49.118603],[9.206301,49.118534],[9.206196,49.118369],[9.206301,49.118204],[9.206553,49.118135],[9.206805,49.118204],[9.20691,49.118369]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.75,"init_fill":100.0},{"idx":81,"id":3493,"name":"Robert-Bosch-Stra\u00dfe / Sontheimer Landwehr","lon":9.208269,"lat":49.125589,"polygon":[[9.208626,49.125589],[9.208521,49.125754],[9.208269,49.125823],[9.208017,49.125754],[9.207912,49.125589],[9.208017,49.125424],[9.208269,49.125355],[9.208521,49.125424],[9.208626,49.125589]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.06,"init_fill":110.0},{"idx":82,"id":3391,"name":"Rollwagstra\u00dfe","lon":9.217813,"lat":49.139083,"polygon":[[9.21817,49.139083],[9.218065,49.139248],[9.217813,49.139317],[9.217561,49.139248],[9.217456,49.139083],[9.217561,49.138918],[9.217813,49.138849],[9.218065,49.138918],[9.21817,49.139083]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.17,"init_fill":100.0},{"idx":83,"id":3479,"name":"R\u00f6merstra\u00dfe","lon":9.195735,"lat":49.155287,"polygon":[[9.196092,49.155287],[9.195988,49.155452],[9.195735,49.155521],[9.195482,49.155452],[9.195378,49.155287],[9.195482,49.155122],[9.195735,49.155053],[9.195988,49.155122],[9.196092,49.155287]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.58,"init_fill":80.0},{"idx":84,"id":3480,"name":"Sachsen\u00e4ckerstra\u00dfe","lon":9.200967,"lat":49.163761,"polygon":[[9.201324,49.163761],[9.20122,49.163926],[9.200967,49.163995],[9.200714,49.163926],[9.20061,49.163761],[9.200714,49.163596],[9.200967,49.163527],[9.20122,49.163596],[9.201324,49.163761]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":5.79,"init_fill":40.0},{"idx":85,"id":3432,"name":"Schickhardtstra\u00dfe / Wartbergsteige","lon":9.231864,"lat":49.153358,"polygon":[[9.232221,49.153358],[9.232117,49.153523],[9.231864,49.153592],[9.231611,49.153523],[9.231507,49.153358],[9.231611,49.153193],[9.231864,49.153124],[9.232117,49.153193],[9.232221,49.153358]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.97,"init_fill":60.0},{"idx":86,"id":3392,"name":"Schillerstra\u00dfe / Gartenstra\u00dfe","lon":9.224925,"lat":49.144269,"polygon":[[9.225282,49.144269],[9.225177,49.144434],[9.224925,49.144503],[9.224673,49.144434],[9.224568,49.144269],[9.224673,49.144104],[9.224925,49.144035],[9.225177,49.144104],[9.225282,49.144269]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.3,"init_fill":70.0},{"idx":87,"id":3433,"name":"Schillerstra\u00dfe / Oststra\u00dfe","lon":9.230449,"lat":49.143853,"polygon":[[9.230806,49.143853],[9.230701,49.144018],[9.230449,49.144087],[9.230197,49.144018],[9.230092,49.143853],[9.230197,49.143688],[9.230449,49.143619],[9.230701,49.143688],[9.230806,49.143853]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.34,"init_fill":100.0},{"idx":88,"id":3411,"name":"Schirrmannstra\u00dfe / Vorderer B\u00f6ckinger","lon":9.257475,"lat":49.136096,"polygon":[[9.257832,49.136096],[9.257727,49.136261],[9.257475,49.13633],[9.257223,49.136261],[9.257118,49.136096],[9.257223,49.135931],[9.257475,49.135862],[9.257727,49.135931],[9.257832,49.136096]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.0,"init_fill":100.0},{"idx":89,"id":3470,"name":"Schlossstra\u00dfe","lon":9.10645,"lat":49.186042,"polygon":[[9.106807,49.186042],[9.106703,49.186207],[9.10645,49.186276],[9.106197,49.186207],[9.106093,49.186042],[9.106197,49.185877],[9.10645,49.185808],[9.106703,49.185877],[9.106807,49.186042]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.16,"init_fill":110.0},{"idx":90,"id":3412,"name":"Schmollerstra\u00dfe / Hohenstaufenstra\u00dfe","lon":9.22344,"lat":49.131093,"polygon":[[9.223797,49.131093],[9.223692,49.131258],[9.22344,49.131327],[9.223188,49.131258],[9.223083,49.131093],[9.223188,49.130928],[9.22344,49.130859],[9.223692,49.130928],[9.223797,49.131093]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":1.54,"init_fill":40.0},{"idx":91,"id":3413,"name":"Schoettlestra\u00dfe / Knorrstra\u00dfe","lon":9.211155,"lat":49.133887,"polygon":[[9.211512,49.133887],[9.211407,49.134052],[9.211155,49.134121],[9.210903,49.134052],[9.210798,49.133887],[9.210903,49.133722],[9.211155,49.133653],[9.211407,49.133722],[9.211512,49.133887]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.14,"init_fill":40.0},{"idx":92,"id":3434,"name":"Sichererstra\u00dfe","lon":9.223695,"lat":49.148319,"polygon":[[9.224052,49.148319],[9.223947,49.148484],[9.223695,49.148553],[9.223443,49.148484],[9.223338,49.148319],[9.223443,49.148154],[9.223695,49.148085],[9.223947,49.148154],[9.224052,49.148319]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.7,"init_fill":100.0},{"idx":93,"id":3459,"name":"Sinsheimer Stra\u00dfe","lon":9.177776,"lat":49.145853,"polygon":[[9.178133,49.145853],[9.178028,49.146018],[9.177776,49.146087],[9.177524,49.146018],[9.177419,49.145853],[9.177524,49.145688],[9.177776,49.145619],[9.178028,49.145688],[9.178133,49.145853]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.26,"init_fill":110.0},{"idx":94,"id":3414,"name":"Sontheimer Landwehr / Hauffstra\u00dfe","lon":9.213312,"lat":49.1254,"polygon":[[9.213669,49.1254],[9.213564,49.125565],[9.213312,49.125634],[9.21306,49.125565],[9.212955,49.1254],[9.21306,49.125235],[9.213312,49.125166],[9.213564,49.125235],[9.213669,49.1254]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.2,"init_fill":70.0},{"idx":95,"id":3415,"name":"Sontheimer Stra\u00dfe / Eythstra\u00dfe / Merkurstra\u00dfe","lon":9.210392,"lat":49.12841,"polygon":[[9.210749,49.12841],[9.210644,49.128575],[9.210392,49.128644],[9.21014,49.128575],[9.210035,49.12841],[9.21014,49.128245],[9.210392,49.128176],[9.210644,49.128245],[9.210749,49.12841]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.91,"init_fill":100.0},{"idx":96,"id":3494,"name":"Staufenbergstra\u00dfe","lon":9.196946,"lat":49.118116,"polygon":[[9.197303,49.118116],[9.197198,49.118281],[9.196946,49.11835],[9.196694,49.118281],[9.196589,49.118116],[9.196694,49.117951],[9.196946,49.117882],[9.197198,49.117951],[9.197303,49.118116]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":4.0,"init_fill":50.0},{"idx":97,"id":3495,"name":"Staufenbergstra\u00dfe / S\u00fcdfriedhof","lon":9.20667,"lat":49.116696,"polygon":[[9.207027,49.116696],[9.206922,49.116861],[9.20667,49.11693],[9.206418,49.116861],[9.206313,49.116696],[9.206418,49.116531],[9.20667,49.116462],[9.206922,49.116531],[9.207027,49.116696]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.37,"init_fill":70.0},{"idx":98,"id":3393,"name":"Turmstra\u00dfe","lon":9.219146,"lat":49.14589,"polygon":[[9.219503,49.14589],[9.219398,49.146055],[9.219146,49.146124],[9.218894,49.146055],[9.218789,49.14589],[9.218894,49.145725],[9.219146,49.145656],[9.219398,49.145725],[9.219503,49.14589]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.6,"init_fill":70.0},{"idx":99,"id":3394,"name":"Uhlandstra\u00dfe / Steinstra\u00dfe","lon":9.22271,"lat":49.136519,"polygon":[[9.223067,49.136519],[9.222962,49.136684],[9.22271,49.136753],[9.222458,49.136684],[9.222353,49.136519],[9.222458,49.136354],[9.22271,49.136285],[9.222962,49.136354],[9.223067,49.136519]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.16,"init_fill":110.0},{"idx":100,"id":3416,"name":"Urbanstra\u00dfe","lon":9.220215,"lat":49.133555,"polygon":[[9.220572,49.133555],[9.220467,49.13372],[9.220215,49.133789],[9.219963,49.13372],[9.219858,49.133555],[9.219963,49.13339],[9.220215,49.133321],[9.220467,49.13339],[9.220572,49.133555]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":3.73,"init_fill":90.0},{"idx":101,"id":3435,"name":"Wartbergstra\u00dfe / Erlenbacher Stra\u00dfe","lon":9.230686,"lat":49.150671,"polygon":[[9.231043,49.150671],[9.230938,49.150836],[9.230686,49.150905],[9.230434,49.150836],[9.230329,49.150671],[9.230434,49.150506],[9.230686,49.150437],[9.230938,49.150506],[9.231043,49.150671]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.33,"init_fill":70.0},{"idx":102,"id":3417,"name":"Werderstra\u00dfe","lon":9.217132,"lat":49.133732,"polygon":[[9.217489,49.133732],[9.217384,49.133897],[9.217132,49.133966],[9.21688,49.133897],[9.216775,49.133732],[9.21688,49.133567],[9.217132,49.133498],[9.217384,49.133567],[9.217489,49.133732]],"tier":"Tier 2: Steady High-Demand","cluster":2,"velocity":1.82,"init_fill":80.0},{"idx":103,"id":3395,"name":"Weststra\u00dfe","lon":9.208027,"lat":49.139866,"polygon":[[9.208384,49.139866],[9.208279,49.140031],[9.208027,49.1401],[9.207775,49.140031],[9.20767,49.139866],[9.207775,49.139701],[9.208027,49.139632],[9.208279,49.139701],[9.208384,49.139866]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":0.95,"init_fill":20.0},{"idx":104,"id":3481,"name":"Widmannstra\u00dfe / R\u00f6merstra\u00dfe","lon":9.197307,"lat":49.167635,"polygon":[[9.197664,49.167635],[9.19756,49.1678],[9.197307,49.167869],[9.197054,49.1678],[9.19695,49.167635],[9.197054,49.16747],[9.197307,49.167401],[9.19756,49.16747],[9.197664,49.167635]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":3.53,"init_fill":60.0},{"idx":105,"id":3438,"name":"Wilhelm-Flinsbach-Stra\u00dfe","lon":9.137218,"lat":49.196282,"polygon":[[9.137575,49.196282],[9.137471,49.196447],[9.137218,49.196516],[9.136965,49.196447],[9.136861,49.196282],[9.136965,49.196117],[9.137218,49.196048],[9.137471,49.196117],[9.137575,49.196282]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.23,"init_fill":110.0},{"idx":106,"id":3482,"name":"Wilhelm-Sch\u00e4ffer-Stra\u00dfe","lon":9.198006,"lat":49.17107,"polygon":[[9.198363,49.17107],[9.198259,49.171235],[9.198006,49.171304],[9.197753,49.171235],[9.197649,49.17107],[9.197753,49.170905],[9.198006,49.170836],[9.198259,49.170905],[9.198363,49.17107]],"tier":"Tier 4: Low-Demand / Sporadic","cluster":0,"velocity":2.5,"init_fill":70.0},{"idx":107,"id":3418,"name":"Wollhausstra\u00dfe / Gutenbergstra\u00dfe","lon":9.230562,"lat":49.138752,"polygon":[[9.230919,49.138752],[9.230814,49.138917],[9.230562,49.138986],[9.23031,49.138917],[9.230205,49.138752],[9.23031,49.138587],[9.230562,49.138518],[9.230814,49.138587],[9.230919,49.138752]],"tier":"Tier 1: Critical High-Volume / Chronic Overfillers","cluster":1,"velocity":4.21,"init_fill":100.0},{"idx":108,"id":3496,"name":"Zwirnereistra\u00dfe / Friedrich-Ackermann-Stra\u00dfe","lon":9.193374,"lat":49.119364,"polygon":[[9.193731,49.119364],[9.193626,49.119529],[9.193374,49.119598],[9.193122,49.119529],[9.193017,49.119364],[9.193122,49.119199],[9.193374,49.11913],[9.193626,49.119199],[9.193731,49.119364]],"tier":"Tier 3: Moderate Regular","cluster":3,"velocity":2.78,"init_fill":30.0}],"mode1":{"name":"Historical Fixed-Schedule","description":"Rigid calendar rounds (Day 8 & 22). Ignores real-time sensor fill levels. Results in 44% severe overflows and 7 wasted premature visits.","trucks":[{"id":"base_truck_1","name":"Historical Round A - Loop 1","color":"#f87171","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":0,"id":3383,"name":"Achtungstra\u00dfe","coord":[9.212454,49.139363],"fill":85.4,"weight_kg":813.2,"stop_num":1,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":1,"id":3396,"name":"Alexanderstra\u00dfe / Dittmarstra\u00dfe","coord":[9.233404,49.133826],"fill":64.8,"weight_kg":615.6,"stop_num":2,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":2,"id":3397,"name":"Am Seelesberg","coord":[9.246999,49.138529],"fill":98.0,"weight_kg":931.0,"stop_num":3,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":3,"id":3464,"name":"Amsterdamer Stra\u00dfe","coord":[9.1802,49.118449],"fill":110.0,"weight_kg":1045.0,"stop_num":4,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":4,"id":3472,"name":"Am Wasserturm","coord":[9.153609,49.117165],"fill":7.3,"weight_kg":68.4,"stop_num":5,"is_premature":true,"reason":"Premature Wasted Stop (<40%)"},{"type":"container","c_idx":5,"id":3398,"name":"Badener Stra\u00dfe","coord":[9.24902,49.134036],"fill":7.4,"weight_kg":72.2,"stop_num":6,"is_premature":true,"reason":"Premature Wasted Stop (<40%)"},{"type":"container","c_idx":6,"id":3467,"name":"Bensheimer Stra\u00dfe","coord":[9.106483,49.182183],"fill":75.3,"weight_kg":714.4,"stop_num":7,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":7,"id":3419,"name":"Binswanger Stra\u00dfe / Alfred-Minner-Stra\u00dfe","coord":[9.228188,49.162226],"fill":10.4,"weight_kg":98.8,"stop_num":8,"is_premature":true,"reason":"Premature Wasted Stop (<40%)"},{"type":"container","c_idx":8,"id":3384,"name":"Bismarckstra\u00dfe / Gymnasiumstra\u00dfe","coord":[9.224879,49.140257],"fill":110.0,"weight_kg":1045.0,"stop_num":9,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":9,"id":3399,"name":"Bismarckstra\u00dfe / Kernerstra\u00dfe","coord":[9.23427,49.14013],"fill":54.3,"weight_kg":516.8,"stop_num":10,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":11},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":12}],"waypoints":[[9.2109,49.1427],[9.21091,49.142678],[9.210939,49.142615],[9.210986,49.142515],[9.211047,49.142383],[9.211122,49.142222],[9.211208,49.142038],[9.211303,49.141835],[9.211405,49.141616],[9.211512,49.141387],[9.211622,49.141151],[9.211732,49.140912],[9.211842,49.140676],[9.211949,49.140447],[9.212051,49.140228],[9.212146,49.140025],[9.212232,49.139841],[9.212307,49.13968],[9.212368,49.139548],[9.212415,49.139448],[9.212444,49.139385],[9.212454,49.139363],[9.213613,49.139803],[9.214724,49.140032],[9.215792,49.140072],[9.216821,49.139945],[9.217817,49.139674],[9.218785,49.139281],[9.219729,49.138787],[9.220656,49.138216],[9.221571,49.13759],[9.222477,49.13693],[9.223381,49.136259],[9.224287,49.135599],[9.225202,49.134973],[9.226129,49.134402],[9.227073,49.133908],[9.228041,49.133515],[9.229037,49.133244],[9.230066,49.133117],[9.231134,49.133157],[9.232245,49.133386],[9.233404,49.133826],[9.234372,49.134266],[9.235243,49.134642],[9.236029,49.134959],[9.236738,49.135225],[9.237382,49.135447],[9.237971,49.135631],[9.238514,49.135784],[9.239021,49.135914],[9.239503,49.136026],[9.23997,49.136128],[9.240433,49.136227],[9.2409,49.136329],[9.241382,49.136441],[9.241889,49.136571],[9.242432,49.136724],[9.243021,49.136908],[9.243665,49.13713],[9.244374,49.137396],[9.24516,49.137713],[9.246031,49.138089],[9.246999,49.138529],[9.242324,49.136422],[9.238096,49.13466],[9.234271,49.133207],[9.230799,49.132026],[9.227633,49.131082],[9.224728,49.130338],[9.222035,49.129758],[9.219507,49.129304],[9.217097,49.128942],[9.214757,49.128634],[9.212442,49.128344],[9.210102,49.128036],[9.207692,49.127674],[9.205164,49.12722],[9.202471,49.12664],[9.199566,49.125896],[9.1964,49.124952],[9.192928,49.123771],[9.189103,49.122318],[9.184875,49.120556],[9.1802,49.118449],[9.178513,49.117735],[9.176952,49.117218],[9.175504,49.116875],[9.174156,49.116687],[9.172894,49.116632],[9.171705,49.116692],[9.170576,49.116843],[9.169494,49.117067],[9.168445,49.117342],[9.167416,49.117649],[9.166393,49.117965],[9.165364,49.118272],[9.164315,49.118547],[9.163233,49.118771],[9.162104,49.118922],[9.160915,49.118982],[9.159653,49.118927],[9.158305,49.118739],[9.156857,49.118396],[9.155296,49.117879],[9.153609,49.117165],[9.159981,49.119954],[9.165804,49.122148],[9.171137,49.123808],[9.176036,49.124998],[9.18056,49.125781],[9.184767,49.126218],[9.188714,49.126374],[9.192458,49.12631],[9.196058,49.126089],[9.199572,49.125774],[9.203057,49.125427],[9.206571,49.125112],[9.210171,49.124891],[9.213915,49.124827],[9.217862,49.124983],[9.222069,49.12542],[9.226593,49.126203],[9.231492,49.127393],[9.236825,49.129053],[9.242648,49.131247],[9.24902,49.134036],[9.241403,49.131239],[9.234035,49.129969],[9.226889,49.130065],[9.21994,49.131367],[9.213162,49.133713],[9.206527,49.136943],[9.20001,49.140897],[9.193585,49.145413],[9.187225,49.150331],[9.180905,49.15549],[9.174598,49.160729],[9.168278,49.165888],[9.161918,49.170806],[9.155493,49.175322],[9.148976,49.179276],[9.142341,49.182506],[9.135563,49.184852],[9.128614,49.186154],[9.121468,49.18625],[9.1141,49.18498],[9.106483,49.182183],[9.113535,49.184966],[9.12021,49.186629],[9.126548,49.18729],[9.132589,49.187067],[9.138371,49.186078],[9.143935,49.184439],[9.14932,49.182271],[9.154567,49.179689],[9.159714,49.176813],[9.164802,49.17376],[9.169869,49.170649],[9.174957,49.167596],[9.180104,49.16472],[9.185351,49.162138],[9.190736,49.15997],[9.1963,49.158331],[9.202082,49.157342],[9.208123,49.157119],[9.214461,49.15778],[9.221136,49.159443],[9.228188,49.162226],[9.227412,49.16173],[9.226822,49.161069],[9.226398,49.16026],[9.22612,49.159321],[9.225969,49.158269],[9.225925,49.157121],[9.225969,49.155896],[9.226082,49.154609],[9.226243,49.15328],[9.226433,49.151924],[9.226634,49.150559],[9.226824,49.149203],[9.226985,49.147874],[9.227098,49.146587],[9.227142,49.145362],[9.227098,49.144214],[9.226947,49.143162],[9.226669,49.142223],[9.226245,49.141414],[9.225655,49.140753],[9.224879,49.140257],[9.22546,49.140498],[9.226001,49.140665],[9.226505,49.140766],[9.226979,49.140808],[9.227424,49.140799],[9.227847,49.140748],[9.228251,49.140661],[9.228639,49.140547],[9.229018,49.140413],[9.22939,49.140268],[9.229759,49.140119],[9.230131,49.139974],[9.23051,49.13984],[9.230898,49.139726],[9.231302,49.139639],[9.231725,49.139588],[9.23217,49.139579],[9.232644,49.139621],[9.233148,49.139722],[9.233689,49.139889],[9.23427,49.14013],[9.235582,49.140873],[9.236654,49.141748],[9.237511,49.142742],[9.238178,49.14384],[9.238681,49.145029],[9.239044,49.146295],[9.239293,49.147623],[9.239454,49.149],[9.239552,49.150412],[9.239611,49.151845],[9.239659,49.153285],[9.239718,49.154718],[9.239816,49.15613],[9.239977,49.157507],[9.240226,49.158835],[9.240589,49.160101],[9.241092,49.16129],[9.241759,49.162388],[9.242616,49.163382],[9.243688,49.164257],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":68.56,"dispatch_day":8,"num_stops":10},{"id":"base_truck_2","name":"Historical Round A - Loop 2","color":"#fb923c","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":10,"id":3400,"name":"Bl\u00fccherstra\u00dfe / Karl-J\u00e4ger-Stra\u00dfe","coord":[9.229419,49.13163],"fill":110.0,"weight_kg":1045.0,"stop_num":1,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":11,"id":3474,"name":"B\u00f6ckinger Stra\u00dfe / Leinbachstra\u00dfe","coord":[9.204201,49.166148],"fill":100.3,"weight_kg":953.8,"stop_num":2,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":12,"id":3475,"name":"B\u00f6llinger Stra\u00dfe","coord":[9.200612,49.174295],"fill":50.8,"weight_kg":482.6,"stop_num":3,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":13,"id":3483,"name":"Bottwarbahnstra\u00dfe","coord":[9.195768,49.121896],"fill":66.0,"weight_kg":627.0,"stop_num":4,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":14,"id":3461,"name":"Brechhausstra\u00dfe","coord":[9.175561,49.155365],"fill":110.0,"weight_kg":1045.0,"stop_num":5,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":15,"id":3439,"name":"Bruchsaler Stra\u00dfe / G\u00fcglinger Stra\u00dfe","coord":[9.182297,49.14456],"fill":42.0,"weight_kg":399.0,"stop_num":6,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":16,"id":3440,"name":"Bruchsaler Stra\u00dfe / Stettener Stra\u00dfe","coord":[9.180039,49.142054],"fill":35.7,"weight_kg":338.2,"stop_num":7,"is_premature":true,"reason":"Premature Wasted Stop (<40%)"},{"type":"container","c_idx":17,"id":3462,"name":"D\u00f6rnlestra\u00dfe","coord":[9.174541,49.157651],"fill":102.5,"weight_kg":972.8,"stop_num":8,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":18,"id":3401,"name":"Einsteinstra\u00dfe / Reutlinger Stra\u00dfe","coord":[9.24445,49.133129],"fill":15.0,"weight_kg":144.4,"stop_num":9,"is_premature":true,"reason":"Premature Wasted Stop (<40%)"},{"type":"container","c_idx":19,"id":6798,"name":"Ernst-Abbe-Stra\u00dfe, au\u00dferhalb des Recyclinghofs","coord":[9.126528,49.180958],"fill":43.9,"weight_kg":418.0,"stop_num":10,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":11},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":12}],"waypoints":[[9.2109,49.1427],[9.211765,49.142973],[9.212635,49.143007],[9.213509,49.142825],[9.214388,49.142454],[9.21527,49.141918],[9.216155,49.141244],[9.217042,49.140455],[9.217931,49.139578],[9.218822,49.138638],[9.219714,49.13766],[9.220605,49.13667],[9.221497,49.135692],[9.222388,49.134752],[9.223277,49.133875],[9.224164,49.133086],[9.225049,49.132412],[9.225931,49.131876],[9.22681,49.131505],[9.227684,49.131323],[9.228554,49.131357],[9.229419,49.13163],[9.228746,49.131621],[9.227914,49.132107],[9.226941,49.133038],[9.225843,49.13436],[9.224636,49.136021],[9.223338,49.137969],[9.221965,49.140152],[9.220534,49.142518],[9.219061,49.145014],[9.217563,49.147589],[9.216057,49.150189],[9.214559,49.152764],[9.213086,49.15526],[9.211655,49.157626],[9.210282,49.159809],[9.208984,49.161757],[9.207777,49.163418],[9.206679,49.16474],[9.205706,49.165671],[9.204874,49.166157],[9.204201,49.166148],[9.204189,49.166207],[9.204129,49.166365],[9.204027,49.166611],[9.203887,49.166935],[9.203715,49.167326],[9.203514,49.167775],[9.203292,49.16827],[9.203051,49.168802],[9.202798,49.169359],[9.202538,49.169932],[9.202275,49.170511],[9.202015,49.171084],[9.201762,49.171641],[9.201521,49.172173],[9.201299,49.172668],[9.201098,49.173117],[9.200926,49.173508],[9.200786,49.173832],[9.200684,49.174078],[9.200624,49.174236],[9.200612,49.174295],[9.198952,49.173191],[9.197721,49.171669],[9.196873,49.169774],[9.196364,49.16755],[9.196148,49.16504],[9.196181,49.162288],[9.196417,49.159339],[9.196811,49.156237],[9.197317,49.153024],[9.197892,49.149746],[9.198488,49.146445],[9.199063,49.143167],[9.199569,49.139954],[9.199963,49.136852],[9.200199,49.133903],[9.200232,49.131151],[9.200016,49.128641],[9.199507,49.126417],[9.198659,49.124522],[9.197428,49.123],[9.195768,49.121896],[9.195379,49.121997],[9.194818,49.122546],[9.194103,49.123496],[9.193253,49.124799],[9.192284,49.126408],[9.191217,49.128277],[9.190067,49.130358],[9.188855,49.132604],[9.187597,49.134967],[9.186312,49.137402],[9.185017,49.139859],[9.183732,49.142294],[9.182474,49.144657],[9.181262,49.146903],[9.180112,49.148984],[9.179045,49.150853],[9.178076,49.152462],[9.177226,49.153765],[9.176511,49.154715],[9.17595,49.155264],[9.175561,49.155365],[9.1757,49.155338],[9.175893,49.155164],[9.176135,49.15486],[9.176421,49.154441],[9.176743,49.153921],[9.177098,49.153317],[9.177478,49.152643],[9.177878,49.151916],[9.178293,49.15115],[9.178716,49.150361],[9.179142,49.149564],[9.179565,49.148775],[9.17998,49.148009],[9.18038,49.147282],[9.18076,49.146608],[9.181115,49.146004],[9.181437,49.145484],[9.181723,49.145065],[9.181965,49.144761],[9.182158,49.144587],[9.182297,49.14456],[9.182092,49.144455],[9.181916,49.144345],[9.181766,49.144232],[9.181639,49.144115],[9.181533,49.143996],[9.181443,49.143874],[9.181368,49.14375],[9.181303,49.143624],[9.181246,49.143498],[9.181193,49.143371],[9.181143,49.143243],[9.18109,49.143116],[9.181033,49.14299],[9.180968,49.142864],[9.180893,49.14274],[9.180803,49.142618],[9.180697,49.142499],[9.18057,49.142382],[9.18042,49.142269],[9.180244,49.142159],[9.180039,49.142054],[9.180101,49.142203],[9.180067,49.14253],[9.179945,49.143016],[9.179746,49.143643],[9.179481,49.144392],[9.179159,49.145244],[9.178792,49.146181],[9.178388,49.147183],[9.177959,49.148232],[9.177515,49.149309],[9.177065,49.150396],[9.176621,49.151473],[9.176192,49.152522],[9.175788,49.153524],[9.175421,49.154461],[9.175099,49.155313],[9.174834,49.156062],[9.174635,49.156689],[9.174513,49.157175],[9.174479,49.157502],[9.174541,49.157651],[9.178253,49.159006],[9.181851,49.159604],[9.185345,49.159525],[9.188749,49.158848],[9.192074,49.157654],[9.195332,49.156022],[9.198536,49.154031],[9.201697,49.151761],[9.204829,49.149292],[9.207942,49.146704],[9.211049,49.144076],[9.214162,49.141488],[9.217294,49.139019],[9.220455,49.136749],[9.223659,49.134758],[9.226917,49.133126],[9.230242,49.131932],[9.233646,49.131255],[9.23714,49.131176],[9.240738,49.131774],[9.24445,49.133129],[9.238356,49.130964],[9.232405,49.130133],[9.226583,49.130493],[9.220875,49.131906],[9.215264,49.13423],[9.209737,49.137326],[9.204278,49.141053],[9.198872,49.145271],[9.193504,49.14984],[9.188158,49.154619],[9.18282,49.159468],[9.177474,49.164247],[9.172106,49.168816],[9.1667,49.173034],[9.161241,49.176761],[9.155714,49.179857],[9.150103,49.182181],[9.144395,49.183594],[9.138573,49.183954],[9.132622,49.183123],[9.126528,49.180958],[9.133483,49.183732],[9.140044,49.185446],[9.146252,49.186211],[9.152149,49.18614],[9.157777,49.185343],[9.163177,49.183932],[9.16839,49.182019],[9.173457,49.179715],[9.178422,49.177132],[9.183323,49.174382],[9.188205,49.171576],[9.193106,49.168826],[9.198071,49.166243],[9.203138,49.163939],[9.208351,49.162026],[9.213751,49.160615],[9.219379,49.159818],[9.225276,49.159747],[9.231484,49.160512],[9.238045,49.162226],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":65.07,"dispatch_day":8,"num_stops":10},{"id":"base_truck_3","name":"Historical Round B - Loop 1","color":"#f43f5e","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":20,"id":4455,"name":"Fasanenweg / Limesstra\u00dfe","coord":[9.194274,49.14633],"fill":94.7,"weight_kg":900.6,"stop_num":1,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":21,"id":3385,"name":"Friedensplatz / Moltkestra\u00dfe","coord":[9.228051,49.141168],"fill":110.0,"weight_kg":1045.0,"stop_num":2,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":22,"id":3402,"name":"Friedrich-D\u00fcrr-Stra\u00dfe / Gildenstra\u00dfe","coord":[9.206843,49.128794],"fill":61.7,"weight_kg":585.2,"stop_num":3,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":23,"id":3420,"name":"Gaswerkstra\u00dfe","coord":[9.220006,49.151259],"fill":105.1,"weight_kg":999.4,"stop_num":4,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":24,"id":3484,"name":"Gotenstra\u00dfe / Damaschkestra\u00dfe","coord":[9.184128,49.116995],"fill":24.8,"weight_kg":235.6,"stop_num":5,"is_premature":true,"reason":"Premature Wasted Stop (<40%)"},{"type":"container","c_idx":25,"id":3421,"name":"Gottlieb-Daimler-Stra\u00dfe","coord":[9.213599,49.153924],"fill":79.5,"weight_kg":756.2,"stop_num":6,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":26,"id":3441,"name":"Gro\u00dfgartacher Stra\u00dfe","coord":[9.176645,49.13999],"fill":105.6,"weight_kg":1003.2,"stop_num":7,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":27,"id":3442,"name":"Gro\u00dfgartacher Stra\u00dfe / Wilhelm-Leuschner-Stra\u00dfe","coord":[9.193595,49.141123],"fill":16.6,"weight_kg":159.6,"stop_num":8,"is_premature":true,"reason":"Premature Wasted Stop (<40%)"},{"type":"container","c_idx":28,"id":3443,"name":"Gr\u00fcnewaldstra\u00dfe","coord":[9.191893,49.143977],"fill":107.9,"weight_kg":1026.0,"stop_num":9,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":10},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":11}],"waypoints":[[9.2109,49.1427],[9.20996,49.142337],[9.209065,49.142134],[9.208209,49.142076],[9.207388,49.142144],[9.206598,49.142323],[9.205834,49.142594],[9.20509,49.142942],[9.204363,49.143349],[9.203648,49.143799],[9.20294,49.144273],[9.202234,49.144757],[9.201526,49.145231],[9.200811,49.145681],[9.200084,49.146088],[9.19934,49.146436],[9.198576,49.146707],[9.197786,49.146886],[9.196965,49.146954],[9.196109,49.146896],[9.195214,49.146693],[9.194274,49.14633],[9.196241,49.147109],[9.1981,49.147581],[9.199864,49.147778],[9.201542,49.147732],[9.203147,49.147475],[9.204689,49.147041],[9.20618,49.14646],[9.207632,49.145767],[9.209056,49.144992],[9.210462,49.144169],[9.211863,49.143329],[9.213269,49.142506],[9.214693,49.141731],[9.216145,49.141038],[9.217636,49.140457],[9.219178,49.140023],[9.220783,49.139766],[9.222461,49.13972],[9.224225,49.139917],[9.226084,49.140389],[9.228051,49.141168],[9.226411,49.140387],[9.22496,49.139663],[9.223678,49.138991],[9.222546,49.138365],[9.221542,49.137778],[9.220649,49.137224],[9.219844,49.136697],[9.21911,49.136192],[9.218425,49.135701],[9.21777,49.13522],[9.217124,49.134742],[9.216469,49.134261],[9.215784,49.13377],[9.21505,49.133265],[9.214245,49.132738],[9.213352,49.132184],[9.212348,49.131597],[9.211216,49.130971],[9.209934,49.130299],[9.208483,49.129575],[9.206843,49.128794],[9.208244,49.129555],[9.209413,49.130409],[9.210374,49.131345],[9.211152,49.132355],[9.211771,49.133428],[9.212255,49.134554],[9.212629,49.135725],[9.212917,49.13693],[9.213145,49.138159],[9.213335,49.139402],[9.213514,49.140651],[9.213704,49.141894],[9.213932,49.143123],[9.21422,49.144328],[9.214594,49.145499],[9.215078,49.146625],[9.215697,49.147698],[9.216475,49.148708],[9.217436,49.149644],[9.218605,49.150498],[9.220006,49.151259],[9.216886,49.149689],[9.214189,49.1481],[9.211872,49.146495],[9.209888,49.144875],[9.208195,49.143243],[9.206746,49.1416],[9.205498,49.139948],[9.204407,49.13829],[9.203426,49.136627],[9.202513,49.134961],[9.201621,49.133293],[9.200708,49.131627],[9.199727,49.129964],[9.198636,49.128306],[9.197388,49.126654],[9.195939,49.125011],[9.194246,49.123379],[9.192262,49.121759],[9.189945,49.120154],[9.187248,49.118565],[9.184128,49.116995],[9.186919,49.118449],[9.189293,49.119994],[9.191295,49.121622],[9.192969,49.123321],[9.194358,49.125082],[9.195505,49.126897],[9.196456,49.128755],[9.197253,49.130647],[9.197941,49.132562],[9.198563,49.134492],[9.199164,49.136427],[9.199786,49.138357],[9.200474,49.140272],[9.201271,49.142164],[9.202222,49.144022],[9.203369,49.145837],[9.204758,49.147598],[9.206432,49.149297],[9.208434,49.150925],[9.210808,49.15247],[9.213599,49.153924],[9.210939,49.152705],[9.208549,49.151653],[9.206401,49.15075],[9.204466,49.149979],[9.202716,49.149321],[9.201122,49.14876],[9.199656,49.148277],[9.19829,49.147856],[9.196994,49.147479],[9.195741,49.147128],[9.194503,49.146786],[9.19325,49.146435],[9.191954,49.146058],[9.190588,49.145637],[9.189122,49.145154],[9.187528,49.144593],[9.185778,49.143935],[9.183843,49.143164],[9.181695,49.142261],[9.179305,49.141209],[9.176645,49.13999],[9.177729,49.140451],[9.178729,49.140789],[9.179656,49.141019],[9.180517,49.141152],[9.181321,49.141202],[9.182077,49.141181],[9.182794,49.141102],[9.18348,49.140978],[9.184145,49.140822],[9.184796,49.140647],[9.185444,49.140466],[9.186095,49.140291],[9.18676,49.140135],[9.187446,49.140011],[9.188163,49.139932],[9.188919,49.139911],[9.189723,49.139961],[9.190584,49.140094],[9.191511,49.140324],[9.192511,49.140662],[9.193595,49.141123],[9.193563,49.141132],[9.193517,49.141179],[9.193457,49.141261],[9.193385,49.141372],[9.193304,49.141509],[9.193214,49.141668],[9.193116,49.141846],[9.193014,49.142037],[9.192908,49.142238],[9.192799,49.142445],[9.192689,49.142655],[9.19258,49.142862],[9.192474,49.143063],[9.192372,49.143254],[9.192274,49.143432],[9.192184,49.143591],[9.192103,49.143728],[9.192031,49.143839],[9.191971,49.143921],[9.191925,49.143968],[9.191893,49.143977],[9.195741,49.145747],[9.199194,49.147286],[9.202292,49.148619],[9.205078,49.14977],[9.207593,49.150763],[9.209879,49.151622],[9.211977,49.152372],[9.21393,49.153038],[9.215778,49.153642],[9.217564,49.15421],[9.219329,49.154767],[9.221115,49.155335],[9.222963,49.155939],[9.224916,49.156605],[9.227014,49.157355],[9.2293,49.158214],[9.231815,49.159207],[9.234601,49.160358],[9.237699,49.161691],[9.241152,49.16323],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":44.29,"dispatch_day":22,"num_stops":9},{"id":"base_truck_4","name":"Historical Round B - Loop 2","color":"#ea580c","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":29,"id":3485,"name":"G\u00fcldensteinstra\u00dfe / Thomastra\u00dfe","coord":[9.200595,49.119099],"fill":97.8,"weight_kg":927.2,"stop_num":1,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":30,"id":3436,"name":"Hahnen\u00e4ckerstra\u00dfe","coord":[9.147576,49.198923],"fill":72.1,"weight_kg":684.0,"stop_num":2,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"container","c_idx":31,"id":3403,"name":"Happelstra\u00dfe / Ludwig-Pfau-Stra\u00dfe","coord":[9.224267,49.132279],"fill":60.5,"weight_kg":573.8,"stop_num":3,"is_premature":false,"reason":"Fixed Monthly Route Stop"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":4},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":5}],"waypoints":[[9.2109,49.1427],[9.209647,49.141992],[9.208623,49.141159],[9.207803,49.140215],[9.207164,49.139172],[9.206681,49.138044],[9.206331,49.136843],[9.206089,49.135584],[9.205931,49.134278],[9.205834,49.13294],[9.205772,49.131582],[9.205723,49.130217],[9.205661,49.128859],[9.205564,49.127521],[9.205406,49.126215],[9.205164,49.124956],[9.204814,49.123755],[9.204331,49.122627],[9.203692,49.121584],[9.202872,49.12064],[9.201848,49.119807],[9.200595,49.119099],[9.199367,49.119215],[9.197751,49.120437],[9.195786,49.122648],[9.193513,49.125731],[9.190975,49.129571],[9.188211,49.134051],[9.185263,49.139055],[9.182172,49.144466],[9.178978,49.150167],[9.175723,49.156044],[9.172448,49.161978],[9.169193,49.167855],[9.165999,49.173556],[9.162908,49.178967],[9.15996,49.183971],[9.157196,49.188451],[9.154658,49.192291],[9.152385,49.195374],[9.15042,49.197585],[9.148804,49.198807],[9.147576,49.198923],[9.150618,49.199667],[9.153843,49.199236],[9.157231,49.197753],[9.160764,49.195342],[9.164423,49.192127],[9.168187,49.188232],[9.172038,49.18378],[9.175957,49.178895],[9.179923,49.173701],[9.183919,49.168322],[9.187924,49.16288],[9.19192,49.157501],[9.195886,49.152307],[9.199805,49.147422],[9.203656,49.14297],[9.20742,49.139075],[9.211079,49.13586],[9.214612,49.133449],[9.218,49.131966],[9.221225,49.131535],[9.224267,49.132279],[9.226405,49.133428],[9.228198,49.134699],[9.229682,49.136081],[9.230893,49.137559],[9.231868,49.139122],[9.232644,49.140755],[9.233255,49.142447],[9.23374,49.144184],[9.234134,49.145953],[9.234473,49.147742],[9.234794,49.149537],[9.235133,49.151326],[9.235527,49.153095],[9.236012,49.154832],[9.236623,49.156524],[9.237399,49.158157],[9.238374,49.15972],[9.239585,49.161198],[9.241069,49.16258],[9.242862,49.163851],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":39.04,"dispatch_day":22,"num_stops":3}],"daily_fills":[[23.2,83.6,82.2,105.3,21.5,61.5,40.6,102.2,104.2,104.5,31.1,84.0,103.8,42.5,64.1,103.5,110.0,102.4,110.0,70.8,75.3,96.2,72.9,83.8,41.9,104.1,12.8,30.5,32.5,103.9,71.4,81.2,103.0,110.0,92.8,93.8,103.9,50.8,104.9,61.7,71.3,103.5,71.5,101.9,61.2,110.0,34.5,102.4,110.0,31.3,91.9,110.0,103.0,81.2,110.0,81.0,101.2,103.3,94.3,50.9,101.7,110.0,101.8,50.9,110.0,110.0,104.3,103.7,110.0,63.3,73.5,80.7,82.3,100.8,102.0,105.0,90.5,101.6,64.6,61.6,103.8,110.0,104.2,81.6,45.8,63.0,71.3,102.3,104.0,110.0,41.5,43.1,103.7,110.0,73.2,101.9,54.0,71.4,71.6,110.0,93.7,73.3,81.8,20.9,63.5,110.0,72.5,104.2,32.8],[26.5,87.2,84.3,110.0,23.0,63.1,41.1,104.3,108.3,109.0,32.3,88.0,107.7,45.0,68.2,107.0,110.0,104.9,110.0,71.6,80.5,102.5,75.7,87.6,43.8,108.3,15.5,31.0,35.0,107.8,72.7,82.4,106.0,110.0,95.6,97.7,107.8,51.7,109.8,63.4,72.6,107.1,73.1,103.8,62.5,110.0,39.1,104.9,110.0,32.6,93.9,110.0,106.1,82.3,110.0,82.0,102.4,106.7,98.6,51.8,103.4,110.0,103.7,51.7,110.0,110.0,108.7,107.3,110.0,66.7,77.0,81.3,84.5,101.6,104.0,110.0,91.0,103.2,69.2,63.3,107.5,110.0,108.3,83.2,51.6,65.9,72.6,104.7,108.0,110.0,43.1,46.3,107.4,110.0,76.4,103.8,58.0,72.7,73.2,110.0,97.5,76.7,83.6,21.9,67.1,110.0,75.0,108.4,35.6],[29.7,90.8,86.5,110.0,24.6,64.6,41.7,106.5,110.0,110.0,33.4,91.9,110.0,47.5,72.2,110.0,110.0,107.3,110.0,72.4,85.8,108.8,78.6,91.4,45.6,110.0,18.2,31.4,37.5,110.0,74.1,83.6,109.0,110.0,98.5,101.5,110.0,52.5,110.0,65.2,74.0,110.0,74.6,105.7,63.8,110.0,43.6,107.3,110.0,33.9,95.8,110.0,109.1,83.5,110.0,83.0,103.6,110.0,103.0,52.7,105.2,110.0,105.5,52.6,110.0,110.0,110.0,110.0,110.0,70.0,80.4,82.0,86.8,102.4,105.9,110.0,91.6,104.8,73.7,64.9,110.0,110.0,110.0,84.7,57.4,68.9,73.9,107.0,110.0,110.0,44.6,49.4,110.0,110.0,79.6,105.7,62.0,74.1,74.8,110.0,101.2,80.0,85.5,22.8,70.6,110.0,77.5,110.0,38.3],[33.0,94.4,88.6,110.0,26.1,66.2,42.2,108.7,110.0,110.0,34.6,95.9,110.0,50.0,76.3,110.0,110.0,109.8,110.0,73.2,91.0,110.0,81.4,95.2,47.5,110.0,21.0,31.9,40.0,110.0,75.5,84.8,110.0,110.0,101.3,105.4,110.0,53.3,110.0,66.9,75.3,110.0,76.2,107.6,65.0,110.0,48.2,109.8,110.0,35.2,97.8,110.0,110.0,84.7,110.0,84.0,104.8,110.0,107.3,53.6,106.9,110.0,107.4,53.4,110.0,110.0,110.0,110.0,110.0,73.3,83.9,82.6,89.1,103.2,107.9,110.0,92.1,106.4,78.3,66.5,110.0,110.0,110.0,86.3,63.2,71.9,75.2,109.4,110.0,110.0,46.2,52.6,110.0,110.0,82.8,107.6,66.0,75.5,76.4,110.0,104.9,83.3,87.3,23.8,74.1,110.0,80.0,110.0,41.1],[36.2,98.0,90.8,110.0,27.6,67.7,42.8,110.0,110.0,110.0,35.7,99.9,110.0,52.5,80.4,110.0,110.0,110.0,110.0,74.0,96.3,110.0,84.3,99.1,49.4,110.0,23.8,32.4,42.5,110.0,76.9,86.0,110.0,110.0,104.1,109.2,110.0,54.1,110.0,68.6,76.6,110.0,77.7,109.5,66.2,110.0,52.7,110.0,110.0,36.5,99.7,110.0,110.0,85.9,110.0,85.1,106.0,110.0,110.0,54.5,108.6,110.0,109.2,54.3,110.0,110.0,110.0,110.0,110.0,76.6,87.4,83.3,91.3,104.0,109.9,110.0,92.6,108.0,82.9,68.1,110.0,110.0,110.0,87.9,69.0,74.8,76.5,110.0,110.0,110.0,47.7,55.7,110.0,110.0,86.0,109.5,70.0,76.9,78.0,110.0,108.7,86.6,89.1,24.7,77.7,110.0,82.5,110.0,43.9],[40.6,102.9,93.7,110.0,29.7,69.8,43.6,110.0,110.0,110.0,37.3,105.3,110.0,55.9,85.9,110.0,110.0,110.0,110.0,75.1,103.4,110.0,88.2,104.2,51.9,110.0,27.5,33.0,45.9,110.0,78.7,87.6,110.0,110.0,107.9,110.0,110.0,55.3,110.0,70.9,78.4,110.0,79.8,110.0,67.9,110.0,58.9,110.0,110.0,38.3,102.3,110.0,110.0,87.4,110.0,86.4,107.7,110.0,110.0,55.7,110.0,110.0,110.0,55.5,110.0,110.0,110.0,110.0,110.0,81.1,92.1,84.2,94.4,105.0,110.0,110.0,93.3,110.0,89.1,70.4,110.0,110.0,110.0,90.0,76.8,78.9,78.3,110.0,110.0,110.0,49.8,59.9,110.0,110.0,90.3,110.0,75.4,78.7,80.2,110.0,110.0,91.1,91.6,26.0,82.4,110.0,85.9,110.0,47.7],[44.9,107.7,96.6,110.0,31.7,71.9,44.3,110.0,110.0,110.0,38.9,110.0,110.0,59.2,91.4,110.0,110.0,110.0,110.0,76.2,110.0,110.0,92.0,109.3,54.5,110.0,31.2,33.7,49.2,110.0,80.5,89.2,110.0,110.0,110.0,110.0,110.0,56.4,110.0,73.2,80.2,110.0,81.9,110.0,69.6,110.0,65.0,110.0,110.0,40.0,104.9,110.0,110.0,89.0,110.0,87.8,109.3,110.0,110.0,56.9,110.0,110.0,110.0,56.6,110.0,110.0,110.0,110.0,110.0,85.6,96.8,85.1,97.5,106.1,110.0,110.0,94.0,110.0,95.3,72.6,110.0,110.0,110.0,92.2,84.6,82.9,80.0,110.0,110.0,110.0,51.9,64.2,110.0,110.0,94.6,110.0,80.8,80.5,82.3,110.0,110.0,95.6,94.0,27.3,87.2,110.0,89.2,110.0,51.4],[5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,110.0,110.0,94.9,110.0,56.4,110.0,33.9,34.2,51.8,110.0,81.9,90.4,110.0,110.0,110.0,110.0,110.0,57.2,110.0,75.0,81.5,110.0,83.4,110.0,70.9,110.0,69.6,110.0,110.0,41.3,106.9,110.0,110.0,90.2,110.0,88.8,110.0,110.0,110.0,57.7,110.0,110.0,110.0,57.5,110.0,110.0,110.0,110.0,110.0,89.0,100.3,85.7,99.7,106.9,110.0,110.0,94.5,110.0,99.8,74.2,110.0,110.0,110.0,93.7,90.4,85.8,81.3,110.0,110.0,110.0,53.4,67.3,110.0,110.0,97.8,110.0,84.8,81.9,83.9,110.0,110.0,99.0,95.8,28.3,90.7,110.0,91.8,110.0,54.2],[8.2,8.6,7.2,10.3,6.5,6.5,5.6,7.2,9.2,9.5,6.2,9.0,8.8,7.5,9.1,8.5,8.0,7.4,9.2,5.8,110.0,110.0,97.7,110.0,58.2,110.0,36.7,34.7,54.2,110.0,83.3,91.6,110.0,110.0,110.0,110.0,110.0,58.1,110.0,76.7,82.8,110.0,84.9,110.0,72.1,110.0,74.1,110.0,110.0,42.6,108.8,110.0,110.0,91.3,110.0,89.8,110.0,110.0,110.0,58.6,110.0,110.0,110.0,58.3,110.0,110.0,110.0,110.0,110.0,92.3,103.8,86.4,102.0,107.7,110.0,110.0,95.0,110.0,104.4,75.8,110.0,110.0,110.0,95.3,96.2,88.8,82.6,110.0,110.0,110.0,54.9,70.5,110.0,110.0,101.0,110.0,88.8,83.3,85.5,110.0,110.0,102.3,97.7,29.2,94.2,110.0,94.2,110.0,57.0],[11.5,12.2,9.3,15.6,8.0,8.1,6.1,9.3,13.3,14.0,7.3,13.0,12.7,10.0,13.2,12.0,10.9,9.9,13.3,6.6,110.0,110.0,100.6,110.0,60.1,110.0,39.4,35.1,56.8,110.0,84.7,92.8,110.0,110.0,110.0,110.0,110.0,58.9,110.0,78.4,84.1,110.0,86.5,110.0,73.4,110.0,78.7,110.0,110.0,43.9,110.0,110.0,110.0,92.5,110.0,90.8,110.0,110.0,110.0,59.5,110.0,110.0,110.0,59.2,110.0,110.0,110.0,110.0,110.0,95.6,107.2,87.1,104.3,108.5,110.0,110.0,95.6,110.0,109.0,77.4,110.0,110.0,110.0,96.9,102.0,91.8,83.9,110.0,110.0,110.0,56.5,73.6,110.0,110.0,104.2,110.0,92.8,84.7,87.1,110.0,110.0,105.6,99.5,30.2,97.8,110.0,96.8,110.0,59.7],[14.7,15.8,11.5,20.9,9.6,9.6,6.7,11.5,17.5,18.6,8.5,16.9,16.6,12.5,17.2,15.5,13.9,12.3,17.5,7.4,110.0,110.0,103.5,110.0,62.0,110.0,42.2,35.6,59.2,110.0,86.0,94.0,110.0,110.0,110.0,110.0,110.0,59.7,110.0,80.1,85.4,110.0,88.0,110.0,74.6,110.0,83.2,110.0,110.0,45.2,110.0,110.0,110.0,93.7,110.0,91.8,110.0,110.0,110.0,60.4,110.0,110.0,110.0,60.1,110.0,110.0,110.0,110.0,110.0,99.0,110.0,87.7,106.6,109.2,110.0,110.0,96.1,110.0,110.0,79.1,110.0,110.0,110.0,98.5,107.7,94.7,85.2,110.0,110.0,110.0,58.0,76.7,110.0,110.0,107.4,110.0,96.8,86.0,88.7,110.0,110.0,109.0,101.3,31.1,101.3,110.0,99.2,110.0,62.5],[18.0,19.4,13.6,26.2,11.1,11.2,7.2,13.7,21.7,23.1,9.6,20.9,20.4,15.0,21.3,19.0,16.9,14.8,21.6,8.2,110.0,110.0,106.3,110.0,63.9,110.0,44.9,36.1,61.8,110.0,87.4,95.2,110.0,110.0,110.0,110.0,110.0,60.5,110.0,81.8,86.8,110.0,89.6,110.0,75.9,110.0,87.8,110.0,110.0,46.5,110.0,110.0,110.0,94.9,110.0,92.8,110.0,110.0,110.0,61.3,110.0,110.0,110.0,60.9,110.0,110.0,110.0,110.0,110.0,102.3,110.0,88.4,108.8,110.0,110.0,110.0,96.6,110.0,110.0,80.7,110.0,110.0,110.0,100.1,110.0,97.7,86.5,110.0,110.0,110.0,59.6,79.9,110.0,110.0,110.0,110.0,100.8,87.4,90.3,110.0,110.0,110.0,103.1,32.1,104.8,110.0,101.8,110.0,65.3],[22.3,24.3,16.5,33.4,13.1,13.2,8.0,16.6,27.3,29.2,11.2,26.3,25.6,18.4,26.8,23.7,20.9,18.1,27.3,9.3,110.0,110.0,110.0,110.0,66.4,110.0,48.6,36.7,65.1,110.0,89.2,96.9,110.0,110.0,110.0,110.0,110.0,61.7,110.0,84.2,88.5,110.0,91.6,110.0,77.6,110.0,93.9,110.0,110.0,48.3,110.0,110.0,110.0,96.4,110.0,94.2,110.0,110.0,110.0,62.5,110.0,110.0,110.0,62.1,110.0,110.0,110.0,110.0,110.0,106.8,110.0,89.3,110.0,110.0,110.0,110.0,97.3,110.0,110.0,82.9,110.0,110.0,110.0,102.2,110.0,101.7,88.3,110.0,110.0,110.0,61.6,84.1,110.0,110.0,110.0,110.0,106.2,89.2,92.5,110.0,110.0,110.0,105.6,33.3,109.6,110.0,105.1,110.0,69.1],[26.7,29.1,19.4,40.6,15.2,15.3,8.8,19.5,32.9,35.3,12.7,31.7,30.8,21.8,32.3,28.5,24.9,21.3,32.9,10.4,110.0,110.0,110.0,110.0,69.0,110.0,52.3,37.4,68.5,110.0,91.1,98.5,110.0,110.0,110.0,110.0,110.0,62.8,110.0,86.5,90.3,110.0,93.7,110.0,79.2,110.0,100.1,110.0,110.0,50.0,110.0,110.0,110.0,98.0,110.0,95.6,110.0,110.0,110.0,63.7,110.0,110.0,110.0,63.2,110.0,110.0,110.0,110.0,110.0,110.0,110.0,90.2,110.0,110.0,110.0,110.0,98.0,110.0,110.0,85.1,110.0,110.0,110.0,104.3,110.0,105.7,90.0,110.0,110.0,110.0,63.7,88.4,110.0,110.0,110.0,110.0,110.0,91.1,94.6,110.0,110.0,110.0,108.0,34.6,110.0,110.0,108.5,110.0,72.8],[29.9,32.7,21.6,45.9,16.7,16.9,9.3,21.7,37.1,39.8,13.9,35.6,34.6,24.2,36.4,32.0,27.9,23.8,37.0,11.2,110.0,110.0,110.0,110.0,70.8,110.0,55.1,37.9,71.0,110.0,92.5,99.7,110.0,110.0,110.0,110.0,110.0,63.6,110.0,88.2,91.6,110.0,95.3,110.0,80.5,110.0,104.6,110.0,110.0,51.3,110.0,110.0,110.0,99.2,110.0,96.6,110.0,110.0,110.0,64.6,110.0,110.0,110.0,64.1,110.0,110.0,110.0,110.0,110.0,110.0,110.0,90.8,110.0,110.0,110.0,110.0,98.5,110.0,110.0,86.7,110.0,110.0,110.0,105.9,110.0,108.7,91.3,110.0,110.0,110.0,65.3,91.5,110.0,110.0,110.0,110.0,110.0,92.5,96.2,110.0,110.0,110.0,109.8,35.6,110.0,110.0,110.0,110.0,75.6],[33.2,36.3,23.7,51.2,18.2,18.4,9.9,23.9,41.3,44.3,15.0,39.6,38.5,26.8,40.5,35.5,30.8,26.2,41.2,12.0,110.0,110.0,110.0,110.0,72.7,110.0,57.8,38.4,73.5,110.0,93.8,100.9,110.0,110.0,110.0,110.0,110.0,64.4,110.0,89.9,93.0,110.0,96.8,110.0,81.8,110.0,109.2,110.0,110.0,52.6,110.0,110.0,110.0,100.4,110.0,97.6,110.0,110.0,110.0,65.5,110.0,110.0,110.0,65.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,91.5,110.0,110.0,110.0,110.0,99.0,110.0,110.0,88.4,110.0,110.0,110.0,107.5,110.0,110.0,92.6,110.0,110.0,110.0,66.8,94.6,110.0,110.0,110.0,110.0,110.0,93.8,97.8,110.0,110.0,110.0,110.0,36.5,110.0,110.0,110.0,110.0,78.4],[36.4,39.9,25.9,56.5,19.7,19.9,10.4,26.0,45.4,48.8,16.2,43.6,42.3,29.2,44.6,39.0,33.8,28.7,45.4,12.8,110.0,110.0,110.0,110.0,74.6,110.0,60.6,38.8,76.0,110.0,95.2,102.1,110.0,110.0,110.0,110.0,110.0,65.3,110.0,91.6,94.3,110.0,98.3,110.0,83.0,110.0,110.0,110.0,110.0,53.9,110.0,110.0,110.0,101.5,110.0,98.6,110.0,110.0,110.0,66.4,110.0,110.0,110.0,65.8,110.0,110.0,110.0,110.0,110.0,110.0,110.0,92.1,110.0,110.0,110.0,110.0,99.6,110.0,110.0,90.0,110.0,110.0,110.0,109.1,110.0,110.0,93.9,110.0,110.0,110.0,68.3,97.8,110.0,110.0,110.0,110.0,110.0,95.2,99.4,110.0,110.0,110.0,110.0,37.5,110.0,110.0,110.0,110.0,81.2],[39.7,43.5,28.0,61.8,21.3,21.5,11.0,28.2,49.6,53.4,17.3,47.6,46.2,31.8,48.7,42.5,36.8,31.1,49.5,13.6,110.0,110.0,110.0,110.0,76.5,110.0,63.3,39.3,78.5,110.0,96.6,103.3,110.0,110.0,110.0,110.0,110.0,66.1,110.0,93.4,95.6,110.0,99.9,110.0,84.2,110.0,110.0,110.0,110.0,55.2,110.0,110.0,110.0,102.7,110.0,99.6,110.0,110.0,110.0,67.3,110.0,110.0,110.0,66.7,110.0,110.0,110.0,110.0,110.0,110.0,110.0,92.8,110.0,110.0,110.0,110.0,100.1,110.0,110.0,91.6,110.0,110.0,110.0,110.0,110.0,110.0,95.2,110.0,110.0,110.0,69.9,100.9,110.0,110.0,110.0,110.0,110.0,96.6,101.0,110.0,110.0,110.0,110.0,38.4,110.0,110.0,110.0,110.0,83.9],[42.9,47.1,30.2,67.1,22.8,23.0,11.6,30.4,53.8,57.9,18.5,51.6,50.0,34.2,52.7,46.0,39.7,33.5,53.7,14.4,110.0,110.0,110.0,110.0,78.4,110.0,66.1,39.8,81.0,110.0,97.9,104.5,110.0,110.0,110.0,110.0,110.0,66.9,110.0,95.1,96.9,110.0,101.4,110.0,85.5,110.0,110.0,110.0,110.0,56.5,110.0,110.0,110.0,103.9,110.0,100.6,110.0,110.0,110.0,68.2,110.0,110.0,110.0,67.5,110.0,110.0,110.0,110.0,110.0,110.0,110.0,93.5,110.0,110.0,110.0,110.0,100.6,110.0,110.0,93.3,110.0,110.0,110.0,110.0,110.0,110.0,96.5,110.0,110.0,110.0,71.4,104.1,110.0,110.0,110.0,110.0,110.0,97.9,102.6,110.0,110.0,110.0,110.0,39.4,110.0,110.0,110.0,110.0,86.7],[47.3,52.0,33.1,74.3,24.8,25.1,12.3,33.3,59.4,64.0,20.0,56.9,55.2,37.6,58.2,50.7,43.8,36.8,59.3,15.4,110.0,110.0,110.0,110.0,80.9,110.0,69.8,40.4,84.4,110.0,99.8,106.1,110.0,110.0,110.0,110.0,110.0,68.1,110.0,97.4,98.7,110.0,103.5,110.0,87.2,110.0,110.0,110.0,110.0,58.3,110.0,110.0,110.0,105.4,110.0,102.0,110.0,110.0,110.0,69.4,110.0,110.0,110.0,68.7,110.0,110.0,110.0,110.0,110.0,110.0,110.0,94.4,110.0,110.0,110.0,110.0,101.3,110.0,110.0,95.5,110.0,110.0,110.0,110.0,110.0,110.0,98.3,110.0,110.0,110.0,73.5,108.3,110.0,110.0,110.0,110.0,110.0,99.8,104.8,110.0,110.0,110.0,110.0,40.7,110.0,110.0,110.0,110.0,90.5],[51.7,56.8,36.0,81.5,26.9,27.2,13.1,36.2,65.0,70.1,21.6,62.3,60.4,41.0,63.8,55.4,47.8,40.1,64.9,16.5,110.0,110.0,110.0,110.0,83.4,110.0,73.5,41.1,87.8,110.0,101.6,107.7,110.0,110.0,110.0,110.0,110.0,69.2,110.0,99.7,100.5,110.0,105.6,110.0,88.9,110.0,110.0,110.0,110.0,60.0,110.0,110.0,110.0,107.0,110.0,103.3,110.0,110.0,110.0,70.6,110.0,110.0,110.0,69.9,110.0,110.0,110.0,110.0,110.0,110.0,110.0,95.2,110.0,110.0,110.0,110.0,102.0,110.0,110.0,97.7,110.0,110.0,110.0,110.0,110.0,110.0,100.0,110.0,110.0,110.0,75.6,110.0,110.0,110.0,110.0,110.0,110.0,101.6,107.0,110.0,110.0,110.0,110.0,41.9,110.0,110.0,110.0,110.0,94.2],[54.9,60.4,38.1,86.8,28.4,28.7,13.6,38.4,69.2,74.6,22.7,66.3,64.3,43.5,67.8,58.9,50.7,42.6,69.1,17.3,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,110.0,110.0,110.0,110.0,110.0,70.0,110.0,101.5,101.8,110.0,107.1,110.0,90.1,110.0,110.0,110.0,110.0,61.3,110.0,110.0,110.0,108.2,110.0,104.3,110.0,110.0,110.0,71.4,110.0,110.0,110.0,70.7,110.0,110.0,110.0,110.0,110.0,110.0,110.0,95.9,110.0,110.0,110.0,110.0,102.5,110.0,110.0,99.3,110.0,110.0,110.0,110.0,110.0,110.0,101.3,110.0,110.0,110.0,77.1,110.0,110.0,110.0,110.0,110.0,110.0,103.0,108.6,110.0,110.0,110.0,110.0,42.9,110.0,110.0,110.0,110.0,97.0],[58.1,64.0,40.3,92.1,29.9,30.3,14.2,40.6,73.4,79.1,23.9,70.3,68.1,46.0,71.9,62.4,53.7,45.0,73.2,18.1,10.3,11.2,7.9,8.8,6.9,9.1,7.8,5.5,7.5,8.9,6.4,6.2,110.0,110.0,110.0,110.0,110.0,70.8,110.0,103.2,103.1,110.0,108.7,110.0,91.4,110.0,110.0,110.0,110.0,62.6,110.0,110.0,110.0,109.4,110.0,105.4,110.0,110.0,110.0,72.3,110.0,110.0,110.0,71.6,110.0,110.0,110.0,110.0,110.0,110.0,110.0,96.6,110.0,110.0,110.0,110.0,103.1,110.0,110.0,100.9,110.0,110.0,110.0,110.0,110.0,110.0,102.6,110.0,110.0,110.0,78.7,110.0,110.0,110.0,110.0,110.0,110.0,104.4,110.0,110.0,110.0,110.0,110.0,43.8,110.0,110.0,110.0,110.0,99.8],[61.4,67.6,42.4,97.4,31.4,31.8,14.7,42.8,77.6,83.6,25.0,74.3,72.0,48.5,76.0,65.9,56.7,47.5,77.4,18.9,15.5,17.5,10.7,12.6,8.8,13.3,10.5,6.0,10.0,12.8,7.7,7.4,110.0,110.0,110.0,110.0,110.0,71.7,110.0,104.9,104.5,110.0,110.0,110.0,92.6,110.0,110.0,110.0,110.0,63.9,110.0,110.0,110.0,110.0,110.0,106.4,110.0,110.0,110.0,73.2,110.0,110.0,110.0,72.4,110.0,110.0,110.0,110.0,110.0,110.0,110.0,97.2,110.0,110.0,110.0,110.0,103.6,110.0,110.0,102.5,110.0,110.0,110.0,110.0,110.0,110.0,103.9,110.0,110.0,110.0,80.2,110.0,110.0,110.0,110.0,110.0,110.0,105.8,110.0,110.0,110.0,110.0,110.0,44.8,110.0,110.0,110.0,110.0,102.6],[64.6,71.2,44.6,102.7,33.0,33.3,15.3,44.9,81.7,88.2,26.2,78.2,75.8,51.0,80.1,69.4,59.6,49.9,81.5,19.7,20.8,23.8,13.6,16.4,10.6,17.4,13.2,6.4,12.5,16.6,9.1,8.6,110.0,110.0,110.0,110.0,110.0,72.5,110.0,106.6,105.8,110.0,110.0,110.0,93.9,110.0,110.0,110.0,110.0,65.2,110.0,110.0,110.0,110.0,110.0,107.4,110.0,110.0,110.0,74.1,110.0,110.0,110.0,73.3,110.0,110.0,110.0,110.0,110.0,110.0,110.0,97.9,110.0,110.0,110.0,110.0,104.1,110.0,110.0,104.2,110.0,110.0,110.0,110.0,110.0,110.0,105.2,110.0,110.0,110.0,81.7,110.0,110.0,110.0,110.0,110.0,110.0,107.1,110.0,110.0,110.0,110.0,110.0,45.7,110.0,110.0,110.0,110.0,105.3],[67.9,74.8,46.7,108.0,34.5,34.9,15.9,47.1,85.9,92.7,27.3,82.2,79.7,53.5,84.2,72.9,62.6,52.3,85.7,20.5,26.0,30.0,16.4,20.2,12.5,21.6,16.0,6.9,15.0,20.5,10.5,9.8,110.0,110.0,110.0,110.0,110.0,73.3,110.0,108.3,107.1,110.0,110.0,110.0,95.1,110.0,110.0,110.0,110.0,66.5,110.0,110.0,110.0,110.0,110.0,108.4,110.0,110.0,110.0,75.0,110.0,110.0,110.0,74.2,110.0,110.0,110.0,110.0,110.0,110.0,110.0,98.5,110.0,110.0,110.0,110.0,104.6,110.0,110.0,105.8,110.0,110.0,110.0,110.0,110.0,110.0,106.5,110.0,110.0,110.0,83.3,110.0,110.0,110.0,110.0,110.0,110.0,108.5,110.0,110.0,110.0,110.0,110.0,46.7,110.0,110.0,110.0,110.0,108.1],[72.2,79.7,49.6,110.0,36.5,37.0,16.6,50.0,91.5,98.8,28.9,87.6,84.9,56.9,89.7,77.6,66.6,55.6,91.3,21.6,33.1,38.4,20.3,25.4,15.1,27.1,19.7,7.6,18.4,25.8,12.3,11.4,110.0,110.0,110.0,110.0,110.0,74.4,110.0,110.0,108.9,110.0,110.0,110.0,96.8,110.0,110.0,110.0,110.0,68.3,110.0,110.0,110.0,110.0,110.0,109.7,110.0,110.0,110.0,76.2,110.0,110.0,110.0,75.3,110.0,110.0,110.0,110.0,110.0,110.0,110.0,99.4,110.0,110.0,110.0,110.0,105.3,110.0,110.0,108.0,110.0,110.0,110.0,110.0,110.0,110.0,108.3,110.0,110.0,110.0,85.4,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,48.0,110.0,110.0,110.0,110.0,110.0],[76.6,84.6,52.5,110.0,38.6,39.0,17.4,53.0,97.2,104.9,30.4,93.0,90.1,60.2,95.2,82.3,70.6,58.9,96.9,22.7,40.2,46.9,24.2,30.5,17.6,32.7,23.4,8.2,21.8,31.0,14.2,13.0,110.0,110.0,110.0,110.0,110.0,75.6,110.0,110.0,110.0,110.0,110.0,110.0,98.5,110.0,110.0,110.0,110.0,70.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,77.4,110.0,110.0,110.0,76.5,110.0,110.0,110.0,110.0,110.0,110.0,110.0,100.3,110.0,110.0,110.0,110.0,106.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,87.4,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,110.0,49.3,110.0,110.0,110.0,110.0,110.0]],"daily_kpis":[{"day":1,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":49,"premature_visits":0,"efficiency_kg_km":0.0},{"day":2,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":50,"premature_visits":0,"efficiency_kg_km":0.0},{"day":3,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":53,"premature_visits":0,"efficiency_kg_km":0.0},{"day":4,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":54,"premature_visits":0,"efficiency_kg_km":0.0},{"day":5,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":54,"premature_visits":0,"efficiency_kg_km":0.0},{"day":6,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":59,"premature_visits":0,"efficiency_kg_km":0.0},{"day":7,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":59,"premature_visits":0,"efficiency_kg_km":0.0},{"day":8,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":49,"premature_visits":2,"efficiency_kg_km":97.9},{"day":9,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":53,"premature_visits":2,"efficiency_kg_km":97.9},{"day":10,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":55,"premature_visits":2,"efficiency_kg_km":97.9},{"day":11,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":57,"premature_visits":2,"efficiency_kg_km":97.9},{"day":12,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":61,"premature_visits":2,"efficiency_kg_km":97.9},{"day":13,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":62,"premature_visits":2,"efficiency_kg_km":97.9},{"day":14,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":63,"premature_visits":2,"efficiency_kg_km":97.9},{"day":15,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":63,"premature_visits":2,"efficiency_kg_km":97.9},{"day":16,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":65,"premature_visits":2,"efficiency_kg_km":97.9},{"day":17,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":65,"premature_visits":2,"efficiency_kg_km":97.9},{"day":18,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":68,"premature_visits":2,"efficiency_kg_km":97.9},{"day":19,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":70,"premature_visits":2,"efficiency_kg_km":97.9},{"day":20,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":70,"premature_visits":2,"efficiency_kg_km":97.9},{"day":21,"distance_km":133.6,"co2_kg":113.6,"diesel_l":42.8,"active_overflows":74,"premature_visits":2,"efficiency_kg_km":97.9},{"day":22,"distance_km":217.0,"co2_kg":184.4,"diesel_l":69.4,"active_overflows":67,"premature_visits":2,"efficiency_kg_km":97.9},{"day":23,"distance_km":217.0,"co2_kg":184.4,"diesel_l":69.4,"active_overflows":68,"premature_visits":2,"efficiency_kg_km":97.9},{"day":24,"distance_km":217.0,"co2_kg":184.4,"diesel_l":69.4,"active_overflows":69,"premature_visits":2,"efficiency_kg_km":97.9},{"day":25,"distance_km":217.0,"co2_kg":184.4,"diesel_l":69.4,"active_overflows":70,"premature_visits":2,"efficiency_kg_km":97.9},{"day":26,"distance_km":217.0,"co2_kg":184.4,"diesel_l":69.4,"active_overflows":70,"premature_visits":2,"efficiency_kg_km":97.9},{"day":27,"distance_km":217.0,"co2_kg":184.4,"diesel_l":69.4,"active_overflows":70,"premature_visits":2,"efficiency_kg_km":97.9},{"day":28,"distance_km":217.0,"co2_kg":184.4,"diesel_l":69.4,"active_overflows":72,"premature_visits":2,"efficiency_kg_km":97.9}]},"mode2":{"name":"PreZero AI Dynamic Routing","description":"Autonomous predictive dispatch at >=80% fill threshold. Solved via Gurobi MILP + OSRM asymmetric road network. 100% zero-overflow, zero premature visits, -61% CO2.","trucks":[{"id":"dyn_truck_1","name":"PreZero Truck #1","color":"#00d26a","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":21,"id":3403,"name":"Happelstra\u00dfe / Ludwig-Pfau-Stra\u00dfe","coord":[9.224267,49.132279],"fill":60.5,"weight_kg":573.8,"stop_num":1,"reason":"Opportunistic Neighbor (60.5%, 0.33 km to urgent)"},{"type":"container","c_idx":8,"id":3416,"name":"Urbanstra\u00dfe","coord":[9.220215,49.133555],"fill":110.0,"weight_kg":1045.0,"stop_num":2,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":4,"id":3400,"name":"Bl\u00fccherstra\u00dfe / Karl-J\u00e4ger-Stra\u00dfe","coord":[9.229419,49.13163],"fill":110.0,"weight_kg":1045.0,"stop_num":3,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":7,"id":3411,"name":"Schirrmannstra\u00dfe / Vorderer B\u00f6ckinger","coord":[9.257475,49.136096],"fill":110.0,"weight_kg":1045.0,"stop_num":4,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":17,"id":3408,"name":"Im Wannental, au\u00dferhalb des Recyclinghofs","coord":[9.24037,49.139758],"fill":110.0,"weight_kg":1045.0,"stop_num":5,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":9,"id":3435,"name":"Wartbergstra\u00dfe / Erlenbacher Stra\u00dfe","coord":[9.230686,49.150671],"fill":110.0,"weight_kg":1045.0,"stop_num":6,"reason":"Critical Overfill Risk (110.0%)"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":7},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":8}],"waypoints":[[9.2109,49.1427],[9.211461,49.142852],[9.212045,49.142809],[9.212649,49.142593],[9.213271,49.142223],[9.213908,49.14172],[9.214559,49.141104],[9.21522,49.140397],[9.215889,49.139617],[9.216564,49.138787],[9.217243,49.137925],[9.217924,49.137054],[9.218603,49.136192],[9.219278,49.135362],[9.219947,49.134582],[9.220608,49.133875],[9.221259,49.133259],[9.221896,49.132756],[9.222518,49.132386],[9.223122,49.13217],[9.223706,49.132127],[9.224267,49.132279],[9.224048,49.132198],[9.223837,49.132159],[9.223633,49.132159],[9.223435,49.132192],[9.223242,49.132254],[9.223054,49.132341],[9.222869,49.132448],[9.222688,49.132571],[9.222508,49.132705],[9.22233,49.132846],[9.222152,49.132988],[9.221974,49.133129],[9.221794,49.133263],[9.221613,49.133386],[9.221428,49.133493],[9.22124,49.13358],[9.221047,49.133642],[9.220849,49.133675],[9.220645,49.133675],[9.220434,49.133636],[9.220215,49.133555],[9.220738,49.133758],[9.221235,49.133872],[9.221709,49.133908],[9.222164,49.133873],[9.222602,49.133778],[9.223024,49.133633],[9.223435,49.133445],[9.223837,49.133225],[9.224231,49.132981],[9.224622,49.132724],[9.225012,49.132461],[9.225403,49.132204],[9.225797,49.13196],[9.226199,49.13174],[9.22661,49.131552],[9.227032,49.131407],[9.22747,49.131312],[9.227925,49.131277],[9.228399,49.131313],[9.228896,49.131427],[9.229419,49.13163],[9.23128,49.132441],[9.232983,49.133072],[9.234546,49.133543],[9.235984,49.133872],[9.237314,49.134079],[9.238554,49.134181],[9.239718,49.134199],[9.240825,49.13415],[9.24189,49.134054],[9.242931,49.13393],[9.243963,49.133796],[9.245004,49.133672],[9.246069,49.133576],[9.247176,49.133527],[9.24834,49.133545],[9.24958,49.133647],[9.25091,49.133854],[9.252348,49.134183],[9.253911,49.134654],[9.255614,49.135285],[9.257475,49.136096],[9.256506,49.135721],[9.255583,49.135511],[9.254702,49.135448],[9.253858,49.135515],[9.253045,49.135695],[9.252259,49.135971],[9.251495,49.136325],[9.250748,49.136739],[9.250013,49.137197],[9.249285,49.137681],[9.24856,49.138173],[9.247832,49.138657],[9.247097,49.139115],[9.24635,49.139529],[9.245586,49.139883],[9.2448,49.140159],[9.243987,49.140339],[9.243143,49.140406],[9.242262,49.140343],[9.241339,49.140133],[9.24037,49.139758],[9.240051,49.139711],[9.239689,49.139834],[9.239289,49.140109],[9.238855,49.140518],[9.238393,49.141043],[9.237905,49.141668],[9.237398,49.142372],[9.236875,49.14314],[9.236341,49.143952],[9.2358,49.144791],[9.235256,49.145638],[9.234715,49.146477],[9.234181,49.147289],[9.233658,49.148057],[9.233151,49.148761],[9.232663,49.149386],[9.232201,49.149911],[9.231767,49.15032],[9.231367,49.150595],[9.231005,49.150718],[9.230686,49.150671],[9.231948,49.15131],[9.233036,49.151962],[9.233968,49.152625],[9.234762,49.153299],[9.235438,49.153982],[9.236013,49.154672],[9.236505,49.155369],[9.236933,49.15607],[9.237315,49.156775],[9.23767,49.157482],[9.238016,49.158189],[9.238371,49.158896],[9.238753,49.159601],[9.239181,49.160302],[9.239673,49.160999],[9.240248,49.161689],[9.240924,49.162372],[9.241718,49.163046],[9.24265,49.163709],[9.243738,49.164361],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":17.04,"shift_hours":1.5,"weight_kg":5799.8,"num_stops":6,"dispatch_day":6},{"id":"dyn_truck_2","name":"PreZero Truck #2","color":"#06b6d4","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":0,"id":3384,"name":"Bismarckstra\u00dfe / Gymnasiumstra\u00dfe","coord":[9.224879,49.140257],"fill":110.0,"weight_kg":1045.0,"stop_num":1,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":14,"id":3425,"name":"Kernerstra\u00dfe","coord":[9.234042,49.141228],"fill":110.0,"weight_kg":1045.0,"stop_num":2,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":19,"id":3429,"name":"Pf\u00fchlstra\u00dfe / M\u00f6rikestra\u00dfe","coord":[9.236403,49.144633],"fill":109.3,"weight_kg":1037.4,"stop_num":3,"reason":"Critical Overfill Risk (109.3%)"},{"type":"container","c_idx":20,"id":3427,"name":"Lessingstra\u00dfe / Nordstra\u00dfe","coord":[9.22649,49.150814],"fill":77.7,"weight_kg":737.2,"stop_num":4,"reason":"Opportunistic Neighbor (77.7%, 0.26 km to urgent)"},{"type":"container","c_idx":13,"id":3428,"name":"Pestalozzistra\u00dfe","coord":[9.223167,49.14984],"fill":110.0,"weight_kg":1045.0,"stop_num":5,"reason":"Critical Overfill Risk (110.0%)"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":6},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":7}],"waypoints":[[9.2109,49.1427],[9.211706,49.143017],[9.21247,49.143204],[9.213196,49.143274],[9.213889,49.143242],[9.214554,49.143122],[9.215193,49.142925],[9.215813,49.142668],[9.216418,49.142362],[9.217011,49.142022],[9.217597,49.141662],[9.218182,49.141295],[9.218768,49.140935],[9.219361,49.140595],[9.219966,49.140289],[9.220586,49.140032],[9.221225,49.139835],[9.22189,49.139715],[9.222583,49.139683],[9.223309,49.139753],[9.224073,49.13994],[9.224879,49.140257],[9.225474,49.140513],[9.226022,49.140706],[9.226526,49.140842],[9.226994,49.140929],[9.227428,49.140973],[9.227835,49.140981],[9.22822,49.140959],[9.228587,49.140914],[9.228941,49.140852],[9.229288,49.14078],[9.229633,49.140705],[9.22998,49.140633],[9.230334,49.140571],[9.230701,49.140526],[9.231086,49.140504],[9.231493,49.140512],[9.231927,49.140556],[9.232395,49.140643],[9.232899,49.140779],[9.233447,49.140972],[9.234042,49.141228],[9.234277,49.141353],[9.234475,49.141489],[9.234641,49.141635],[9.234777,49.14179],[9.234888,49.141952],[9.234978,49.142121],[9.235051,49.142296],[9.235109,49.142474],[9.235158,49.142655],[9.235202,49.142839],[9.235243,49.143022],[9.235287,49.143206],[9.235336,49.143387],[9.235394,49.143565],[9.235467,49.14374],[9.235557,49.143909],[9.235668,49.144071],[9.235804,49.144226],[9.23597,49.144372],[9.236168,49.144508],[9.236403,49.144633],[9.235947,49.144491],[9.235486,49.144481],[9.23502,49.144587],[9.234551,49.144796],[9.234079,49.145095],[9.233604,49.14547],[9.233127,49.145906],[9.232648,49.146391],[9.232168,49.14691],[9.231687,49.14745],[9.231206,49.147997],[9.230725,49.148537],[9.230245,49.149056],[9.229766,49.149541],[9.229289,49.149977],[9.228814,49.150352],[9.228342,49.150651],[9.227873,49.15086],[9.227407,49.150966],[9.226946,49.150956],[9.22649,49.150814],[9.226258,49.15071],[9.226048,49.150623],[9.225858,49.150551],[9.225686,49.150494],[9.225528,49.150448],[9.225383,49.150412],[9.225249,49.150385],[9.225123,49.150364],[9.225003,49.150347],[9.224886,49.150333],[9.224771,49.150321],[9.224654,49.150307],[9.224534,49.15029],[9.224408,49.150269],[9.224274,49.150242],[9.224129,49.150206],[9.223971,49.15016],[9.223799,49.150103],[9.223609,49.150031],[9.223399,49.149944],[9.223167,49.14984],[9.224918,49.150689],[9.226456,49.1515],[9.227802,49.152277],[9.228981,49.153024],[9.230013,49.153745],[9.230921,49.154443],[9.231729,49.155123],[9.232458,49.15579],[9.233131,49.156446],[9.23377,49.157096],[9.234397,49.157744],[9.235036,49.158394],[9.235709,49.15905],[9.236438,49.159717],[9.237246,49.160397],[9.238154,49.161095],[9.239186,49.161816],[9.240365,49.162563],[9.241711,49.16334],[9.243249,49.164151],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":12.99,"shift_hours":1.28,"weight_kg":4911.5,"num_stops":5,"dispatch_day":6},{"id":"dyn_truck_3","name":"PreZero Truck #3","color":"#a855f7","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":15,"id":3452,"name":"Klingenberger Stra\u00dfe / Hohlstra\u00dfe","coord":[9.190406,49.131728],"fill":110.0,"weight_kg":1045.0,"stop_num":1,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":1,"id":3464,"name":"Amsterdamer Stra\u00dfe","coord":[9.1802,49.118449],"fill":110.0,"weight_kg":1045.0,"stop_num":2,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":22,"id":3487,"name":"Kolpingstra\u00dfe","coord":[9.201212,49.126034],"fill":63.0,"weight_kg":600.4,"stop_num":3,"reason":"Opportunistic Neighbor (63.0%, 0.33 km to urgent)"},{"type":"container","c_idx":11,"id":3490,"name":"Max-von-Laue-Stra\u00dfe","coord":[9.211754,49.120033],"fill":110.0,"weight_kg":1045.0,"stop_num":4,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":10,"id":3488,"name":"Mauerstra\u00dfe","coord":[9.200159,49.12313],"fill":110.0,"weight_kg":1045.0,"stop_num":5,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":23,"id":3483,"name":"Bottwarbahnstra\u00dfe","coord":[9.195768,49.121896],"fill":66.0,"weight_kg":627.0,"stop_num":6,"reason":"Opportunistic Neighbor (66.0%, 0.35 km to urgent)"},{"type":"container","c_idx":2,"id":3385,"name":"Friedensplatz / Moltkestra\u00dfe","coord":[9.228051,49.141168],"fill":110.0,"weight_kg":1045.0,"stop_num":7,"reason":"Critical Overfill Risk (110.0%)"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":8},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":9}],"waypoints":[[9.2109,49.1427],[9.209341,49.141964],[9.207957,49.141291],[9.206729,49.140677],[9.205639,49.140112],[9.20467,49.139592],[9.203801,49.139109],[9.203016,49.138656],[9.202295,49.138227],[9.20162,49.137815],[9.200972,49.137413],[9.200334,49.137015],[9.199686,49.136613],[9.199011,49.136201],[9.19829,49.135772],[9.197505,49.135319],[9.196636,49.134836],[9.195667,49.134316],[9.194577,49.133751],[9.193349,49.133137],[9.191965,49.132464],[9.190406,49.131728],[9.189427,49.131215],[9.188596,49.130667],[9.187897,49.130086],[9.187315,49.129477],[9.186834,49.128843],[9.186439,49.128189],[9.186114,49.127518],[9.185843,49.126833],[9.185612,49.126139],[9.185403,49.125439],[9.185203,49.124738],[9.184994,49.124038],[9.184763,49.123344],[9.184492,49.122659],[9.184167,49.121988],[9.183772,49.121334],[9.183291,49.1207],[9.182709,49.120091],[9.18201,49.11951],[9.181179,49.118962],[9.1802,49.118449],[9.181704,49.119136],[9.183056,49.119725],[9.184274,49.120226],[9.185372,49.120651],[9.186368,49.121008],[9.187276,49.12131],[9.188112,49.121565],[9.188893,49.121784],[9.189634,49.121977],[9.190351,49.122155],[9.191061,49.122328],[9.191778,49.122506],[9.192519,49.122699],[9.1933,49.122918],[9.194136,49.123173],[9.195044,49.123475],[9.19604,49.123832],[9.197138,49.124257],[9.198356,49.124758],[9.199708,49.125347],[9.201212,49.126034],[9.201712,49.126195],[9.202213,49.126222],[9.202714,49.12613],[9.203216,49.125931],[9.203718,49.12564],[9.20422,49.125272],[9.204723,49.124841],[9.205225,49.12436],[9.205728,49.123843],[9.206231,49.123306],[9.206735,49.122761],[9.207238,49.122224],[9.207741,49.121707],[9.208243,49.121226],[9.208746,49.120795],[9.209248,49.120427],[9.20975,49.120136],[9.210252,49.119937],[9.210753,49.119845],[9.211254,49.119872],[9.211754,49.120033],[9.211113,49.11979],[9.210499,49.119664],[9.209908,49.119643],[9.209339,49.119715],[9.208788,49.119867],[9.208252,49.120086],[9.207729,49.120361],[9.207215,49.120679],[9.206709,49.121027],[9.206207,49.121395],[9.205706,49.121768],[9.205204,49.122136],[9.204698,49.122484],[9.204184,49.122802],[9.203661,49.123077],[9.203125,49.123296],[9.202574,49.123448],[9.202005,49.12352],[9.201414,49.123499],[9.2008,49.123373],[9.200159,49.12313],[9.199854,49.122993],[9.199578,49.12288],[9.199327,49.122787],[9.199099,49.122713],[9.198891,49.122655],[9.1987,49.122611],[9.198522,49.122578],[9.198355,49.122553],[9.198195,49.122535],[9.19804,49.12252],[9.197887,49.122506],[9.197732,49.122491],[9.197572,49.122473],[9.197405,49.122448],[9.197227,49.122415],[9.197036,49.122371],[9.196828,49.122313],[9.1966,49.122239],[9.196349,49.122146],[9.196073,49.122033],[9.195768,49.121896],[9.198276,49.123093],[9.200492,49.124206],[9.202448,49.125245],[9.204175,49.126217],[9.205702,49.127132],[9.20706,49.127998],[9.208281,49.128824],[9.209394,49.12962],[9.210431,49.130394],[9.211422,49.131154],[9.212397,49.13191],[9.213388,49.13267],[9.214425,49.133444],[9.215538,49.13424],[9.216759,49.135066],[9.218117,49.135932],[9.219644,49.136847],[9.221371,49.137819],[9.223327,49.138858],[9.225543,49.139971],[9.228051,49.141168],[9.229723,49.142053],[9.231136,49.143012],[9.232316,49.144039],[9.233292,49.145125],[9.23409,49.146263],[9.234738,49.147444],[9.235262,49.14866],[9.235692,49.149905],[9.236052,49.151168],[9.236372,49.152444],[9.236679,49.153724],[9.236999,49.155],[9.237359,49.156263],[9.237789,49.157508],[9.238313,49.158724],[9.238961,49.159905],[9.239759,49.161043],[9.240735,49.162129],[9.241915,49.163156],[9.243328,49.164115],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":23.58,"shift_hours":1.79,"weight_kg":6450.5,"num_stops":7,"dispatch_day":18},{"id":"dyn_truck_4","name":"PreZero Truck #4","color":"#3b82f6","stops":[{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":0},{"type":"container","c_idx":12,"id":3389,"name":"Mozartstra\u00dfe","coord":[9.209556,49.141473],"fill":110.0,"weight_kg":1045.0,"stop_num":1,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":3,"id":3450,"name":"Hofweg / Im Kreuzgrund","coord":[9.185487,49.15077],"fill":110.0,"weight_kg":1045.0,"stop_num":2,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":5,"id":3461,"name":"Brechhausstra\u00dfe","coord":[9.175561,49.155365],"fill":110.0,"weight_kg":1045.0,"stop_num":3,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":18,"id":3470,"name":"Schlossstra\u00dfe","coord":[9.10645,49.186042],"fill":110.0,"weight_kg":1045.0,"stop_num":4,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":16,"id":4452,"name":"Jakob-Saame-Stra\u00dfe / Hermann-L\u00f6ns-Stra\u00dfe","coord":[9.188638,49.168027],"fill":110.0,"weight_kg":1045.0,"stop_num":5,"reason":"Critical Overfill Risk (110.0%)"},{"type":"container","c_idx":6,"id":3482,"name":"Wilhelm-Sch\u00e4ffer-Stra\u00dfe","coord":[9.198006,49.17107],"fill":110.0,"weight_kg":1045.0,"stop_num":6,"reason":"Critical Overfill Risk (110.0%)"},{"type":"disposal","name":"Entsorgungszentrum B\u00f6llinger H\u00f6fe","coord":[9.245,49.165],"stop_num":7},{"type":"depot","name":"Central Fleet Yard","coord":[9.2109,49.1427],"stop_num":8}],"waypoints":[[9.2109,49.1427],[9.210785,49.142642],[9.210685,49.142584],[9.210598,49.142526],[9.210524,49.142468],[9.210461,49.142409],[9.210406,49.142351],[9.210359,49.142292],[9.210318,49.142233],[9.21028,49.142175],[9.210245,49.142116],[9.210211,49.142057],[9.210176,49.141998],[9.210138,49.14194],[9.210097,49.141881],[9.21005,49.141822],[9.209995,49.141764],[9.209932,49.141705],[9.209858,49.141647],[9.209771,49.141589],[9.209671,49.141531],[9.209556,49.141473],[9.2083,49.141023],[9.207077,49.14084],[9.205884,49.140897],[9.204716,49.141166],[9.203571,49.141618],[9.202445,49.142225],[9.201335,49.14296],[9.200237,49.143792],[9.199147,49.144696],[9.198063,49.145642],[9.19698,49.146601],[9.195896,49.147547],[9.194806,49.148451],[9.193708,49.149283],[9.192598,49.150018],[9.191472,49.150625],[9.190327,49.151077],[9.189159,49.151346],[9.187966,49.151403],[9.186743,49.15122],[9.185487,49.15077],[9.184989,49.150598],[9.184498,49.150544],[9.184015,49.150594],[9.183537,49.150737],[9.183064,49.15096],[9.182597,49.151251],[9.182132,49.151597],[9.181671,49.151986],[9.181211,49.152406],[9.180753,49.152845],[9.180295,49.15329],[9.179837,49.153729],[9.179377,49.154149],[9.178916,49.154538],[9.178451,49.154884],[9.177984,49.155175],[9.177511,49.155398],[9.177033,49.155541],[9.17655,49.155591],[9.176059,49.155537],[9.175561,49.155365],[9.172058,49.154146],[9.168619,49.153731],[9.165236,49.154035],[9.161904,49.154974],[9.158615,49.156463],[9.155363,49.158417],[9.152141,49.160753],[9.148943,49.163384],[9.145761,49.166227],[9.14259,49.169197],[9.139421,49.17221],[9.13625,49.17518],[9.133068,49.178023],[9.12987,49.180654],[9.126648,49.18299],[9.123396,49.184944],[9.120107,49.186433],[9.116775,49.187372],[9.113392,49.187676],[9.109953,49.187261],[9.10645,49.186042],[9.111095,49.187837],[9.11552,49.188836],[9.119749,49.189123],[9.123805,49.188781],[9.127711,49.187896],[9.131491,49.186549],[9.135166,49.184826],[9.13876,49.182809],[9.142297,49.180583],[9.145799,49.178231],[9.149289,49.175838],[9.152791,49.173486],[9.156328,49.17126],[9.159922,49.169243],[9.163597,49.16752],[9.167377,49.166173],[9.171283,49.165288],[9.175339,49.164946],[9.179568,49.165233],[9.183993,49.166232],[9.188638,49.168027],[9.1893,49.168327],[9.189897,49.16858],[9.190436,49.168792],[9.190924,49.168967],[9.191367,49.16911],[9.191774,49.169227],[9.19215,49.169321],[9.192502,49.169398],[9.192837,49.169463],[9.193161,49.169521],[9.193483,49.169576],[9.193807,49.169634],[9.194142,49.169699],[9.194494,49.169776],[9.19487,49.16987],[9.195277,49.169987],[9.19572,49.17013],[9.196208,49.170305],[9.196747,49.170517],[9.197344,49.17077],[9.198006,49.17107],[9.200772,49.172175],[9.203379,49.172862],[9.205844,49.173175],[9.208185,49.173157],[9.210417,49.172854],[9.212558,49.172308],[9.214623,49.171564],[9.216631,49.170666],[9.218596,49.169657],[9.220537,49.168583],[9.222469,49.167487],[9.22441,49.166413],[9.226375,49.165404],[9.228383,49.164506],[9.230448,49.163762],[9.232589,49.163216],[9.234821,49.162913],[9.237162,49.162895],[9.239627,49.163208],[9.242234,49.163895],[9.245,49.165],[9.242301,49.163699],[9.239924,49.16247],[9.237836,49.161305],[9.236003,49.160197],[9.234391,49.159137],[9.232965,49.158119],[9.231692,49.157135],[9.230538,49.156178],[9.229469,49.155239],[9.228451,49.154312],[9.227449,49.153388],[9.226431,49.152461],[9.225362,49.151522],[9.224208,49.150565],[9.222935,49.149581],[9.221509,49.148563],[9.219897,49.147503],[9.218064,49.146395],[9.215976,49.14523],[9.213599,49.144001],[9.2109,49.1427]],"distance_km":31.08,"shift_hours":1.85,"weight_kg":6270.0,"num_stops":6,"dispatch_day":18}],"daily_fills":[[23.2,83.6,82.2,92.0,21.5,61.5,40.6,92.0,92.0,92.0,31.1,84.0,92.0,42.5,64.1,92.0,92.0,92.0,92.0,70.8,75.3,92.0,72.9,83.8,41.9,92.0,12.8,30.5,32.5,92.0,71.4,81.2,92.0,92.0,92.0,92.0,92.0,50.8,92.0,61.7,71.3,92.0,71.5,92.0,61.2,92.0,34.5,92.0,92.0,31.3,91.9,92.0,92.0,81.2,92.0,81.0,92.0,92.0,92.0,50.9,92.0,92.0,92.0,50.9,92.0,92.0,92.0,92.0,92.0,63.3,73.5,80.7,82.3,92.0,92.0,92.0,90.5,92.0,64.6,61.6,92.0,92.0,92.0,81.6,45.8,63.0,71.3,92.0,92.0,92.0,41.5,43.1,92.0,92.0,73.2,92.0,54.0,71.4,71.6,92.0,92.0,73.3,81.8,20.9,63.5,92.0,72.5,92.0,32.8],[26.5,87.2,84.3,92.0,23.0,63.1,41.1,92.0,92.0,92.0,32.3,88.0,92.0,45.0,68.2,92.0,92.0,92.0,92.0,71.6,80.5,92.0,75.7,87.6,43.8,92.0,15.5,31.0,35.0,92.0,72.7,82.4,92.0,92.0,92.0,92.0,92.0,51.7,92.0,63.4,72.6,92.0,73.1,92.0,62.5,92.0,39.1,92.0,92.0,32.6,92.0,92.0,92.0,82.3,92.0,82.0,92.0,92.0,92.0,51.8,92.0,92.0,92.0,51.7,92.0,92.0,92.0,92.0,92.0,66.7,77.0,81.3,84.5,92.0,92.0,92.0,91.0,92.0,69.2,63.3,92.0,92.0,92.0,83.2,51.6,65.9,72.6,92.0,92.0,92.0,43.1,46.3,92.0,92.0,76.4,92.0,58.0,72.7,73.2,92.0,92.0,76.7,83.6,21.9,67.1,92.0,75.0,92.0,35.6],[29.7,90.8,86.5,92.0,24.6,64.6,41.7,92.0,92.0,92.0,33.4,91.9,92.0,47.5,72.2,92.0,92.0,92.0,92.0,72.4,85.8,92.0,78.6,91.4,45.6,92.0,18.2,31.4,37.5,92.0,74.1,83.6,92.0,92.0,92.0,92.0,92.0,52.5,92.0,65.2,74.0,92.0,74.6,92.0,63.8,92.0,43.6,92.0,92.0,33.9,92.0,92.0,92.0,83.5,92.0,83.0,92.0,92.0,92.0,52.7,92.0,92.0,92.0,52.6,92.0,92.0,92.0,92.0,92.0,70.0,80.4,82.0,86.8,92.0,92.0,92.0,91.6,92.0,73.7,64.9,92.0,92.0,92.0,84.7,57.4,68.9,73.9,92.0,92.0,92.0,44.6,49.4,92.0,92.0,79.6,92.0,62.0,74.1,74.8,92.0,92.0,80.0,85.5,22.8,70.6,92.0,77.5,92.0,38.3],[33.0,92.0,88.6,92.0,26.1,66.2,42.2,92.0,92.0,92.0,34.6,92.0,92.0,50.0,76.3,92.0,92.0,92.0,92.0,73.2,91.0,92.0,81.4,92.0,47.5,92.0,21.0,31.9,40.0,92.0,75.5,84.8,92.0,92.0,92.0,92.0,92.0,53.3,92.0,66.9,75.3,92.0,76.2,92.0,65.0,92.0,48.2,92.0,92.0,35.2,92.0,92.0,92.0,84.7,92.0,84.0,92.0,92.0,92.0,53.6,92.0,92.0,92.0,53.4,92.0,92.0,92.0,92.0,92.0,73.3,83.9,82.6,89.1,92.0,92.0,92.0,92.0,92.0,78.3,66.5,92.0,92.0,92.0,86.3,63.2,71.9,75.2,92.0,92.0,92.0,46.2,52.6,92.0,92.0,82.8,92.0,66.0,75.5,76.4,92.0,92.0,83.3,87.3,23.8,74.1,92.0,80.0,92.0,41.1],[36.2,92.0,90.8,92.0,27.6,67.7,42.8,92.0,92.0,92.0,35.7,92.0,92.0,52.5,80.4,92.0,92.0,92.0,92.0,74.0,92.0,92.0,84.3,92.0,49.4,92.0,23.8,32.4,42.5,92.0,76.9,86.0,92.0,92.0,92.0,92.0,92.0,54.1,92.0,68.6,76.6,92.0,77.7,92.0,66.2,92.0,52.7,92.0,92.0,36.5,92.0,92.0,92.0,85.9,92.0,85.1,92.0,92.0,92.0,54.5,92.0,92.0,92.0,54.3,92.0,92.0,92.0,92.0,92.0,76.6,87.4,83.3,91.3,92.0,92.0,92.0,92.0,92.0,82.9,68.1,92.0,92.0,92.0,87.9,69.0,74.8,76.5,92.0,92.0,92.0,47.7,55.7,92.0,92.0,86.0,92.0,70.0,76.9,78.0,92.0,92.0,86.6,89.1,24.7,77.7,92.0,82.5,92.0,43.9],[40.6,92.0,92.0,92.0,29.7,69.8,43.6,92.0,5.0,92.0,5.0,92.0,92.0,55.9,85.9,92.0,92.0,92.0,92.0,75.1,92.0,92.0,88.2,92.0,51.9,92.0,27.5,33.0,45.9,92.0,78.7,5.0,92.0,92.0,92.0,92.0,92.0,55.3,92.0,70.9,78.4,92.0,79.8,92.0,67.9,92.0,5.0,92.0,92.0,38.3,92.0,5.0,92.0,87.4,92.0,86.4,92.0,92.0,5.0,55.7,92.0,92.0,92.0,55.5,92.0,92.0,92.0,92.0,92.0,81.1,92.0,84.2,92.0,92.0,5.0,92.0,5.0,92.0,89.1,70.4,92.0,92.0,92.0,90.0,76.8,78.9,78.3,92.0,5.0,92.0,49.8,59.9,92.0,92.0,90.3,92.0,75.4,78.7,80.2,92.0,5.0,5.0,91.6,26.0,82.4,92.0,85.9,92.0,47.7],[44.9,92.0,92.0,92.0,31.7,71.9,44.3,92.0,10.6,92.0,6.6,92.0,92.0,59.2,91.4,92.0,92.0,92.0,92.0,76.2,92.0,92.0,92.0,92.0,54.5,92.0,31.2,33.7,49.2,92.0,80.5,6.6,92.0,92.0,92.0,92.0,92.0,56.4,92.0,73.2,80.2,92.0,81.9,92.0,69.6,92.0,11.1,92.0,92.0,40.0,92.0,10.3,92.0,89.0,92.0,87.8,92.0,92.0,10.8,56.9,92.0,92.0,92.0,56.6,92.0,92.0,92.0,92.0,92.0,85.6,92.0,85.1,92.0,92.0,7.7,92.0,5.7,92.0,92.0,72.6,92.0,92.0,92.0,92.0,84.6,82.9,80.0,92.0,10.4,92.0,51.9,64.2,92.0,92.0,92.0,92.0,80.8,80.5,82.3,92.0,10.0,9.5,92.0,27.3,87.2,92.0,89.2,92.0,51.4],[48.2,92.0,92.0,92.0,33.2,73.4,44.9,92.0,14.8,92.0,7.7,92.0,92.0,61.8,92.0,92.0,92.0,92.0,92.0,77.0,92.0,92.0,92.0,92.0,56.4,92.0,33.9,34.2,51.8,92.0,81.9,7.8,92.0,92.0,92.0,92.0,92.0,57.2,92.0,75.0,81.5,92.0,83.4,92.0,70.9,92.0,15.7,92.0,92.0,41.3,92.0,14.2,92.0,90.2,92.0,88.8,92.0,92.0,15.2,57.7,92.0,92.0,92.0,57.5,92.0,92.0,92.0,92.0,92.0,89.0,92.0,85.7,92.0,92.0,9.7,92.0,6.2,92.0,92.0,74.2,92.0,92.0,92.0,92.0,90.4,85.8,81.3,92.0,14.4,92.0,53.4,67.3,92.0,92.0,92.0,92.0,84.8,81.9,83.9,92.0,13.8,12.8,92.0,28.3,90.7,92.0,91.8,92.0,54.2],[51.4,92.0,92.0,92.0,34.7,74.9,45.4,92.0,19.0,92.0,8.9,92.0,92.0,64.2,92.0,92.0,92.0,92.0,92.0,77.8,92.0,92.0,92.0,92.0,58.2,92.0,36.7,34.7,54.2,92.0,83.3,9.0,92.0,92.0,92.0,92.0,92.0,58.1,92.0,76.7,82.8,92.0,84.9,92.0,72.1,92.0,20.2,92.0,92.0,42.6,92.0,18.2,92.0,91.3,92.0,89.8,92.0,92.0,19.5,58.6,92.0,92.0,92.0,58.3,92.0,92.0,92.0,92.0,92.0,92.0,92.0,86.4,92.0,92.0,11.6,92.0,6.7,92.0,92.0,75.8,92.0,92.0,92.0,92.0,92.0,88.8,82.6,92.0,18.4,92.0,54.9,70.5,92.0,92.0,92.0,92.0,88.8,83.3,85.5,92.0,17.5,16.2,92.0,29.2,92.0,92.0,92.0,92.0,57.0],[54.7,92.0,92.0,92.0,36.3,76.5,46.0,92.0,23.1,92.0,10.0,92.0,92.0,66.8,92.0,92.0,92.0,92.0,92.0,78.6,92.0,92.0,92.0,92.0,60.1,92.0,39.4,35.1,56.8,92.0,84.7,10.2,92.0,92.0,92.0,92.0,92.0,58.9,92.0,78.4,84.1,92.0,86.5,92.0,73.4,92.0,24.8,92.0,92.0,43.9,92.0,22.1,92.0,92.0,92.0,90.8,92.0,92.0,23.8,59.5,92.0,92.0,92.0,59.2,92.0,92.0,92.0,92.0,92.0,92.0,92.0,87.1,92.0,92.0,13.6,92.0,7.3,92.0,92.0,77.4,92.0,92.0,92.0,92.0,92.0,91.8,83.9,92.0,22.4,92.0,56.5,73.6,92.0,92.0,92.0,92.0,92.0,84.7,87.1,92.0,21.2,19.5,92.0,30.2,92.0,92.0,92.0,92.0,59.7],[57.9,92.0,92.0,92.0,37.8,78.0,46.6,92.0,27.3,92.0,11.2,92.0,92.0,69.2,92.0,92.0,92.0,92.0,92.0,79.4,92.0,92.0,92.0,92.0,62.0,92.0,42.2,35.6,59.2,92.0,86.0,11.4,92.0,92.0,92.0,92.0,92.0,59.7,92.0,80.1,85.4,92.0,88.0,92.0,74.6,92.0,29.3,92.0,92.0,45.2,92.0,26.0,92.0,92.0,92.0,91.8,92.0,92.0,28.1,60.4,92.0,92.0,92.0,60.1,92.0,92.0,92.0,92.0,92.0,92.0,92.0,87.7,92.0,92.0,15.6,92.0,7.8,92.0,92.0,79.1,92.0,92.0,92.0,92.0,92.0,92.0,85.2,92.0,26.4,92.0,58.0,76.7,92.0,92.0,92.0,92.0,92.0,86.0,88.7,92.0,25.0,22.8,92.0,31.1,92.0,92.0,92.0,92.0,62.5],[61.1,92.0,92.0,92.0,39.3,79.6,47.1,92.0,31.5,92.0,12.3,92.0,92.0,71.8,92.0,92.0,92.0,92.0,92.0,80.2,92.0,92.0,92.0,92.0,63.9,92.0,44.9,36.1,61.8,92.0,87.4,12.6,92.0,92.0,92.0,92.0,92.0,60.5,92.0,81.8,86.8,92.0,89.6,92.0,75.9,92.0,33.9,92.0,92.0,46.5,92.0,30.0,92.0,92.0,92.0,92.0,92.0,92.0,32.4,61.3,92.0,92.0,92.0,60.9,92.0,92.0,92.0,92.0,92.0,92.0,92.0,88.4,92.0,92.0,17.6,92.0,8.3,92.0,92.0,80.7,92.0,92.0,92.0,92.0,92.0,92.0,86.5,92.0,30.4,92.0,59.6,79.9,92.0,92.0,92.0,92.0,92.0,87.4,90.3,92.0,28.7,26.1,92.0,32.1,92.0,92.0,92.0,92.0,65.3],[65.5,92.0,92.0,92.0,41.4,81.6,47.9,92.0,37.1,92.0,13.9,92.0,92.0,75.1,92.0,92.0,92.0,92.0,92.0,81.2,92.0,92.0,92.0,92.0,66.4,92.0,48.6,36.7,65.1,92.0,89.2,14.2,92.0,92.0,92.0,92.0,92.0,61.7,92.0,84.2,88.5,92.0,91.6,92.0,77.6,92.0,40.0,92.0,92.0,48.3,92.0,35.3,92.0,92.0,92.0,92.0,92.0,92.0,38.3,62.5,92.0,92.0,92.0,62.1,92.0,92.0,92.0,92.0,92.0,92.0,92.0,89.3,92.0,92.0,20.2,92.0,9.0,92.0,92.0,82.9,92.0,92.0,92.0,92.0,92.0,92.0,88.3,92.0,35.8,92.0,61.6,84.1,92.0,92.0,92.0,92.0,92.0,89.2,92.0,92.0,33.7,30.6,92.0,33.3,92.0,92.0,92.0,92.0,69.1],[69.9,92.0,92.0,92.0,43.4,83.7,48.6,92.0,42.7,92.0,15.4,92.0,92.0,78.5,92.0,92.0,92.0,92.0,92.0,82.3,92.0,92.0,92.0,92.0,69.0,92.0,52.3,37.4,68.5,92.0,91.1,15.9,92.0,92.0,92.0,92.0,92.0,62.8,92.0,86.5,90.3,92.0,92.0,92.0,79.2,92.0,46.2,92.0,92.0,50.0,92.0,40.6,92.0,92.0,92.0,92.0,92.0,92.0,44.1,63.7,92.0,92.0,92.0,63.2,92.0,92.0,92.0,92.0,92.0,92.0,92.0,90.2,92.0,92.0,22.9,92.0,9.7,92.0,92.0,85.1,92.0,92.0,92.0,92.0,92.0,92.0,90.0,92.0,41.2,92.0,63.7,88.4,92.0,92.0,92.0,92.0,92.0,91.1,92.0,92.0,38.8,35.1,92.0,34.6,92.0,92.0,92.0,92.0,72.8],[73.1,92.0,92.0,92.0,44.9,85.3,49.2,92.0,46.9,92.0,16.6,92.0,92.0,81.0,92.0,92.0,92.0,92.0,92.0,83.1,92.0,92.0,92.0,92.0,70.8,92.0,55.1,37.9,71.0,92.0,92.0,17.1,92.0,92.0,92.0,92.0,92.0,63.6,92.0,88.2,91.6,92.0,92.0,92.0,80.5,92.0,50.7,92.0,92.0,51.3,92.0,44.5,92.0,92.0,92.0,92.0,92.0,92.0,48.4,64.6,92.0,92.0,92.0,64.1,92.0,92.0,92.0,92.0,92.0,92.0,92.0,90.8,92.0,92.0,24.9,92.0,10.2,92.0,92.0,86.7,92.0,92.0,92.0,92.0,92.0,92.0,91.3,92.0,45.2,92.0,65.3,91.5,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,42.5,38.5,92.0,35.6,92.0,92.0,92.0,92.0,75.6],[76.4,92.0,92.0,92.0,46.4,86.8,49.7,92.0,51.1,92.0,17.7,92.0,92.0,83.5,92.0,92.0,92.0,92.0,92.0,83.9,92.0,92.0,92.0,92.0,72.7,92.0,57.8,38.4,73.5,92.0,92.0,18.3,92.0,92.0,92.0,92.0,92.0,64.4,92.0,89.9,92.0,92.0,92.0,92.0,81.8,92.0,55.3,92.0,92.0,52.6,92.0,48.4,92.0,92.0,92.0,92.0,92.0,92.0,52.7,65.5,92.0,92.0,92.0,65.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,91.5,92.0,92.0,26.9,92.0,10.7,92.0,92.0,88.4,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,49.2,92.0,66.8,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,46.2,41.8,92.0,36.5,92.0,92.0,92.0,92.0,78.4],[79.6,92.0,92.0,92.0,48.0,88.3,50.3,92.0,55.2,92.0,18.9,92.0,92.0,86.0,92.0,92.0,92.0,92.0,92.0,84.7,92.0,92.0,92.0,92.0,74.6,92.0,60.6,38.8,76.0,92.0,92.0,19.5,92.0,92.0,92.0,92.0,92.0,65.3,92.0,91.6,92.0,92.0,92.0,92.0,83.0,92.0,59.8,92.0,92.0,53.9,92.0,52.4,92.0,92.0,92.0,92.0,92.0,92.0,57.1,66.4,92.0,92.0,92.0,65.8,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,28.9,92.0,11.3,92.0,92.0,90.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,53.2,92.0,68.3,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,49.9,45.1,92.0,37.5,92.0,92.0,92.0,92.0,81.2],[82.9,92.0,92.0,5.0,49.5,89.9,50.9,92.0,59.4,92.0,20.0,92.0,92.0,5.0,5.0,92.0,92.0,92.0,92.0,85.5,92.0,5.0,92.0,92.0,76.5,92.0,63.3,39.3,78.5,92.0,92.0,20.7,92.0,92.0,92.0,92.0,92.0,66.1,92.0,92.0,92.0,5.0,92.0,92.0,84.2,92.0,64.4,5.0,92.0,55.2,92.0,56.3,5.0,5.0,92.0,92.0,92.0,92.0,61.4,67.3,92.0,92.0,92.0,66.7,92.0,92.0,5.0,92.0,5.0,92.0,5.0,92.0,92.0,92.0,30.8,92.0,11.8,92.0,92.0,91.6,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,57.2,5.0,69.9,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,53.7,48.5,92.0,38.4,92.0,92.0,5.0,92.0,83.9],[86.1,92.0,92.0,10.3,51.0,91.4,51.4,92.0,63.6,92.0,21.2,92.0,92.0,7.5,9.1,92.0,92.0,92.0,92.0,86.3,92.0,11.2,92.0,92.0,78.4,92.0,66.1,39.8,81.0,92.0,92.0,21.9,92.0,92.0,92.0,92.0,92.0,66.9,92.0,92.0,92.0,8.5,92.0,92.0,85.5,92.0,68.9,7.4,92.0,56.5,92.0,60.2,8.1,6.2,92.0,92.0,92.0,92.0,65.7,68.2,92.0,92.0,92.0,67.5,92.0,92.0,9.3,92.0,9.3,92.0,8.5,92.0,92.0,92.0,32.8,92.0,12.3,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,61.2,8.2,71.4,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,57.4,51.8,92.0,39.4,92.0,92.0,7.5,92.0,86.7],[90.5,92.0,92.0,17.5,53.1,92.0,52.2,92.0,69.2,92.0,22.7,92.0,92.0,10.9,14.6,92.0,92.0,92.0,92.0,87.4,92.0,19.7,92.0,92.0,80.9,92.0,69.8,40.4,84.4,92.0,92.0,23.5,92.0,92.0,92.0,92.0,92.0,68.1,92.0,92.0,92.0,13.3,92.0,92.0,87.2,92.0,75.1,10.7,92.0,58.3,92.0,65.5,12.2,7.7,92.0,92.0,92.0,92.0,71.5,69.4,92.0,92.0,92.0,68.7,92.0,92.0,15.2,92.0,15.2,92.0,13.2,92.0,92.0,92.0,35.5,92.0,13.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,66.6,12.4,73.5,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,62.4,56.3,92.0,40.7,92.0,92.0,10.9,92.0,90.5],[92.0,92.0,92.0,24.6,55.1,92.0,52.9,92.0,74.8,92.0,24.3,92.0,92.0,14.2,20.1,92.0,92.0,92.0,92.0,88.5,92.0,28.1,92.0,92.0,83.4,92.0,73.5,41.1,87.8,92.0,92.0,25.1,92.0,92.0,92.0,92.0,92.0,69.2,92.0,92.0,92.0,18.1,92.0,92.0,88.9,92.0,81.2,14.0,92.0,60.0,92.0,70.8,16.3,9.3,92.0,92.0,92.0,92.0,77.4,70.6,92.0,92.0,92.0,69.9,92.0,92.0,21.1,92.0,21.1,92.0,17.9,92.0,92.0,92.0,38.2,92.0,13.7,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,72.0,16.7,75.6,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,67.5,60.8,92.0,41.9,92.0,92.0,14.2,92.0,92.0],[92.0,92.0,92.0,30.0,56.6,92.0,53.5,92.0,79.0,92.0,25.4,92.0,92.0,16.8,24.2,92.0,92.0,92.0,92.0,89.3,92.0,34.4,92.0,92.0,85.3,92.0,76.3,41.6,90.2,92.0,92.0,26.3,92.0,92.0,92.0,92.0,92.0,70.0,92.0,92.0,92.0,21.6,92.0,92.0,90.1,92.0,85.8,16.5,92.0,61.3,92.0,74.8,19.3,10.5,92.0,92.0,92.0,92.0,81.7,71.4,92.0,92.0,92.0,70.7,92.0,92.0,25.4,92.0,25.4,92.0,21.4,92.0,92.0,92.0,40.1,92.0,14.2,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,76.0,19.9,77.1,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,71.2,64.1,92.0,42.9,92.0,92.0,16.8,92.0,92.0],[92.0,92.0,92.0,35.3,58.2,92.0,54.1,92.0,83.2,92.0,26.6,92.0,92.0,19.2,28.3,92.0,92.0,92.0,92.0,90.1,92.0,40.6,92.0,92.0,87.2,92.0,79.0,42.0,92.0,92.0,92.0,27.5,92.0,92.0,92.0,92.0,92.0,70.8,92.0,92.0,92.0,25.2,92.0,92.0,91.4,92.0,90.3,18.9,92.0,62.6,92.0,78.7,22.4,11.7,92.0,92.0,92.0,92.0,86.0,72.3,92.0,92.0,92.0,71.6,92.0,92.0,29.8,92.0,29.7,92.0,24.8,92.0,92.0,92.0,42.1,92.0,14.7,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,80.0,23.0,78.7,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,74.9,67.4,92.0,43.8,92.0,92.0,19.2,92.0,92.0],[92.0,92.0,92.0,40.6,59.7,92.0,54.6,92.0,87.4,92.0,27.7,92.0,92.0,21.8,32.3,92.0,92.0,92.0,92.0,90.9,92.0,46.9,92.0,92.0,89.1,92.0,81.8,42.5,92.0,92.0,92.0,28.7,92.0,92.0,92.0,92.0,92.0,71.7,92.0,92.0,92.0,28.7,92.0,92.0,92.0,92.0,92.0,21.3,92.0,63.9,92.0,82.6,25.4,12.8,92.0,92.0,92.0,92.0,90.3,73.2,92.0,92.0,92.0,72.4,92.0,92.0,34.1,92.0,34.1,92.0,28.3,92.0,92.0,92.0,44.1,92.0,15.3,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,84.0,26.2,80.2,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,78.7,70.8,92.0,44.8,92.0,92.0,21.8,92.0,92.0],[92.0,92.0,92.0,45.9,61.2,92.0,55.2,92.0,91.5,92.0,28.9,92.0,92.0,24.2,36.4,92.0,92.0,92.0,92.0,91.7,92.0,53.1,92.0,92.0,90.9,92.0,84.5,43.0,92.0,92.0,92.0,29.9,92.0,92.0,92.0,92.0,92.0,72.5,92.0,92.0,92.0,32.3,92.0,92.0,92.0,92.0,92.0,23.8,92.0,65.2,92.0,86.5,28.5,14.0,92.0,92.0,92.0,92.0,92.0,74.1,92.0,92.0,92.0,73.3,92.0,92.0,38.5,92.0,38.4,92.0,31.8,92.0,92.0,92.0,46.1,92.0,15.8,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,88.0,29.3,81.7,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,82.4,74.1,92.0,45.7,92.0,92.0,24.2,92.0,92.0],[92.0,92.0,92.0,51.2,62.7,92.0,55.7,92.0,92.0,92.0,30.0,92.0,92.0,26.8,40.5,92.0,92.0,92.0,92.0,92.0,92.0,59.4,92.0,92.0,92.0,92.0,87.3,43.5,92.0,92.0,92.0,31.1,92.0,92.0,92.0,92.0,92.0,73.3,92.0,92.0,92.0,35.8,92.0,92.0,92.0,92.0,92.0,26.2,92.0,66.5,92.0,90.5,31.5,15.2,92.0,92.0,92.0,92.0,92.0,75.0,92.0,92.0,92.0,74.2,92.0,92.0,42.8,92.0,42.8,92.0,35.3,92.0,92.0,92.0,48.1,92.0,16.3,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,32.5,83.3,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,86.1,77.4,92.0,46.7,92.0,92.0,26.8,92.0,92.0],[92.0,92.0,92.0,58.4,64.8,92.0,56.5,92.0,92.0,92.0,31.6,92.0,92.0,30.1,46.0,92.0,92.0,92.0,92.0,92.0,92.0,67.8,92.0,92.0,92.0,92.0,91.0,44.1,92.0,92.0,92.0,32.7,92.0,92.0,92.0,92.0,92.0,74.4,92.0,92.0,92.0,40.6,92.0,92.0,92.0,92.0,92.0,29.5,92.0,68.3,92.0,92.0,35.7,16.8,92.0,92.0,92.0,92.0,92.0,76.2,92.0,92.0,92.0,75.3,92.0,92.0,48.7,92.0,48.6,92.0,40.0,92.0,92.0,92.0,50.7,92.0,17.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,36.8,85.4,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,91.2,81.9,92.0,48.0,92.0,92.0,30.1,92.0,92.0],[92.0,92.0,92.0,65.5,66.8,92.0,57.2,92.0,92.0,92.0,33.1,92.0,92.0,33.5,51.5,92.0,92.0,92.0,92.0,92.0,92.0,76.2,92.0,92.0,92.0,92.0,92.0,44.8,92.0,92.0,92.0,34.3,92.0,92.0,92.0,92.0,92.0,75.6,92.0,92.0,92.0,45.4,92.0,92.0,92.0,92.0,92.0,32.8,92.0,70.0,92.0,92.0,39.8,18.3,92.0,92.0,92.0,92.0,92.0,77.4,92.0,92.0,92.0,76.5,92.0,92.0,54.6,92.0,54.5,92.0,44.7,92.0,92.0,92.0,53.4,92.0,17.7,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,41.0,87.4,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,92.0,86.4,92.0,49.3,92.0,92.0,33.5,92.0,92.0]],"daily_kpis":[{"day":1,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":0,"overflows_prevented":0,"premature_visits":0,"efficiency_kg_km":0.0},{"day":2,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":0,"overflows_prevented":0,"premature_visits":0,"efficiency_kg_km":0.0},{"day":3,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":0,"overflows_prevented":0,"premature_visits":0,"efficiency_kg_km":0.0},{"day":4,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":0,"overflows_prevented":0,"premature_visits":0,"efficiency_kg_km":0.0},{"day":5,"distance_km":0.0,"co2_kg":0.0,"diesel_l":0.0,"active_overflows":0,"overflows_prevented":0,"premature_visits":0,"efficiency_kg_km":0.0},{"day":6,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":7,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":8,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":9,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":10,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":11,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":12,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":13,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":14,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":15,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":16,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":17,"distance_km":30.0,"co2_kg":25.5,"diesel_l":9.6,"active_overflows":0,"overflows_prevented":10,"premature_visits":0,"efficiency_kg_km":276.7},{"day":18,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":19,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":20,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":21,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":22,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":23,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":24,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":25,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":26,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":27,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7},{"day":28,"distance_km":84.7,"co2_kg":72.0,"diesel_l":27.1,"active_overflows":0,"overflows_prevented":20,"premature_visits":0,"efficiency_kg_km":276.7}]}};
+  </script>
+
+  <!-- MAIN APPLICATION JAVASCRIPT LOGIC -->
+  <script>
+    // --- Web Audio Synthesizer (No external sound files required) ---
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.15, vol = 0.08) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('audio-icon').textContent = audioEnabled ? '🔊' : '🔇';
+      if (audioEnabled) playTone(580, 'sine', 0.1);
+    }
+
+    // --- State Variables ---
+    let currentMode = 'future'; // 'past' or 'future'
+    let currentDay = 1.0;
+    let isPlaying = false;
+    let playbackSpeed = 2.0;
+    let animFrameId = null;
+    let lastTimestamp = 0;
+    let map = null;
+    let activeTruckMarkers = [];
+    let selectedContainerIdx = null;
+
+    // --- Map Initialization ---
+    function initMap() {
+      const depot = SIMULATION_DATA.metadata.depot_coord;
+
+      map = new maplibregl.Map({
+        container: 'map',
+        style: {
+          version: 8,
+          sources: {
+            'carto-dark': {
+              type: 'raster',
+              tiles: [
+                'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+              ],
+              tileSize: 256,
+              attribution: '&copy; OpenStreetMap &copy; CARTO'
+            }
+          },
+          layers: [
+            {
+              id: 'carto-dark-layer',
+              type: 'raster',
+              source: 'carto-dark',
+              minzoom: 0,
+              maxzoom: 20
+            }
+          ]
+        },
+        center: [9.215, 49.145],
+        zoom: 13.5,
+        pitch: 58,
+        bearing: -18,
+        antialias: true
+      });
+
+      map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
+
+      map.on('load', () => {
+        setup3DMapLayers();
+        updateSimulationFrame(currentDay);
+      });
+
+      map.on('click', 'containers-3d-fill', (e) => {
+        if (e.features && e.features.length > 0) {
+          const idx = e.features[0].properties.idx;
+          openInspector(idx);
+          playTone(840, 'triangle', 0.12);
+        }
+      });
+
+      map.on('mouseenter', 'containers-3d-fill', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'containers-3d-fill', () => {
+        map.getCanvas().style.cursor = '';
+      });
+    }
+
+    // --- 3D WebGL Map Layers Setup ---
+    function setup3DMapLayers() {
+      // 1. Containers GeoJSON Source
+      map.addSource('containers-source', {
+        type: 'geojson',
+        data: getContainersGeoJSON(currentDay)
+      });
+
+      // 3D Extruded Pillars for Containers
+      map.addLayer({
+        id: 'containers-3d-fill',
+        type: 'fill-extrusion',
+        source: 'containers-source',
+        paint: {
+          'fill-extrusion-color': ['get', 'color'],
+          'fill-extrusion-height': ['get', 'height'],
+          'fill-extrusion-base': 0,
+          'fill-extrusion-opacity': 0.92
+        }
+      });
+
+      // Ground halo circles for containers
+      map.addLayer({
+        id: 'containers-ground-halo',
+        type: 'circle',
+        source: 'containers-source',
+        paint: {
+          'circle-radius': ['get', 'halo_radius'],
+          'circle-color': ['get', 'halo_color'],
+          'circle-opacity': 0.45,
+          'circle-blur': 0.6
+        }
+      });
+
+      // 2. Depot & Disposal Facility Markers
+      setupFacilityLandmarks();
+
+      // 3. Vehicle Route Polylines
+      setupRouteLayers();
+    }
+
+    // --- Build GeoJSON for Containers at Given Day ---
+    function getContainersGeoJSON(day) {
+      const dayIdx = Math.min(27, Math.max(0, Math.floor(day) - 1));
+      const nextDayIdx = Math.min(27, dayIdx + 1);
+      const alpha = day - Math.floor(day);
+
+      const modeKey = (currentMode === 'past') ? 'mode1' : 'mode2';
+      const fillsToday = SIMULATION_DATA[modeKey].daily_fills[dayIdx];
+      const fillsNext = SIMULATION_DATA[modeKey].daily_fills[nextDayIdx];
+
+      const features = SIMULATION_DATA.containers.map((c, i) => {
+        const fill = fillsToday[i] * (1 - alpha) + fillsNext[i] * alpha;
+        
+        // Height formula: 12m base up to 160m at 110%
+        const height = Math.max(10, (fill / 100.0) * 140);
+
+        let color = '#00d26a';
+        let haloColor = 'transparent';
+        let haloRadius = 0;
+
+        if (fill >= 100) {
+          color = '#ff0055';
+          haloColor = '#ff0055';
+          haloRadius = 22;
+        } else if (fill >= 80) {
+          color = '#ef4444';
+          haloColor = 'rgba(239, 68, 68, 0.4)';
+          haloRadius = 14;
+        } else if (fill >= 60) {
+          color = '#f59e0b';
+          haloColor = 'rgba(245, 158, 11, 0.3)';
+          haloRadius = 8;
+        }
+
+        return {
+          type: 'Feature',
+          properties: {
+            idx: i,
+            id: c.id,
+            name: c.name,
+            tier: c.tier,
+            fill: fill.toFixed(1),
+            height: height,
+            color: color,
+            halo_color: haloColor,
+            halo_radius: haloRadius
+          },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [c.polygon]
+          }
+        };
+      });
+
+      return {
+        type: 'FeatureCollection',
+        features: features
+      };
+    }
+
+    // --- Setup Facilities (Depot & Disposal Site) ---
+    function setupFacilityLandmarks() {
+      const depot = SIMULATION_DATA.metadata.depot_coord;
+      const disposal = SIMULATION_DATA.metadata.disposal_coord;
+
+      const depotEl = document.createElement('div');
+      depotEl.innerHTML = '<div style="background:#111827; border:2px solid #00d26a; border-radius:8px; padding:4px 8px; font-size:10px; font-weight:700; color:#fff; box-shadow:0 0 15px rgba(0,210,106,0.6); display:flex; align-items:center; gap:4px;"><span>🏠</span> Central Yard</div>';
+      new maplibregl.Marker({ element: depotEl }).setLngLat(depot).addTo(map);
+
+      const dispEl = document.createElement('div');
+      dispEl.innerHTML = '<div style="background:#111827; border:2px solid #a855f7; border-radius:8px; padding:4px 8px; font-size:10px; font-weight:700; color:#fff; box-shadow:0 0 15px rgba(168,85,247,0.6); display:flex; align-items:center; gap:4px;"><span>🏭</span> Böllinger Höfe Depot</div>';
+      new maplibregl.Marker({ element: dispEl }).setLngLat(disposal).addTo(map);
+    }
+
+    // --- Route Polyline Layer Setup ---
+    function setupRouteLayers() {
+      const modeKey = (currentMode === 'past') ? 'mode1' : 'mode2';
+      const trucks = SIMULATION_DATA[modeKey].trucks;
+
+      const routeFeatures = trucks.map(truck => ({
+        type: 'Feature',
+        properties: {
+          id: truck.id,
+          name: truck.name,
+          color: truck.color
+        },
+        geometry: {
+          type: 'LineString',
+          coordinates: truck.waypoints
+        }
+      }));
+
+      const routeGeoJSON = {
+        type: 'FeatureCollection',
+        features: routeFeatures
+      };
+
+      if (map.getSource('routes-source')) {
+        map.getSource('routes-source').setData(routeGeoJSON);
+      } else {
+        map.addSource('routes-source', {
+          type: 'geojson',
+          data: routeGeoJSON
+        });
+
+        // Route Glow Layer
+        map.addLayer({
+          id: 'routes-glow',
+          type: 'line',
+          source: 'routes-source',
+          paint: {
+            'line-color': ['get', 'color'],
+            'line-width': 8,
+            'line-opacity': 0.35,
+            'line-blur': 4
+          }
+        });
+
+        // Crisp Route Centerline
+        map.addLayer({
+          id: 'routes-line',
+          type: 'line',
+          source: 'routes-source',
+          paint: {
+            'line-color': ['get', 'color'],
+            'line-width': 3.5,
+            'line-opacity': 0.85
+          }
+        });
+      }
+    }
+
+    // --- Update Simulation at Given Day ---
+    function updateSimulationFrame(day) {
+      currentDay = day;
+      document.getElementById('timeline-slider').value = day;
+
+      const dayInt = Math.min(28, Math.max(1, Math.floor(day)));
+      const hourVal = Math.floor((day - Math.floor(day)) * 24);
+      const hourStr = (hourVal < 10 ? '0' : '') + hourVal + ':00';
+      document.getElementById('current-day-display').textContent = `Day ${dayInt} &bull; ${hourStr}`;
+
+      // 1. Update 3D Container Heights & Colors
+      if (map && map.getSource('containers-source')) {
+        map.getSource('containers-source').setData(getContainersGeoJSON(day));
+      }
+
+      // 2. Update Moving Trucks Along Routes
+      updateTruckPositions(day);
+
+      // 3. Update Real-Time Live KPI HUD
+      updateLiveKPIHUD(dayInt);
+
+      // 4. Update Inspector if open
+      if (selectedContainerIdx !== null) {
+        renderInspectorValues(selectedContainerIdx);
+      }
+    }
+
+    // --- Moving Trucks Interpolation ---
+    function updateTruckPositions(day) {
+      const modeKey = (currentMode === 'past') ? 'mode1' : 'mode2';
+      const trucks = SIMULATION_DATA[modeKey].trucks;
+
+      // Clear existing markers
+      activeTruckMarkers.forEach(m => m.remove());
+      activeTruckMarkers = [];
+
+      trucks.forEach(truck => {
+        // Check if truck is active today
+        const dispatchDay = truck.dispatch_day;
+        if (Math.abs(day - dispatchDay) <= 0.95) {
+          const waypoints = truck.waypoints;
+          if (waypoints.length > 1) {
+            const fraction = Math.max(0, Math.min(1, day - (dispatchDay - 0.5)));
+            const ptIdx = Math.floor(fraction * (waypoints.length - 1));
+            const nextIdx = Math.min(waypoints.length - 1, ptIdx + 1);
+            const pt = waypoints[ptIdx];
+            const nextPt = waypoints[nextIdx];
+
+            // Heading calculation
+            const angleDeg = Math.atan2(nextPt[0] - pt[0], nextPt[1] - pt[1]) * 180 / Math.PI;
+
+            const el = document.createElement('div');
+            el.className = `truck-marker-node ${currentMode === 'past' ? 'mode-past' : ''}`;
+            el.style.transform = `rotate(${angleDeg}deg)`;
+            el.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>';
+            el.title = `${truck.name} (${truck.distance_km} km)`;
+
+            const marker = new maplibregl.Marker({ element: el }).setLngLat(pt).addTo(map);
+            activeTruckMarkers.push(marker);
+          }
+        }
+      });
+    }
+
+    // --- Update KPI HUD Counters ---
+    function updateLiveKPIHUD(dayInt) {
+      const modeKey = (currentMode === 'past') ? 'mode1' : 'mode2';
+      const kpis = SIMULATION_DATA[modeKey].daily_kpis[dayInt - 1];
+
+      document.getElementById('kpi-distance').textContent = kpis.distance_km.toFixed(1);
+      document.getElementById('kpi-co2').textContent = kpis.co2_kg.toFixed(1);
+      document.getElementById('kpi-premature').textContent = kpis.premature_visits;
+
+      if (currentMode === 'past') {
+        document.getElementById('label-overflow').textContent = 'Active Overflows';
+        document.getElementById('kpi-overflow').textContent = kpis.active_overflows;
+        document.getElementById('unit-overflow').textContent = 'bins';
+        document.getElementById('kpi-efficiency').textContent = (kpis.distance_km > 0) ? '97.9' : '0.0';
+
+        document.getElementById('badge-distance').textContent = 'Fixed Round Baseline';
+        document.getElementById('badge-distance').className = 'kpi-badge badge-red';
+        document.getElementById('badge-co2').textContent = 'Heavy Fleet Emissions';
+        document.getElementById('badge-co2').className = 'kpi-badge badge-red';
+        document.getElementById('badge-overflow').textContent = (kpis.active_overflows > 0) ? '44% Severe Overfill' : 'Normal';
+        document.getElementById('badge-overflow').className = (kpis.active_overflows > 0) ? 'kpi-badge badge-red' : 'kpi-badge badge-green';
+        document.getElementById('badge-premature').textContent = `${kpis.premature_visits} Premature Stops`;
+        document.getElementById('badge-premature').className = 'kpi-badge badge-red';
+        document.getElementById('badge-efficiency').textContent = 'Low Payload Density';
+        document.getElementById('badge-efficiency').className = 'kpi-badge badge-red';
+
+        document.getElementById('ticker-text').textContent = (kpis.active_overflows > 5) 
+          ? 'CRITICAL ALERT: Multiple unaddressed overflows detected across sector'
+          : 'Historical Monthly Schedule Enforced';
+        document.getElementById('ticker-dot').style.background = (kpis.active_overflows > 5) ? '#ef4444' : '#f59e0b';
+      } else {
+        document.getElementById('label-overflow').textContent = 'Overflows Prevented';
+        document.getElementById('kpi-overflow').textContent = kpis.overflows_prevented;
+        document.getElementById('unit-overflow').textContent = 'prevented';
+        document.getElementById('kpi-efficiency').textContent = (kpis.distance_km > 0) ? '276.7' : '0.0';
+
+        document.getElementById('badge-distance').textContent = '-61.0% vs Baseline';
+        document.getElementById('badge-distance').className = 'kpi-badge badge-green';
+        document.getElementById('badge-co2').textContent = '-112.4 kg Saved';
+        document.getElementById('badge-co2').className = 'kpi-badge badge-green';
+        document.getElementById('badge-overflow').textContent = '100% Zero-Overflow';
+        document.getElementById('badge-overflow').className = 'kpi-badge badge-green';
+        document.getElementById('badge-premature').textContent = '0 Wasted Trips';
+        document.getElementById('badge-premature').className = 'kpi-badge badge-green';
+        document.getElementById('badge-efficiency').textContent = '+182.6% Higher Yield';
+        document.getElementById('badge-efficiency').className = 'kpi-badge badge-green';
+
+        document.getElementById('ticker-text').textContent = 'Predictive IoT Dispatches Nominal &bull; Zero Overflows';
+        document.getElementById('ticker-dot').style.background = '#00d26a';
+      }
+    }
+
+    // --- Mode Switcher ---
+    function setSimulationMode(mode) {
+      currentMode = mode;
+      document.getElementById('btn-mode-past').classList.toggle('active', mode === 'past');
+      document.getElementById('btn-mode-future').classList.toggle('active', mode === 'future');
+
+      playTone(mode === 'future' ? 720 : 380, 'sine', 0.15);
+      setupRouteLayers();
+      updateSimulationFrame(currentDay);
+    }
+
+    // --- Animation Loop ---
+    function animationStep(timestamp) {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const deltaSec = (timestamp - lastTimestamp) / 1000.0;
+      lastTimestamp = timestamp;
+
+      if (isPlaying) {
+        // Advance timeline according to speed (1 day every ~6 seconds at 1x)
+        const dayDelta = (deltaSec / 6.0) * playbackSpeed;
+        currentDay += dayDelta;
+        if (currentDay > 28.0) {
+          currentDay = 1.0;
+        }
+        updateSimulationFrame(currentDay);
+        animFrameId = requestAnimationFrame(animationStep);
+      }
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      document.getElementById('play-icon').innerHTML = isPlaying 
+        ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'
+        : '<path d="M8 5v14l11-7z"/>';
+
+      playTone(isPlaying ? 640 : 440, 'triangle', 0.1);
+
+      if (isPlaying) {
+        lastTimestamp = performance.now();
+        animFrameId = requestAnimationFrame(animationStep);
+      } else {
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+      }
+    }
+
+    function resetSimulation() {
+      if (isPlaying) togglePlay();
+      currentDay = 1.0;
+      updateSimulationFrame(1.0);
+      playTone(400, 'sine', 0.1);
+    }
+
+    function setSpeed(speed) {
+      playbackSpeed = speed;
+      document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === `${speed}x`);
+      });
+      playTone(520, 'sine', 0.08);
+    }
+
+    function onScrub(val) {
+      updateSimulationFrame(parseFloat(val));
+    }
+
+    function jumpToDay(day) {
+      currentDay = day;
+      updateSimulationFrame(day);
+      playTone(600, 'sine', 0.1);
+    }
+
+    // --- Container Inspector Drawer ---
+    function openInspector(idx) {
+      selectedContainerIdx = idx;
+      renderInspectorValues(idx);
+      document.getElementById('inspector-drawer').classList.add('open');
+    }
+
+    function closeInspector() {
+      selectedContainerIdx = null;
+      document.getElementById('inspector-drawer').classList.remove('open');
+    }
+
+    function renderInspectorValues(idx) {
+      const c = SIMULATION_DATA.containers[idx];
+      const dayIdx = Math.min(27, Math.max(0, Math.floor(currentDay) - 1));
+      const modeKey = (currentMode === 'past') ? 'mode1' : 'mode2';
+      const fillVal = SIMULATION_DATA[modeKey].daily_fills[dayIdx][idx];
+
+      document.getElementById('insp-name').textContent = c.name;
+      document.getElementById('insp-id').textContent = `Station POI #${c.id} &bull; Heilbronn`;
+      document.getElementById('insp-fill-text').textContent = `${fillVal.toFixed(1)}%`;
+      document.getElementById('insp-fill-bar').style.width = `${Math.min(100, fillVal)}%`;
+
+      let statusColor = '#00d26a';
+      let statusText = 'Normal';
+      if (fillVal >= 100) {
+        statusColor = '#ff0055';
+        statusText = 'CRITICAL OVERFLOW';
+      } else if (fillVal >= 80) {
+        statusColor = '#ef4444';
+        statusText = 'URGENT DISPATCH';
+      } else if (fillVal >= 60) {
+        statusColor = '#f59e0b';
+        statusText = 'OPPORTUNISTIC';
+      }
+
+      document.getElementById('insp-fill-bar').style.background = statusColor;
+      document.getElementById('insp-status-badge').textContent = statusText;
+      document.getElementById('insp-status-badge').style.color = statusColor;
+      document.getElementById('insp-tier').textContent = c.tier.split(':')[0];
+      document.getElementById('insp-velocity').textContent = `+${c.velocity.toFixed(1)}% / day`;
+
+      const daysLeft = Math.max(0, (100 - fillVal) / Math.max(0.5, c.velocity));
+      document.getElementById('insp-overflow-time').textContent = fillVal >= 100 ? 'OVERFLOWED' : `${daysLeft.toFixed(1)} days`;
+
+      document.getElementById('insp-action').textContent = (currentMode === 'past')
+        ? (fillVal >= 100 ? 'Left Overflowing' : 'Calendar Queue')
+        : (fillVal >= 80 ? 'Gurobi Optimized' : 'Continuous Monitor');
+      document.getElementById('insp-action').style.color = (currentMode === 'past') ? '#ef4444' : '#00d26a';
+    }
+
+    // --- Camera View Presets ---
+    function setCameraView(view) {
+      document.querySelectorAll('.dock-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      playTone(550, 'sine', 0.1);
+
+      if (view === 'overview') {
+        map.flyTo({ center: [9.215, 49.145], zoom: 13.5, pitch: 58, bearing: -18, duration: 1800 });
+      } else if (view === 'follow') {
+        const modeKey = (currentMode === 'past') ? 'mode1' : 'mode2';
+        const truck = SIMULATION_DATA[modeKey].trucks[0];
+        const centerPt = truck.waypoints[Math.floor(truck.waypoints.length / 2)];
+        map.flyTo({ center: centerPt, zoom: 15.2, pitch: 65, bearing: 30, duration: 2000 });
+      } else if (view === 'downtown') {
+        map.flyTo({ center: [9.218, 49.141], zoom: 15.0, pitch: 60, bearing: -45, duration: 1800 });
+      } else if (view === 'depot') {
+        map.flyTo({ center: SIMULATION_DATA.metadata.disposal_coord, zoom: 15.0, pitch: 55, bearing: 15, duration: 1800 });
+      } else if (view === 'topdown') {
+        map.flyTo({ center: [9.215, 49.145], zoom: 13.0, pitch: 0, bearing: 0, duration: 1500 });
+      }
+    }
+
+    // --- Hackathon Jury Walkthrough Modal Logic ---
+    let tourStep = 1;
+    const tourSlides = [
+      {
+        step: 1,
+        title: "Heilbronn Glass Waste Network & IoT Digital Twin",
+        body: "Welcome to the City of Heilbronn PreZero Digital Twin. Our operations research model monitors 109 physical glass container stations mapped via OpenStreetMap and OSRM turn-by-turn road matrices.",
+        metrics: [
+          { num: "109", txt: "Physical Stations" },
+          { num: "28 Days", txt: "Municipal Cycle" },
+          { num: "OSRM Table", txt: "Road Matrix Cache" }
+        ],
+        btn: "Next: The Baseline Failure &rarr;",
+        action: () => {
+          setSimulationMode('past');
+          jumpToDay(1);
+          setCameraView('overview');
+        }
+      },
+      {
+        step: 2,
+        title: "The Past: Rigid Calendar Rounds Cause 44% Overflows",
+        body: "Under traditional fixed-schedule rounds, trucks drive 217 km in rigid sequential order. On Day 8, trucks dump empty air from 7 premature bins (<40% fill). Meanwhile, high-velocity bins in Sector B hit 110% overflow and sit overflowing for weeks!",
+        metrics: [
+          { num: "217 km", txt: "Distance Driven" },
+          { num: "44%", txt: "Overflow Rate" },
+          { num: "7 Trips", txt: "Wasted Prematurely" }
+        ],
+        btn: "Next: PreZero Dynamic AI &rarr;",
+        action: () => {
+          setSimulationMode('past');
+          jumpToDay(14);
+          map.flyTo({ center: [9.218, 49.141], zoom: 14.8, pitch: 60, bearing: -30, duration: 1500 });
+        }
+      },
+      {
+        step: 3,
+        title: "The Future: Predictive AI Dispatch & OSRM Routing",
+        body: "PreZero's Dynamic AI dispatches only when containers cross 80% (plus opportunistic neighbors). Gurobi MILP solves the asymmetric CVRP across the road network, dispatching compact multi-vehicle sweeps that eliminate 100% of overflows.",
+        metrics: [
+          { num: "84.7 km", txt: "Optimized Distance" },
+          { num: "0", txt: "Premature Stops" },
+          { num: "100%", txt: "Zero-Overflow Rate" }
+        ],
+        btn: "Next: Executive Business Case &rarr;",
+        action: () => {
+          setSimulationMode('future');
+          jumpToDay(6);
+          setCameraView('follow');
+        }
+      },
+      {
+        step: 4,
+        title: "The Proof: -61% CO2, -61% Fuel, +182% Payload Density",
+        body: "Direct comparison on the identical demand scenario proves dramatic municipal savings: 132.3 km eliminated (-61%), 112.4 kg CO2 abated (-61%), and collection efficiency leaps from 97.9 kg/km to 276.7 kg/km (+182.6%).",
+        metrics: [
+          { num: "-61.0%", txt: "CO2 Abatement" },
+          { num: "-132.3 km", txt: "Distance Cut" },
+          { num: "+182.6%", txt: "Efficiency Gain" }
+        ],
+        btn: "Finish Walkthrough & Explore 3D Twin",
+        action: () => {
+          setSimulationMode('future');
+          jumpToDay(28);
+          setCameraView('overview');
+        }
+      }
+    ];
+
+    function startPresentationTour() {
+      tourStep = 1;
+      renderTourSlide(1);
+      document.getElementById('tour-modal').classList.add('active');
+      playTone(650, 'sine', 0.15);
+    }
+
+    function closeTour() {
+      document.getElementById('tour-modal').classList.remove('active');
+    }
+
+    function nextTourStep() {
+      tourStep++;
+      if (tourStep > tourSlides.length) {
+        closeTour();
+      } else {
+        renderTourSlide(tourStep);
+        playTone(700, 'sine', 0.1);
+      }
+    }
+
+    function renderTourSlide(step) {
+      const slide = tourSlides[step - 1];
+      document.getElementById('tour-step-badge').textContent = `Hackathon Jury Walkthrough &bull; Step ${slide.step} of ${tourSlides.length}`;
+      document.getElementById('tour-title').textContent = slide.title;
+      document.getElementById('tour-body').textContent = slide.body;
+      document.getElementById('tour-next-btn').innerHTML = slide.btn;
+
+      const mContainer = document.getElementById('tour-metrics');
+      mContainer.innerHTML = slide.metrics.map(m => `
+        <div class="tour-metric-box">
+          <div class="num">${m.num}</div>
+          <div class="txt">${m.txt}</div>
+        </div>
+      `).join('');
+
+      if (slide.action) slide.action();
+    }
+
+    // --- Keyboard Shortcuts ---
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === 'KeyR') {
+        resetSimulation();
+      } else if (e.code === 'Digit1') {
+        setSpeed(1);
+      } else if (e.code === 'Digit2') {
+        setSpeed(2);
+      } else if (e.code === 'Digit5') {
+        setSpeed(5);
+      } else if (e.code === 'KeyM') {
+        setSimulationMode(currentMode === 'future' ? 'past' : 'future');
+      }
+    });
+
+    // Boot Map
+    window.addEventListener('DOMContentLoaded', initMap);
+  </script>
+</body>
+</html>
