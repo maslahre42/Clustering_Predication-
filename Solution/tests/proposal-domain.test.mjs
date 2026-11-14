@@ -85,6 +85,34 @@ test('a proposal can be handed to the manual collection plan in its route order'
   assert.deepEqual(model.plan.stops.value.map(s => s.locationId), ['B', 'D', 'A'])
 })
 
+test('accepting a full proposal preserves collection date, forecasts, settings, trucks and loads', t => {
+  const { model, asOf } = workspace(t)
+  const proposal = sampleProposal()
+  assert.equal(model.plan.applyProposal(proposal), true)
+  assert.equal(asOf.value, '2026-08-14')
+  assert.equal(model.plan.collectionDate.value, '2026-08-17')
+  assert.equal(model.plan.acceptedProposal.value.plan.routes[0].trips.length, 2)
+  const csv = proposalCsv(model.plan.acceptedProposal.value)
+  assert.match(csv, /"2026-08-17","1","2","3","D"/)
+  assert.match(csv, /"90.0","0.75"/)
+  assert.deepEqual(model.plan.acceptedProposal.value.settings, proposal.settings)
+  proposal.plan.routes[0].trips.length = 0
+  assert.equal(model.plan.acceptedProposal.value.plan.routes[0].trips.length, 2)
+  model.plan.editManually()
+  assert.equal(model.plan.acceptedProposal.value, null)
+  assert.equal(model.plan.collectionDate.value, '2026-08-17')
+  asOf.value = '2026-08-13'
+  assert.equal(model.plan.collectionDate.value, '2026-08-13')
+  assert.equal(model.plan.selectedKeys.value.length, 0)
+})
+
+test('accepting a proposal for another historical cutoff is rejected', t => {
+  const { model } = workspace(t)
+  const proposal = sampleProposal(); proposal.asOf = '2026-08-13'
+  assert.equal(model.plan.applyProposal(proposal), false)
+  assert.equal(model.plan.acceptedProposal.value, null)
+})
+
 test('unknown bins in a proposal are ignored and changing the date clears the applied plan', t => {
   const { model, asOf } = workspace(t)
   model.plan.applyProposal(['A:white', 'ZZ:white', 'B:blue'], ['ZZ', 'A'])

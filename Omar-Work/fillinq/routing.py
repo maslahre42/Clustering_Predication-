@@ -16,7 +16,7 @@ One planning day:
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
@@ -34,6 +34,7 @@ class Plan:
     dropped_optional: list  # site ids not visited (optional)
     dropped_mandatory: list  # site ids that could not be scheduled (infeasible)
     kpis: dict
+    reasons: dict = field(default_factory=dict)
 
 
 def site_demand(bins: pd.DataFrame, cfg: OpsConfig):
@@ -51,9 +52,10 @@ def _solve(stops: pd.DataFrame, cfg: OpsConfig, V: int, time_limit_s: int) -> Pl
     if n == 0:
         return Plan([], [], [], empty_kpis)
 
-    cap_v, cap_w = int(round(cfg.truck_volume_l)), int(round(cfg.truck_payload_kg))
-    vol = np.minimum(stops["vol_l"].to_numpy(), cap_v).round().astype(int)
-    wgt = np.minimum(stops["kg"].to_numpy(), cap_w).round().astype(int)
+    cap_v, cap_w = int(math.floor(cfg.truck_volume_l)), int(math.floor(cfg.truck_payload_kg))
+    # Round demand upward and capacity downward: never understate load feasibility.
+    vol = np.ceil(stops["vol_l"].to_numpy()).astype(int)
+    wgt = np.ceil(stops["kg"].to_numpy()).astype(int)
 
     # number of reload (disposal) copies we allow
     trips_needed = max(math.ceil(vol.sum() / cap_v), math.ceil(wgt.sum() / cap_w), 1)
@@ -80,7 +82,7 @@ def _solve(stops: pd.DataFrame, cfg: OpsConfig, V: int, time_limit_s: int) -> Pl
 
     ret_s = travel_s[N - 1, 0]                       # disposal -> depot
     shift_s = int(cfg.shift_hours * 3600 - cfg.unload_min * 60 - ret_s)
-    if shift_s < 600:
+    if shift_s < 0:
         raise ValueError("Shift too short for the distance depot -> disposal -> depot.")
 
     manager = pywrapcp.RoutingIndexManager(N, V, [0] * V, [N - 1] * V)
@@ -126,7 +128,7 @@ def _solve(stops: pd.DataFrame, cfg: OpsConfig, V: int, time_limit_s: int) -> Pl
     for i in range(n):
         node = 1 + i
         if must[i]:
-            pen = MUST_PENALTY
+            pen = int(MUST_PENALTY * (1 + float(np.clip(value[i], 0, 1))))
         else:
             pen = int(service[node] + max(value[i], 0.0) * cfg.opt_value_min * 60)
         routing.AddDisjunction([manager.NodeToIndex(node)], pen)
@@ -139,7 +141,9 @@ def _solve(stops: pd.DataFrame, cfg: OpsConfig, V: int, time_limit_s: int) -> Pl
     sp.time_limit.FromSeconds(max(int(time_limit_s), 1))
     sol = routing.SolveWithParameters(sp)
     if sol is None:
-        return Plan([], list(stops["site"]), [], empty_kpis)
+        return Plan([], stops.loc[~stops["must"].astype(bool), "site"].tolist(),
+                    stops.loc[stops["must"].astype(bool), "site"].tolist(), empty_kpis,
+                    {site:'solver_no_solution' for site in stops['site']})
 
     sites = stops["site"].tolist()
     routes, visited = [], set()
@@ -210,6 +214,22 @@ def plan_routes(stops: pd.DataFrame, cfg: OpsConfig, time_limit_s: int = 3, seed
     stops = stops.reset_index(drop=True)
     if len(stops) == 0:
         return Plan([], [], [], dict(trucks=0, trips=0, stops=0, bins=0, km=0.0, hours=0.0, volume_m3=0.0, weight_t=0.0))
+    from .geo import haversine_km
+    solo_drive = (3 * cfg.fixed_travel_min if cfg.fixed_travel_min > 0 else
+        (haversine_km(cfg.depot_lat,cfg.depot_lon,stops['lat'],stops['lon']) +
+         haversine_km(stops['lat'],stops['lon'],cfg.disposal_lat,cfg.disposal_lon) +
+         haversine_km(cfg.disposal_lat,cfg.disposal_lon,cfg.depot_lat,cfg.depot_lon)) * cfg.detour_factor / cfg.avg_speed_kph * 60)
+    impossible = ((stops["vol_l"] > cfg.truck_volume_l) | (stops["kg"] > cfg.truck_payload_kg) |
+        (solo_drive + cfg.service_min_per_stop + stops['n_bins'] * cfg.service_min_per_bin + cfg.unload_min > cfg.shift_hours*60))
+    if impossible.any():
+        eligible = stops.loc[~impossible].reset_index(drop=True)
+        result = plan_routes(eligible, cfg, time_limit_s, seed)
+        rejected = stops.loc[impossible]
+        result.dropped_mandatory.extend(rejected.loc[rejected["must"].astype(bool), "site"].tolist())
+        result.dropped_optional.extend(rejected.loc[~rejected["must"].astype(bool), "site"].tolist())
+        for row in rejected.itertuples():
+            result.reasons[row.site] = ('exceeds_truck_capacity' if row.kg > cfg.truck_payload_kg or row.vol_l > cfg.truck_volume_l else 'exceeds_shift')
+        return result
     must = stops[stops["must"].astype(bool)]
     lb = _lower_bound_trucks(must if len(must) else stops, cfg)
     tries = []

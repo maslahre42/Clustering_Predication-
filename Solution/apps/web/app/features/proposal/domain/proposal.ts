@@ -17,6 +17,7 @@ export const REASON_LABELS: Record<UnservedReason, string> = {
   fleet_limit: 'All available trucks are full',
   optional_not_scheduled: 'Optional: no spare time',
   missing_coordinates: 'No coordinates for this site',
+  solver_no_solution: 'The solver found no feasible route within its budget',
 }
 const COLLECTED: readonly BinDecision[] = ['due', 'neighbour', 'optional']
 const isCollected = (bin: ProposalBin) => COLLECTED.includes(bin.decision)

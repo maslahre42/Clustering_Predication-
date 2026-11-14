@@ -2,11 +2,12 @@
 
 # Builds and tests share generated files, so keep targets serial even with make -j.
 .NOTPARALLEL:
-.PHONY: help setup run dev api web test test-api test-web typecheck build build-api build-web check smoke clean compose deploy
+.PHONY: help setup setup-python test-python run dev api web test test-api test-web typecheck build build-api build-web check smoke clean compose deploy
 
 DOTNET ?= dotnet
 PNPM ?= pnpm
 PYTHON ?= python3
+PYTHON_ENGINE ?= .venv/bin/python
 ASPIRE ?= aspire
 CONFIGURATION ?= Debug
 ENVIRONMENT ?= Production
@@ -19,9 +20,16 @@ TEST_DLL := tests/GarbageCollector.TestRunner/bin/$(CONFIGURATION)/net10.0/Garba
 help: ## Show available commands (default)
 	@awk 'BEGIN { print "Garbage Collector — run from the repository root\n" } /^[a-zA-Z][a-zA-Z0-9_-]*:.*## / { split($$0, parts, ":.*## "); printf "  make %-14s %s\n", parts[1], parts[2] }' Makefile
 
-setup: ## Restore .NET packages and install pinned frontend dependencies
+setup: setup-python ## Install Python engine, restore .NET packages and install pinned frontend dependencies
 	"$(DOTNET)" restore "$(SOLUTION)" --disable-parallel
 	"$(PNPM)" --dir apps/web install --frozen-lockfile
+
+setup-python: ## Install Omar's forecast, OR-Tools and simulation dependencies (Python 3.12+ recommended)
+	"$(PYTHON)" -m venv .venv
+	"$(PYTHON_ENGINE)" -m pip install -r forecast_service/requirements.txt pytest
+
+test-python: ## Test Omar's engine and the app bridge (setup-python first)
+	"$(PYTHON_ENGINE)" -m pytest -q forecast_service/tests ../Omar-Work/tests
 
 run: ## Start API, frontend and dashboard with Aspire; Ctrl+C stops them
 	"$(DOTNET)" run --project apps/apphost
@@ -34,7 +42,7 @@ api: ## Start only the API (use a separate terminal for make web)
 web: ## Start only the Nuxt development server
 	"$(PNPM)" --dir apps/web dev
 
-test: test-api test-web ## Run API, Aspire and frontend tests
+test: test-api test-web test-python ## Run API, Aspire, frontend and Python engine tests
 
 test-api: ## Build and run API + Aspire tests without VSTest sockets (setup first)
 	"$(DOTNET)" build "$(TEST_RUNNER)" --configuration "$(CONFIGURATION)" --no-restore -p:UseSharedCompilation=false -nodeReuse:false -m:1

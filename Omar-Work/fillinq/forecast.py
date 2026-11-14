@@ -136,16 +136,17 @@ class RateModel:
         m = mu + ld
         L = np.log(100.0)
         mean = np.exp(m + s ** 2 / 2) * norm.cdf((L - m - s ** 2) / s) + 100.0 * norm.sf((L - m) / s)
+        mean = np.where(days <= 0, 0.0, mean)
         out = pd.DataFrame({"container": np.asarray(containers), "days": days, "mean_fill": mean})
         for T in thresholds:
-            out[f"p_ge_{T}"] = norm.sf((np.log(T) - m) / s)
+            out[f"p_ge_{T}"] = np.where(days <= 0, 0.0, norm.sf((np.log(T) - m) / s))
         return out
 
     def fill_quantile(self, containers, last_empty, target, q=0.5):
         """Quantile q of the fill level (capped at 100) when collected on `target`."""
         mu, s, days = self._mu_and_s(containers, last_empty, target)
         z = norm.ppf(q)
-        return np.minimum(100.0, np.exp(mu + np.log(np.maximum(days, 0.5)) + s * z))
+        return np.where(days <= 0, 0.0, np.minimum(100.0, np.exp(mu + np.log(np.maximum(days, 0.5)) + s * z)))
 
     def days_to_full(self, containers, last_empty, q=0.5):
         """Days after `last_empty` until the container reaches 100% (quantile q of time)."""

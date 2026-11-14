@@ -22,9 +22,36 @@ test('route table lists stops per truck and load with weights and urgency', asyn
 })
 
 test('route table says so when nothing needs collecting', async t => {
-  const proposal = sampleProposal(); proposal.plan.routes = []
+  const proposal = sampleProposal(); proposal.plan.routes = []; proposal.plan.unserved = []; proposal.stops = []
   const m = mount(t, await component('ProposalRoutesTable'), { proposal }, undefined, await controls())
   assert.match(m.text(), /No truck is needed/)
+})
+
+test('an infeasible route is not described as no collection needed', async t => {
+  const proposal = sampleProposal(); proposal.plan.routes = []
+  const m = mount(t, await component('ProposalRoutesTable'), { proposal }, undefined, await controls())
+  assert.match(m.text(), /No feasible truck route/)
+  assert.doesNotMatch(m.text(), /No truck is needed/)
+})
+
+test('forecast chart preserves overfull as an observed category and labels its uncertainty band', async t => {
+  const forecast = { lastEmptied: '2026-08-14', medianDaysToFull: 20, note: 'Not a service guarantee.',
+    history: [{ date: '2026-08-14', fill: null, isOverfull: true }],
+    points: [{ date:'2026-08-17', expectedFill:20, lower:5,upper:50,risk:.1 },{date:'2026-09-17',expectedFill:90,lower:60,upper:100,risk:.7}] }
+  const m=mount(t,await component('ForecastExplorer'),{forecast})
+  assert.match(m.text(),/Overfull/);assert.doesNotMatch(m.text(),/110%/)
+  assert.match(m.text(),/10–90%/);assert.ok(m.find('svg'))
+})
+
+test('simulation comparison shows service, missed collections, cost and simulation qualifications', async t => {
+  const scenario={name:'historical',label:'Historical',site_visits:12,bin_collections:30,truckDays:2,hours:8,
+    mean_fill_at_collection_pct:60,share_collections_below_40pct:.2,overflow_bin_days:10,overflow_events:2,missedMandatory:3,
+    daily:[{date:'2026-08-10',stops:12}]}
+  const result={start:'2026-08-10',end:'2026-08-10',knownBins:100,trainingThrough:'2026-08-09',seed:7,effectiveSolverTimeSeconds:1,
+    scenarios:[scenario,{...scenario,name:'dynamic',label:'Dynamic',site_visits:10}],frontier:[],assumptions:['Shared model family.']}
+  const m=mount(t,await component('SimulationResults'),{result})
+  assert.match(m.text(),/not measured savings/);assert.match(m.text(),/Missed mandatory stop-days/)
+  assert.match(m.text(),/selection-only|Selection-only/);assert.ok(m.find('svg'))
 })
 
 test('settings form shows source labels, reports edits and blocks an invalid apply', async t => {
@@ -41,7 +68,7 @@ test('settings form shows source labels, reports edits and blocks an invalid app
   payload.props.onInput({ target: { value: '8' } }); await nextTick()
   assert.deepEqual(edits[0], ['truckPayloadT', '8'])
   m.all().find(n => n.tag === 'input' && n.props.type === 'checkbox').props.onChange({ target: { checked: true } })
-  assert.deepEqual(edits[1], ['workSaturday', true])
+  assert.deepEqual(edits[1], ['workMonday', true])
   const button = (root, label) => root.all().find(n => n.tag === 'button' && n.children.some(c => c.text?.includes(label)) || n.tag === 'button' && n.text?.includes(label))
   assert.equal(button(m, 'Apply').props.disabled, false)
   button(m, 'Apply').props.onClick(); button(m, 'Reset').props.onClick()

@@ -4,7 +4,7 @@ import type { WorkspaceView } from '~/features/workspace/model';
 const { view } = useWorkspaceNavigation();
 const sections: { id: Exclude<WorkspaceView, 'details'>; label: string }[] = [
   { id: 'planning', label: 'Route planner & map' }, { id: 'history', label: 'Bin inventory & history' },
-  { id: 'analytics', label: 'Historical analytics' }, { id: 'forecasts', label: 'Forecast & route proposal' },
+  { id: 'analytics', label: 'Historical analytics' }, { id: 'forecasts', label: 'Forecast, routes & simulation' },
   { id: 'manifest', label: 'Collection plan' }, { id: 'status', label: 'System status' },
 ];
 </script>

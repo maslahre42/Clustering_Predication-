@@ -18,6 +18,7 @@ Use the matching row, then read only the listed files and their direct dependenc
 | Shared sort behavior | `shared/state/createTableSort.ts`, `shared/domain/table.ts`, `shared/ui/controls/UiSortableHeader.vue` | `table-state.test.mjs`, `table-sorting.test.mjs` |
 | Analytics tables | `features/analytics/state/`, `config/tableColumns.ts`, `components/*Table.vue` | `table-state.test.mjs`, `table-components.test.mjs` |
 | Forecast, selection, routes (proposal) | `features/proposal/` (`domain/`, `state/`, `components/`), `shared/api/contracts/proposal.ts`; backend `Features/Proposal/` (see below) | `proposal-*.test.mjs`; API `Proposal/*Tests.cs` |
+| Omar Python engine, forecast curves, simulation | `forecast_service/worker.py`, `../Omar-Work/fillinq/`; backend `Features/Proposal/PythonForecastEngine.cs`, `ProposalEndpoints.cs`; web `features/proposal/components/ForecastAnalysis.vue`, `ForecastExplorer.vue`, `SimulationResults.vue`, `state/createAnalysisState.ts`, `shared/api/contracts/simulation.ts` | `forecast_service/tests/`, `../Omar-Work/tests/`, `proposal-analysis.test.mjs`, `proposal-view.test.mjs`, API `ProposalEndpointTests.cs`, `SimulationRulesTests.cs` |
 | Analytics metrics and loading | `features/analytics/composables/useHistoricalAnalytics.ts`, `components/`; backend `Features/Analytics/` | API `Analytics/CollectionAnalyticsTests.cs` |
 | Bin identity, joins, location details | `features/inventory/domain/catalog.ts`, `types.ts`, `components/` | `workspace.test.mjs`, `coordinates.test.mjs` |
 | Fill labels, material icons | `shared/domain/fill.ts`, `shared/ui/HistoricalFillMeter.vue`, `GlassFractionBadge.vue`, `icons.ts`, `styles.css` | `historical-fill-states.test.mjs`; API `Domain/RecordedFillTests.cs` |
@@ -40,13 +41,14 @@ Use the matching row, then read only the listed files and their direct dependenc
 
 ## Proposal backend ownership
 
-- `ProposalEndpoints.cs`: `GET /api/proposal?asOf=…` plus optional operating numbers; validation responses.
+- `ProposalEndpoints.cs`: proposal, per-bin forecast and simulation endpoints, query binding and validation.
+- `PythonForecastEngine.cs`: request-local JSON/stdin bridge to Omar's actual Python package, cancellation and time limit.
 - `OperationsSettings.cs`: every operating number with its default, range checks, request overrides, collection calendar.
 - `FillingCycles.cs`: visits → filling cycles (a visit empties the bin; full/overfull are lower bounds).
-- `FillRateModel.cs`: fill rate per bin with pooling per glass type; expected fill and overflow probability.
+- `FillRateModel.cs`: tested C# reference model. Public forecasts use Omar's seasonal Python model through `forecast_service/worker.py`.
 - `CollectionPolicy.cs`: one decision per bin (due, neighbour, optional, skipped, no forecast) and site stops with weight/volume.
-- `RoutePlanner.cs`: trucks, loads, shift, unloading trips, unserved stops with reasons.
-- `CollectionProposal.cs`: composes the above for the first collection day after the cutoff. See [method and evidence](docs/architecture/proposal.md).
+- `RoutePlanner.cs`: tested C# reference heuristic. Public routing uses Omar's repaired OR-Tools engine.
+- `CollectionProposal.cs`: C# reference composition. See [live Python integration and simulation](docs/architecture/proposal.md).
 
 ## Checks and runtime
 

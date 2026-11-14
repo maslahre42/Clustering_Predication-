@@ -65,7 +65,7 @@ class Twin:
     def overflow_days(self, c, t, le, k):
         need = self.CR[c, le[c]] + 100.0 / self.mult[c, k[c]]
         cross = np.array([np.searchsorted(self.CR[ci], nd, side="left") for ci, nd in zip(c, need)])
-        return np.maximum(0, t - cross)
+        return np.maximum(0, t - np.maximum(cross, self.day_index[self.start]))
 
 
 def _kpis(rec: dict, n_days: int) -> dict:
@@ -132,7 +132,12 @@ def run_baseline(tw: Twin, locs=None, cfg: OpsConfig | None = None, route=False,
         row = {"date": date, "stops": int(grp["site"].nunique()), "bins": int(len(idx))}
         if route:
             plan = plan_routes(_stop_table(tw, idx, f, locs, cfg), cfg, time_limit_s=time_limit)
-            row.update(km=plan.kpis["km"], hours=plan.kpis["hours"], trucks=plan.kpis["trucks"])
+            visited = {s for r in plan.routes for s, _, _ in r["stops"]}
+            served = grp["site"].isin(visited).to_numpy()
+            idx = idx[served]
+            rec["stops"] -= row["stops"] - len(visited)
+            row.update(stops=len(visited), bins=len(idx), km=plan.kpis["km"], hours=plan.kpis["hours"], trucks=plan.kpis["trucks"],
+                       dropped_mandatory=len(plan.dropped_mandatory))
         daily.append(row)
         _collect(tw, idx, t, le, k, rec)
     _close_open_cycles(tw, le, k, rec, tw.day_index[tw.end])

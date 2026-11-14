@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { ProposalSettings } from '~/shared/api/contracts/proposal';
-import { SETTING_GROUPS, type FlagSettingKey, type NumericSettingKey } from '~/features/proposal/domain/settings';
+import { SETTING_GROUPS, WORKING_DAYS, type FlagSettingKey, type NumericSettingKey } from '~/features/proposal/domain/settings';
 
 const props = defineProps<{
   settings: ProposalSettings;
@@ -38,9 +38,8 @@ const hasErrors = () => Object.keys(props.errors).length > 0;
     </fieldset>
     <fieldset>
       <legend>Collection days</legend>
-      <p>Monday to Friday (PreZero).</p>
-      <UiCheckbox :model-value="settings.workSaturday" label="Also collect on Saturday" @update:model-value="emit('flag', 'workSaturday', $event)" />
-      <UiCheckbox :model-value="settings.workSunday" label="Also collect on Sunday" @update:model-value="emit('flag', 'workSunday', $event)" />
+      <p>Defaults: Monday to Friday (PreZero). Adjust the service calendar for this scenario.</p>
+      <UiCheckbox v-for="day in WORKING_DAYS" :key="day.key" :model-value="settings[day.key]" :label="day.label" @update:model-value="emit('flag', day.key, $event)" />
     </fieldset>
     <div class="proposal-settings-actions">
       <UiButton label="Apply and recalculate" :disabled="hasErrors() || !dirty" @click="finish('apply')" />

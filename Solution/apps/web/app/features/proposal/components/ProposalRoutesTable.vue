@@ -13,7 +13,7 @@ const trucks = computed(() => props.proposal.plan.routes.map(route => ({
 </script>
 <template>
   <div class="proposal-routes">
-    <p v-if="!trucks.length" class="proposal-empty">No truck is needed on {{ proposal.planDate }} with these settings.</p>
+    <p v-if="!trucks.length" class="proposal-empty">{{ proposal.plan.unserved.length ? 'No feasible truck route was scheduled. Review the unserved reasons and settings.' : `No truck is needed on ${proposal.planDate} with these settings.` }}</p>
     <template v-else>
       <ul class="proposal-trucks" aria-label="Trucks in this proposal">
         <li v-for="truck in trucks" :key="truck.truck">

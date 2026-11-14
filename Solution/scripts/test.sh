@@ -9,3 +9,4 @@ dotnet restore tests/GarbageCollector.TestRunner/GarbageCollector.TestRunner.csp
 dotnet build tests/GarbageCollector.TestRunner/GarbageCollector.TestRunner.csproj --no-restore -p:UseSharedCompilation=false -nodeReuse:false -m:1
 dotnet tests/GarbageCollector.TestRunner/bin/Debug/net10.0/GarbageCollector.TestRunner.dll
 pnpm --dir apps/web test
+.venv/bin/python -m pytest -q forecast_service/tests ../Omar-Work/tests

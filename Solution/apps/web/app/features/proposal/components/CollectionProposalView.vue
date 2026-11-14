@@ -25,7 +25,7 @@ const unservedByReason = computed(() => {
 function exportSheet() { if (data.value) downloadCsv(proposalCsv(data.value), `route-proposal-${data.value.planDate}.csv`); }
 function useAsPlan() {
   if (!data.value) return;
-  plan.applyProposal(servedBinKeys(data.value), servedOrder(data.value));
+  if (!plan.applyProposal(data.value)) return;
   view.value = 'manifest';
 }
 </script>
@@ -35,6 +35,7 @@ function useAsPlan() {
       <div>
         <p class="eyebrow">FORECAST & ROUTE PROPOSAL</p>
         <h1>What to empty next, and with how many trucks.</h1>
+        <nav class="proposal-actions" aria-label="Forecast and simulation sections"><a href="#route-proposal">Routes</a><a href="#forecast-explorer">Forecast curves</a><a href="#simulation">Simulation & backtest</a></nav>
         <p v-if="ready && data">Uses collection records through {{ asOf }} only. Proposal for the next collection day: <strong>{{ data.planDate }}</strong>.</p>
         <p v-else>Uses collection records through {{ asOf }} only.</p>
       </div>
@@ -53,7 +54,7 @@ function useAsPlan() {
         <UiInfoCard v-if="summary.unservedMandatory" headline="Some urgent stops do not fit" color="danger" role="alert">
           <p>{{ summary.unservedMandatory }} stops that must be emptied are not in the plan. Add trucks or lengthen the shift below.</p>
         </UiInfoCard>
-        <UiCard class="analytics-panel">
+        <UiCard id="route-proposal" class="analytics-panel">
           <h2>Proposed routes for {{ data.planDate }}</h2>
           <p>A truck unloads when its next stop would exceed the load limit and then continues. Fill levels and weights are forecasts, not measurements.</p>
           <ProposalRoutesTable :proposal="data" />
@@ -74,7 +75,9 @@ function useAsPlan() {
         </UiCard>
         <UiCard class="analytics-panel proposal-model">
           <h2>How the forecast works</h2>
-          <p>Each visit empties the container, so the fill recorded at a visit is what accumulated since the previous one. From {{ data.model.cycles.toLocaleString('en-US') }} such filling periods ({{ data.model.censoredCycles.toLocaleString('en-US') }} ended full and count as “at least this fast”) the model learns a fill rate per container, pulled towards the average of its glass type when a container has few visits.</p>
+          <p>Omar’s Python model learns from {{ data.model.cycles.toLocaleString('en-US') }} filling periods ({{ data.model.censoredCycles.toLocaleString('en-US') }} censored). Container rates borrow from glass-type averages, with month and school-vacation effects. Engine: {{ data.model.engine || 'C# baseline' }}.</p>
+          <p v-if="data.model.vacationMultiplier != null">Fitted school-vacation multiplier: {{ data.model.vacationMultiplier.toFixed(2) }}. This is a model association, not proof of causality.</p>
+          <details v-if="data.model.seasonality?.length"><summary>Fitted monthly rate multipliers</summary><table><thead><tr><th>Month</th><th>Multiplier</th></tr></thead><tbody><tr v-for="row in data.model.seasonality" :key="row.month"><td>{{ row.month }}</td><td>{{ row.multiplier.toFixed(2) }}</td></tr></tbody></table></details>
           <dl>
             <template v-for="(rate, material) in data.model.materialRatePercentPerDay" :key="material">
               <dt><GlassFractionBadge :material="String(material)" /></dt><dd>typically {{ rate.toFixed(1) }} points of fill per day</dd>
@@ -85,5 +88,6 @@ function useAsPlan() {
         </UiCard>
       </template>
     </template>
+    <ForecastAnalysis v-if="ready && data && data.bins.length" :as-of="asOf" :settings="stored" :proposal="data" />
   </div>
 </template>

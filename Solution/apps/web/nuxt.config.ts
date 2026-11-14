@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  buildDir: process.env.NUXT_BUILD_DIR || '.nuxt',
   compatibilityDate: '2026-11-13',
   components: [
     { path: '~/components', pathPrefix: false },

@@ -5,5 +5,7 @@ export const API_ROUTES = {
   locations: '/api/locations',
   analytics: '/api/analytics',
   proposal: '/api/proposal',
+  forecast: '/api/forecast',
+  simulation: '/api/simulation',
   health: '/api/health',
 } as const

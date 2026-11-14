@@ -2,7 +2,7 @@
 import { coordinateSourceLabel } from '~/shared/domain/coordinates';
 const { asOf } = useWorkspaceData();
 const { view } = useWorkspaceNavigation();
-const { stops, clearPlan, routePoints, depot } = useCollectionPlan();
+const { stops, clearPlan, routePoints, depot, collectionDate, acceptedProposal, editManually } = useCollectionPlan();
 const printedAt = useState<string | null>('manifest-print-timestamp', () => null);
 </script>
 <template>
@@ -11,14 +11,23 @@ const printedAt = useState<string | null>('manifest-print-timestamp', () => null
       <div>
         <p class="eyebrow">COLLECTION PLANS / DRAFT</p>
         <h1>Collection plan manifest</h1>
-        <p>Plan for {{ asOf }} · source records through this date · depot start and return</p>
+        <p>Plan for {{ collectionDate }} · history through {{ asOf }} · depot start and return</p>
       </div>
       <UiButton label="Back to planner" mode="outline" @click="view = 'planning'" />
     </header>
     <p v-if="printedAt" class="manifest-print-stamp print-only">Historical cutoff: {{ asOf }} · Generated: {{ printedAt }}</p>
-    <PlanMetrics />
+    <template v-if="acceptedProposal">
+      <UiInfoCard headline="Accepted forecast-driven plan">
+        <p>Collection date {{ collectionDate }}. Forecasts, operating settings, trucks and unloading loads are preserved. History remains through {{ asOf }}.</p>
+      </UiInfoCard>
+      <ProposalRoutesTable :proposal="acceptedProposal" />
+      <ExportActions />
+      <UiButton label="Convert to editable manual draft" mode="outline" @click="editManually" />
+      <p>Manual editing removes the solver's truck/load assignments and requires a new feasibility check.</p>
+    </template>
+    <PlanMetrics v-else />
     <WorkspaceState v-if="!stops.length" state="empty" title="Your collection plan is empty" description="Choose individual bins in the route planner. Bins at the same location will become a single stop." action="Choose collection bins" @action="view = 'planning'" />
-    <div v-else class="manifest-layout">
+    <div v-else-if="!acceptedProposal" class="manifest-layout">
       <div>
         <div class="section-heading">
           <h2>Grouped stop sequence</h2>

@@ -20,6 +20,17 @@ public class RoutePlannerTests
     }
 
     [Fact]
+    public void LimitedFleetPreservesHigherMandatoryRiskEvenWhenItNeedsMoreService()
+    {
+        var settings = Fixed with { MaxVehicles = 1, ShiftHours = 1 };
+        var high = Stop("HIGH", 1050, bins: 3, risk: 0.99);
+        var low = Stop("LOW", 350, bins: 1, risk: 0.71);
+        var plan = RoutePlanner.Plan([high, low], settings);
+        Assert.Equal("HIGH", Assert.Single(Assert.Single(plan.Routes).Trips).Stops.Single());
+        Assert.Equal("LOW", Assert.Single(plan.Unserved).LocationId);
+    }
+
+    [Fact]
     public void OneContainerTakesDriveServiceFinalUnloadAndReturn()
     {
         var plan = RoutePlanner.Plan([Stop("A", 800)], Fixed);

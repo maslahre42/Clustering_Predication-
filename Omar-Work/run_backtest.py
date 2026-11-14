@@ -62,7 +62,7 @@ def _routed(args):
 def _write_meta(synthetic):
     st = load_settings().to_dict()
     st["working_weekdays"] = list(st["working_weekdays"])
-    json.dump({"synthetic_locations": bool(synthetic), "start": START, "end": END,
+    json.dump({"engine_revision": 2, "synthetic_locations": bool(synthetic), "start": START, "end": END,
                "planner_train_end": PLANNER_TRAIN_END, "scenarios": SCENARIOS, "settings": st},
               open(os.path.join(OUT, "meta.json"), "w"), indent=2)
 

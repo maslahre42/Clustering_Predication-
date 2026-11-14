@@ -16,6 +16,8 @@ const components = {
   MaterialAnalyticsTable: 'features/analytics/components/MaterialAnalyticsTable.vue',
   ProposalRoutesTable: 'features/proposal/components/ProposalRoutesTable.vue',
   ProposalSettingsForm: 'features/proposal/components/ProposalSettingsForm.vue',
+  ForecastExplorer: 'features/proposal/components/ForecastExplorer.vue',
+  SimulationResults: 'features/proposal/components/SimulationResults.vue',
 }
 
 /** Compile actual components. Resolve runtime imports against their original source. */

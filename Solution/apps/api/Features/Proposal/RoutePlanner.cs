@@ -58,7 +58,7 @@ public static class RoutePlanner
         while (mandatory.Count > 0 && trucks.Count < settings.MaxVehicles)
         {
             var truck = new Truck(settings);
-            while (truck.TakeNearest(mandatory)) { }
+            while (truck.TakeNearest(mandatory, byRisk: true)) { }
             trucks.Add(truck);
         }
         unserved.AddRange(mandatory.Select(stop => new UnservedStop(stop.LocationId, true, UnservedReason.FleetLimit)));
@@ -127,8 +127,9 @@ public static class RoutePlanner
             {
                 var (cost, _) = Reach(pool[i]);
                 if (minutes + cost + Closing(new(pool[i]), settings) > settings.ShiftHours * 60 + Epsilon) continue;
-                if (byRisk) { best = i; break; }               // pool is ordered by risk
-                if (cost < bestCost - Epsilon) { best = i; bestCost = cost; }
+                if (byRisk && best >= 0 && pool[i].Risk < pool[best].Risk - Epsilon) continue;
+                if (best < 0 || (byRisk && pool[i].Risk > pool[best].Risk + Epsilon) || cost < bestCost - Epsilon)
+                { best = i; bestCost = cost; }
             }
             if (best < 0) return false;
             var stop = pool[best];

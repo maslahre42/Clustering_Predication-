@@ -296,13 +296,18 @@ elif page.endswith("Route planner"):
     if pd.Timestamp(plan_day).dayofweek not in cfg.working_weekdays:
         st.warning("This day is not a collection day in the settings, so pick a collection day for a real plan.")
     known = df[df["date"] < pd.Timestamp(plan_day)]
+    eligible_intervals = iv[iv["end"] < pd.Timestamp(plan_day)]
+    if eligible_intervals.empty:
+        st.warning("No completed filling cycles exist before this planning day. Choose a later date.")
+        st.stop()
+    planner_model = _model(eligible_intervals, f"{data_key}-before-{plan_day}")
     last_readings = known.groupby("container")["date"].max()
-    state = df.drop_duplicates("container")[["container", "site", "material"]].copy()
+    state = known.drop_duplicates("container")[["container", "site", "material"]].copy()
     state["last_empty"] = state["container"].map(last_readings).fillna(df["date"].min())
     if pd.Timestamp(plan_day) > df["date"].max() + pd.Timedelta(days=7):
         st.warning("This day is well after the last reading. The planner assumes nothing was collected since, "
                    "so the backlog is huge. Pick a day inside the data period for a typical day.")
-    bins = assess_bins(model, state, pd.Timestamp(plan_day), cfg)
+    bins = assess_bins(planner_model, state, pd.Timestamp(plan_day), cfg)
     stops, take = select_stops(bins, locs, cfg)
     n_must, n_opt = int(stops["must"].sum()) if len(stops) else 0, int((~stops["must"]).sum()) if len(stops) else 0
     c = st.columns(4)
@@ -375,6 +380,8 @@ elif page.endswith("Backtest"):
         st.warning("No results yet. Run `python run_backtest.py` once (about 10 minutes) and reload this page.")
     else:
         used, now = meta.get("settings"), load_settings().to_dict()
+        if meta.get("engine_revision") != 2:
+            st.warning("These saved results predate the corrected route-demand, served-stop and simulation-window accounting. Run python run_backtest.py to regenerate them. The integrated app's Simulation view calculates fresh results.")
         if used:
             diff = [f"{k_}: calculated with {used[k_]}, now {now[k_]}" for k_ in now
                     if k_ in used and k_ not in ("opt_p",) and list(np.atleast_1d(used[k_])) != list(np.atleast_1d(now[k_]))]

@@ -1,5 +1,7 @@
 # Garbage Collector
 
+**Forecasts and simulation:** open **Forecast, routes & simulation** in the sidebar, then **Forecast curves** or **Simulation & backtest** at the top. This now runs Omar's actual Python seasonal model, OR-Tools router and digital twin. Run `make setup-python PYTHON=python3.12` once for an existing checkout, then restart the API/Aspire host. New `make setup` includes Python setup. [Method, parameters, limits and API](docs/architecture/proposal.md).
+
 Local ASP.NET Core 10 + Nuxt 4/Vue foundation for historical glass-bin collections in Heilbronn.
 
 For code changes, start with the [code index](CODE_INDEX.md) and [contributor guidance](AGENTS.md). They map each feature to its source and tests.
@@ -127,7 +129,7 @@ This is a reusable application template with actual historical data, not a simul
 - Changing the cutoff recreates the planning/history views and clears selected bins and routes. Records are never deleted from SQLite.
 - Counts, date bounds, known bins, latest readings, and selectable collection stops come only from eligible observations. Bins first observed after the cutoff do not appear.
 - History filters also respect the same cutoff, including when requesting a later `to` date.
-- Fill values in planning, history and analytics are actual pre-emptying measurements, never estimates of current fill. Forecasts exist only in the **Forecast & route proposal** module (`GET /api/proposal`), where every number is labelled as a prediction; see [method and evidence](docs/architecture/proposal.md).
+- Fill values in planning, history and analytics are actual pre-emptying measurements, never estimates of current fill. Forecasts exist only in the **Forecast, routes & simulation** module (`GET /api/proposal`, `/api/forecast`, `/api/simulation`), where every number is labelled as a prediction; see [method and evidence](docs/architecture/proposal.md).
 - Select individual bins or add the actual recorded collections from the selected day. Bins at the same location share one stop.
 - Location names use existing UUIDs rather than invented station names. Coordinates and central depot remain synthetic, explicitly labeled. Route preview uses nearest-neighbor order and straight lines, not driving directions or a globally optimal route.
 - Export a dated CSV plan with source collection dates and historical percentages. Plans are held in memory.
@@ -139,11 +141,11 @@ Run frontend unit tests from the repository root:
 pnpm --dir apps/web test
 ```
 
-Real forecast integration, road routing, and operational collection constraints remain future work.
+Omar’s Python forecasting, constrained OR-Tools routing and digital-twin simulation are connected in **Forecast, routes & simulation**. Road-network navigation, color-chamber constraints and verified operating assets remain future work.
 
 Leaflet uses MapTiler OMT when a browser key is configured, otherwise the public OpenStreetMap tile service for local demonstration. Provider attribution stays visible. Choose a suitable tile provider and review its usage policy before wider deployment; no offline tile downloading is implemented. The map needs an internet connection.
 
-This is a local development foundation with no authentication. Before exposing it, add access controls, HTTPS, deployment host configuration, and database backup procedures. Keep the database on a persistent local volume when deploying the API. Deploy the built Nuxt Node server alongside the API, configuring `NUXT_API_BASE` to the internal API address. Forecast integration and future writes should use an explicitly designed schema/migration process, preserving original observations.
+This is a local development foundation with no authentication. Before exposing it, add access controls, HTTPS, deployment host configuration, and database backup procedures. Keep the database on a persistent local volume when deploying the API. Deploy the built Nuxt Node server alongside the API, configuring `NUXT_API_BASE` to the internal API address. The Python integration reads observation snapshots without changing the database. Future writes should use an explicitly designed schema/migration process, preserving original observations.
 
 See [PROJECT_IDEA.md](PROJECT_IDEA.md) for the product plan and remaining decisions.
 
@@ -177,7 +179,7 @@ Optional backend coverage report:
 dotnet test GarbageCollector.slnx --collect:"XPlat Code Coverage"
 ```
 
-Verified results: **93 API tests, 6 AppHost tests, and 86 frontend/tooling tests pass (185 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
+Verified results: **205 API tests, 6 AppHost tests, 113 frontend/tooling tests and 17 Python tests pass (341 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
 
 The standard `dotnet test` runner builds but cannot start its communication socket in this restricted environment. A small in-process runner calls the real xUnit discovery/execution API, including theories and async fixtures; it does not replace assertions or manually call test methods. Run both suites without a local test socket:
 
@@ -202,7 +204,7 @@ The uploaded designs in `idea of UI:UX` informed the persistent navigation rail,
 
 The frontend is split into small components under `apps/web/app/features/*/components`, `components/layout`, and `shared/ui`. `useCollectionWorkspace` provides one shared reactive workspace: selected bins survive navigation, manual stop ordering and draft collector notes are shared with the manifest, and changing the cutoff clears the plan. Export CSV uses one row per selected bin and preserves its original collection date. Browser print provides a PDF-capable collector sheet. Draft notes and plans are not written to SQLite.
 
-The fill slider filters the **last recorded pre-emptying reading**, not present fill or predicted urgency. The bin detail chart plots individual real observations; no accumulation curve or forecast is invented. Forecasts, dispatch, weights, and vehicle metadata are explicitly unavailable until their data/integrations exist. Fonts use Hanken Grotesk/Inter when installed, with system fallbacks; no font assets were included in the design upload.
+The fill slider filters the **last recorded pre-emptying reading**, not present fill or predicted urgency. The bin detail chart plots individual real observations; no accumulation curve or forecast is invented. Model forecasts and estimated loads are available in the forecast module. Live dispatch, measured vehicle weights and verified vehicle metadata require operating data. Fonts use Hanken Grotesk/Inter when installed, with system fallbacks; no font assets were included in the design upload.
 
 See [component and design mapping](docs/architecture/ui-components.md) for responsibilities and source mapping. Restart `pnpm dev` after the component-directory configuration change. The backend API contract and read-only database remain unchanged.
 
@@ -225,4 +227,4 @@ All analytics respect the inclusive planning cutoff. SQLite and the notebook are
 
 The backend uses feature folders with shared cutoff/fill domain types and isolated EF persistence. Vue features colocate components, models, query adapters, and styles. API contracts, routes, configuration, and browser effects have explicit owners; components consume narrow workspace capabilities.
 
-See [code structure and change guide](docs/architecture/code-structure.md) for the current tree and where to make common changes. Depot defaults are injectable, and real/synthetic coordinate flags now survive joins, map data, and CSV. Real-coordinate import and operational routing remain future work. Restart the frontend dev server after this component-directory reorganization.
+See [code structure and change guide](docs/architecture/code-structure.md) for the current tree and where to make common changes. Depot defaults are injectable, and real/synthetic coordinate flags now survive joins, map data, and CSV. Constrained operational routing is connected through Omar’s Python engine. Verified coordinate import and road-network navigation remain future work. Restart the frontend dev server after this component-directory reorganization.

@@ -5,6 +5,7 @@ import type { Location } from '~/shared/api/contracts/locations'
 import type { PlanningSnapshot } from '~/shared/api/contracts/planning'
 import { API_ROUTES } from '~/shared/api/routes'
 import { planCsv } from '~/features/manifest/domain/planExport'
+import { proposalCsv } from '~/features/proposal/domain/proposal'
 import { createWorkspaceModel } from '~/features/workspace/model'
 import { downloadCsv } from '~/shared/browser/download'
 
@@ -27,7 +28,9 @@ export function createCollectionWorkspace() {
   }
   function exportCsv() {
     if (model.plan.stops.value.length) {
-      downloadCsv(planCsv(asOf.value, model.plan.stops.value, model.plan.notes.value), `collection-plan-${asOf.value}.csv`)
+      const csv = model.plan.acceptedProposal.value ? proposalCsv(model.plan.acceptedProposal.value)
+        : planCsv(model.plan.collectionDate.value, model.plan.stops.value, model.plan.notes.value)
+      downloadCsv(csv, `collection-plan-${model.plan.collectionDate.value}.csv`)
     }
   }
   const workspace = { ...model, planningDate, requests: { snapshotRequest, healthRequest, dateRangeRequest, error, loading, retry }, exportCsv }

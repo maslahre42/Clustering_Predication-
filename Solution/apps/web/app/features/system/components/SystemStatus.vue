@@ -59,10 +59,12 @@ const healthy = computed(() => healthRequest.data.value?.status === 'healthy' &&
         </dl>
       </UiCard>
       <UiCard>
-        <h2>Future integrations</h2>
+        <h2>Forecast and remaining integrations</h2>
         <dl>
           <dt>Forecast model</dt>
-          <dd>Not connected</dd>
+          <dd>Omar’s Python seasonal/censored-rate model. Open Forecast, routes & simulation for live results or dependency errors.</dd>
+          <dt>Simulation</dt>
+          <dd>Historical calendar versus dynamic collection, with routed service and missed-stop accounting.</dd>
           <dt>Sensor telemetry</dt>
           <dd>Not part of the current data source</dd>
           <dt>Driver dispatch</dt>
