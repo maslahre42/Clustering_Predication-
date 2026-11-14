@@ -1,0 +1,24 @@
+.analytics-panel {
+  margin-bottom: 22px;
+  min-width: 0;
+}
+
+.analytics-panel>p {
+  margin: 12px 0 20px;
+}
+
+.analytics-distributions {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.analytics-distributions>article {
+  padding: 16px;
+  background: var(--surface-subtle);
+  border-radius: 6px;
+}
+
+.analytics-table-filter { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+.analytics-table-filter > .ui-field { min-width: 180px; }

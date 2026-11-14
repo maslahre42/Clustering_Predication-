@@ -1,0 +1,26 @@
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.status-grid dl {
+  font-size: 12px;
+}
+
+.integration-panel {
+  max-width: 800px;
+  margin: 32px auto;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.integration-panel h2, .integration-panel p, .integration-panel dl {
+  width: 100%;
+}
+
+.integration-panel h2 {
+  margin-top: 14px;
+}
