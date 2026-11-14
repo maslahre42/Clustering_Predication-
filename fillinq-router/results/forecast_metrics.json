@@ -1,0 +1,33 @@
+{
+  "cross_validation_mean": {
+    "n_test": 2072.6,
+    "MAE_model": 16.490945363352466,
+    "MAE_material_median": 24.979560454651885,
+    "MAE_container_median": 17.361620899485843,
+    "MAE_always_mean": 26.494196475776114,
+    "AUC_need>=70_model": 0.8401102596665778,
+    "AUC_need>=70_days_since_last_visit": 0.5584164491831938,
+    "AUC_need>=70_container_median": 0.8177735992777813
+  },
+  "forward_test": {
+    "n_test": 6657,
+    "MAE_model": 19.53729587653839,
+    "MAE_material_median": 25.719513992544247,
+    "MAE_container_median": 21.30800895029956,
+    "MAE_always_mean": 26.50063637790795,
+    "AUC_need>=70_model": 0.7848092353753322,
+    "AUC_need>=70_days_since_last_visit": 0.5511162250955193,
+    "AUC_need>=70_container_median": 0.7350054671401665,
+    "train_until": "2026-04-01"
+  },
+  "model": {
+    "sigma": 0.6,
+    "tau": 0.8484404377608961,
+    "vacation_multiplier": 0.9368522616202958,
+    "material_rate_pct_per_day": {
+      "brown": 0.7618755858122586,
+      "green": 2.0618454788735994,
+      "white": 3.064393476986783
+    }
+  }
+}

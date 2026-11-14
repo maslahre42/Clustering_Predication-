@@ -1,0 +1,11 @@
+{
+  "synthetic_locations": true,
+  "start": "2026-04-01",
+  "end": "2026-09-30",
+  "planner_train_end": "2026-04-01",
+  "scenarios": {
+    "baseline_replay": null,
+    "dynamic_same_service": 0.82,
+    "dynamic_same_effort": 0.67
+  }
+}
