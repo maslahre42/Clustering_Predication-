@@ -1,0 +1,37 @@
+/* The shell owns the viewport; only content and navigation may scroll. */
+.application-shell { display: grid; grid-template-columns: 76px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); height: 100vh; height: 100dvh; overflow: hidden; }
+.application-body { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+#workspace-content { flex: 1; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: none; }
+.workspace-header, .workspace-footer { flex-shrink: 0; }
+.workspace-sidebar { height: 100%; min-height: 0; z-index: 30; display: flex; flex-direction: column; align-items: center; padding: 22px 10px; border-right: 1px solid var(--surface-border); background: #fff; }
+.rail-brand { width: 42px; max-width: 100%; height: 42px; display: grid; place-items: center; color: #fff; background: var(--brand-primary); border-radius: 14px; margin-bottom: 38px; }
+.rail-brand .ui-icon { width: 25px; height: 25px; }
+.module-nav { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; flex: 1; min-height: 0; overflow-y: auto; overflow-x: clip; overscroll-behavior: none; scrollbar-width: none; }
+.module-nav > button { border: 0; padding: 0; position: relative; display: flex; align-items: center; justify-content: center; width: 100%; max-width: 46px; min-height: 46px; flex-shrink: 0; border-radius: 13px; color: #7a8981; background: transparent; cursor: pointer; transition: background .15s, color .15s; }
+.module-nav > button:hover { color: var(--brand-primary); background: var(--surface-ground); }
+.module-nav > button[aria-current=page] { color: var(--brand-primary); background: #e7f3ec; box-shadow: inset 0 0 0 1px #d8ebe0; }
+.rail-tooltip { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); }
+.workspace-header { min-height: 82px; display: flex; align-items: center; gap: 18px; padding: 16px 32px; background: #fff; border-bottom: 1px solid var(--surface-border); }
+.workspace-header > div:first-child > strong { display: block; font-size: 21px; letter-spacing: -.7px; color: var(--brand-primary); font-weight: 750; }
+.header-date { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.planning-date-control { min-width: 176px; }
+.planning-date-control > small { display: block; margin-top: 5px; }
+.workspace-footer { padding: 16px 32px; display: flex; gap: 12px; color: var(--text-secondary); border-top: 1px solid var(--surface-border); font-size: 11px; }
+.workspace-footer strong { font-weight: 600; color: var(--text-secondary); }
+.workspace-footer span { margin-left: auto; }
+.connection-dot { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: #b7c6be; flex-shrink: 0; }
+.connection-dot.connected { background: var(--brand-primary); box-shadow: 0 0 0 4px #087f480c; }
+.page-body { max-width: 1640px; width: 100%; margin: 0 auto; padding: 30px 32px; }
+.section-title { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 30px 32px 24px; background: transparent; border: 0; }
+.page-body > .section-title { padding: 0 0 24px; }
+.section-title h1 { font-size: clamp(24px, 2.3vw, 31px); font-weight: 720; letter-spacing: -1px; line-height: 1.25; }
+.section-title p:not(.eyebrow) { margin-top: 9px; font-size: 13px; }
+.eyebrow { font-family: var(--font-ui); font-size: 10px; text-transform: uppercase; font-weight: 650; letter-spacing: .12em; color: var(--text-secondary); margin-bottom: 10px; }
+.section-totals { display: grid; grid-template-columns: auto auto; gap: 6px 12px; background: #fff; padding: 14px 20px; border: 1px solid var(--surface-border); border-radius: 12px; }
+.section-totals strong { color: var(--brand-primary); font-size: 19px; font-weight: 700; text-align: right; }
+.section-totals span { align-self: center; font-size: 11px; color: var(--text-secondary); }
+.field-caption { font-family: var(--font-ui); display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; font-weight: 650; color: var(--text-secondary); margin-bottom: 8px; }
+.section-heading { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-bottom: 20px; }
+.section-heading h2 { font-size: 17px; letter-spacing: -.4px; }
+.section-heading p { margin-top: 8px; max-width: 65ch; }
+.numeric { text-align: right; }

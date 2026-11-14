@@ -1,0 +1,12 @@
+**/bin
+**/obj
+**/node_modules
+**/.nuxt
+**/.output
+.git
+.env
+**/.env
+**/.env.*
+**/*.db
+**/*.db-*
+aspire-output

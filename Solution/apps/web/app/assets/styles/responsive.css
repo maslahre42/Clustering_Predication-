@@ -1,0 +1,92 @@
+@media (min-width: 1800px) {
+  .planning-view { padding-inline: 38px; }
+  .planning-canvas { grid-template-columns: minmax(430px, 37%) minmax(0, 1fr); }
+  .cluster-card { padding-inline: 24px; }
+}
+@media (max-width: 1250px) {
+  .planning-filters { grid-template-columns: auto minmax(140px, 1fr); gap: 16px; }
+  .planning-filters > .ui-field { grid-column: 2; grid-row: 2; }
+  .search-filter { grid-column: 1; }
+  .planning-filters > .ui-button { grid-column: 1 / -1; }
+  .route-drawer { width: 260px; }
+  .section-totals { padding: 12px 15px; }
+  .bin-detail-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .location-profile { grid-column: 1 / -1; }
+  .location-profile .map { height: 200px; }
+  .plan-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1050px) {
+  .planning-canvas { height: auto; grid-template-columns: minmax(0, 1fr); }
+  .planning-map-panel { grid-row: 1; min-height: 500px; }
+  .planning-map-panel > .map-wrapper, .planning-map-panel > .map-wrapper > .map, .planning-map-panel .map-placeholder { height: 500px; min-height: 500px; }
+  .cluster-list { max-height: 660px; border-right: 0; border-top: 1px solid var(--surface-border); }
+  .manifest-layout { grid-template-columns: minmax(0, 1fr); }
+  .manifest-side { display: grid; grid-template-columns: 1fr 1fr; }
+  .analytics-distributions { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .application-shell { grid-template-columns: 60px minmax(0, 1fr); }
+  .workspace-sidebar { padding: 16px 7px; }
+  .rail-brand { width: 36px; height: 36px; border-radius: 11px; margin-bottom: 28px; }
+  .module-nav > button { max-width: 42px; min-height: 44px; border-radius: 11px; }
+  .workspace-header { padding: 14px 16px; flex-wrap: wrap; gap: 14px; }
+  .workspace-header > div:first-child { flex: 1; }
+  .workspace-header > .workspace-lock { order: 1; margin-left: auto; }
+  .header-date { order: 2; width: 100%; margin: 0; }
+  .planning-date-control { min-width: 0; flex: 1; }
+  .header-date .ui-button { flex-shrink: 0; }
+  .planning-view { padding: 0 14px 14px; }
+  .section-title, .page-body { padding: 22px 16px; }
+  .planning-view > .section-title { padding: 24px 0 18px; }
+  .section-title { align-items: flex-start; flex-wrap: wrap; gap: 16px; }
+  .section-title h1 { font-size: 24px; }
+  .section-totals { grid-template-columns: auto auto auto auto; gap: 8px; width: 100%; padding: 12px 14px; }
+  .section-totals strong { font-size: 17px; }
+  .planning-filters { grid-template-columns: minmax(0, 1fr); padding: 16px; gap: 16px; }
+  .planning-filters > *, .planning-filters > .ui-field { grid-column: 1; grid-row: auto; }
+  .ui-segmented-control { width: 100%; }
+  .ui-segmented-control button { flex: 1; padding-inline: 6px; }
+  .threshold-filter .ui-slider { min-height: 48px; }
+  .planning-filters > .ui-button { justify-self: stretch; }
+  .calendar-popover { right: auto; left: 0; width: min(290px, calc(100vw - 110px)); padding: 10px; }
+  .calendar-days button { min-height: 30px; }
+  .planning-map-panel { min-height: 620px; }
+  .planning-map-panel > .map-wrapper, .planning-map-panel > .map-wrapper > .map { height: 620px; min-height: 620px; }
+  .map-top-label { left: 50px; right: 10px; font-size: 9px; padding: 10px; }
+  .map-top-label > span:last-child { display: none; }
+  .route-drawer { top: auto; bottom: 78px; right: 12px; left: 12px; width: auto; max-height: 360px; overflow-y: auto; }
+  .cluster-card { padding: 18px 14px 0; }
+  .cluster-card > footer { flex-wrap: wrap; }
+  .cluster-card h3 { font-size: 13px; }
+  .fraction-meter { grid-template-columns: 20px minmax(0, 1fr); gap: 3px 4px; }
+  .fraction-bin-icon { width: 20px; height: 26px; }
+  .fraction-meter strong { font-size: 12px; }
+  .bin-detail-grid, .plan-metrics, .manifest-side { grid-template-columns: minmax(0, 1fr); }
+  .ui-card { padding: 18px; }
+  .history-filters { gap: 14px; }
+  .history-filters > * { min-width: 100%; }
+  .section-heading { align-items: flex-start; flex-wrap: wrap; }
+  .workspace-footer { padding: 14px 16px; flex-wrap: wrap; }
+  .workspace-footer span { margin-left: 0; }
+  .ui-button { min-height: 42px; }
+}
+@media print {
+  @page { size: A4; margin: 12mm; }
+  html, body, #__nuxt { height: auto; overflow: visible; }
+  body { background: white; color: black; font-size: 10pt; }
+  .application-shell { display: block; height: auto; overflow: visible; }
+  .application-body { display: block; }
+  #workspace-content { overflow: visible; }
+  .workspace-sidebar, .workspace-header, .workspace-footer, .stop-actions, .export-actions, .section-title > .ui-button, .section-heading > .ui-button, .stop-meta > .ui-button, .ui-textarea, .manifest-side { display: none !important; }
+  .page-body { padding: 0; }
+  .manifest-layout { display: block; }
+  .plan-metrics { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .manifest-stop { break-inside: avoid; padding: 12px; }
+  .plan-metrics .ui-card { box-shadow: none; padding: 10px; }
+  .stop-meta { color: #222; }
+  .print-only { display: block; }
+  .manifest-print-stamp { color: #000; font-family: var(--font-date); margin: 12px 0; }
+  .collector-note { color: #000; background: #fff; border: 1px solid #000; min-height: 36px; white-space: pre-wrap; }
+  .manifest-print-footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #000; font-size: 9pt; }
+  .fraction-bin-icon { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}

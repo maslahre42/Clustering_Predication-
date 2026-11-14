@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../GarbageCollector.Api.Tests/GarbageCollector.Api.Tests.csproj" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="../GarbageCollector.AppHost.Tests/GarbageCollector.AppHost.Tests.csproj" /></ItemGroup>
+</Project>

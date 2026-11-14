@@ -1,0 +1,101 @@
+.map {
+  min-height: 260px;
+  height: 420px;
+  background: #e7ecee;
+  z-index: 0;
+}
+
+.map-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fleet-muted);
+}
+
+.map-top-label {
+  position: absolute;
+  top: 18px;
+  left: 55px;
+  right: 20px;
+  z-index: 2;
+  background: #ffffffed;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 13px;
+  border: 1px solid #e5e8eb;
+  box-shadow: 0 3px 8px #1c252e0a;
+  border-radius: 10px;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.map-top-label>span:last-child {
+  margin-left: auto;
+  color: var(--fleet-muted);
+  font-size: 10px;
+}
+
+.map-bottom-label {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 2;
+  background: #ffffffed;
+  padding: 10px 13px;
+  border-radius: 9px;
+  box-shadow: 0 2px 6px #1c252e10;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: #51616a;
+}
+
+.route-key {
+  width: 15px;
+  border-top: 2px dashed var(--fleet-green);
+}
+
+.route-marker span {
+  background: #153c2a;
+  color: var(--surface-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #69b988;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  font: bold 11px ui-monospace, monospace;
+  box-shadow: 0 0 0 4px #ffffff80;
+}
+
+.map-connection-warning {
+  position: absolute;
+  bottom: 30px;
+  left: 40px;
+  right: 40px;
+  z-index: 4;
+  background: #fff8e7;
+  padding: 12px;
+  font-size: 11px;
+  border: 1px solid #ebd59e;
+  border-radius: 10px;
+}
+
+.map-wrapper {
+  position: relative;
+  min-width: 0;
+}
+
+.leaflet-container { font-family: var(--font-ui); }
+.leaflet-control-zoom { border: 1px solid #e0e6e2 !important; box-shadow: 0 2px 10px #183c2912 !important; border-radius: 9px !important; overflow: hidden; }
+.leaflet-control-zoom a { color: #42564a !important; font-weight: 400 !important; }
+.leaflet-tooltip { font-family: var(--font-ui); border-radius: 6px; padding: 7px 10px; }
+
+.maptiler-logo { position: absolute; left: 10px; bottom: 8px; z-index: 1; line-height: 0; background: #fffffff0; border-radius: 3px; padding: 2px 5px; }
+.maptiler-logo img { display: block; object-fit: contain; }
+.planning-map-panel:has(.maptiler-logo) .map-bottom-label { bottom: 44px; }

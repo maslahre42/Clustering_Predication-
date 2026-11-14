@@ -1,0 +1,38 @@
+:root {
+  color-scheme: light;
+  --brand-primary: #087f48;
+  --brand-hover: #06673a;
+  --brand-active: #054f2e;
+  --brand-subtle: #edf7f1;
+  --surface-ground: #f5f7f8;
+  --surface-container: #fff;
+  --surface-subtle: #f1f4f5;
+  --surface-border: #e4e9e8;
+  --text-primary: #1c2925;
+  --text-secondary: #66756f;
+  --text-muted: #8c9993;
+  --text-inverse: #fff;
+  --fraction-brown: #916449;
+  --fraction-brown-border: #e3d4c9;
+  --fraction-green: #357f50;
+  --fraction-green-border: #cfe4d4;
+  --fraction-white: #506775;
+  --fraction-white-border: #d5dfe3;
+  --fill-low: #2f8b58;
+  --fill-high: #cc8a26;
+  --fill-overfull: #c34242;
+  --fill-unknown: #cbd5d1;
+  --cutoff-background: #edf3f7;
+  --cutoff-border: #dce7ed;
+  --cutoff-text: #526c7b;
+  --cutoff-icon: #597e91;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-date: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  --fleet-green: var(--brand-primary);
+  --fleet-slate: var(--text-primary);
+  --fleet-muted: var(--text-secondary);
+  --fleet-border: var(--surface-border);
+  --fleet-canvas: var(--surface-ground);
+  --shadow-sm: 0 2px 6px #183c2905;
+  --shadow-popover: 0 12px 40px #183c291c;
+}

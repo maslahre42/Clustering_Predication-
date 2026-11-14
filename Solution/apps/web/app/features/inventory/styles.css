@@ -1,0 +1,41 @@
+.bin-detail-grid {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.bin-detail-grid>.ui-card {
+  min-width: 0;
+}
+
+.location-profile .map {
+  height: 180px;
+  min-height: 180px;
+  margin-top: 15px;
+}
+
+.bin-fraction-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-top: 3px solid var(--fraction-ink);
+}
+
+.fraction-large {
+  font-size: 40px;
+  letter-spacing: -.05em;
+}
+
+.bin-fraction-card dl {
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.bin-fraction-card dd {
+  margin-bottom: 9px;
+}
+
+.bin-fraction-card>.ui-button {
+  margin-top: auto;
+}

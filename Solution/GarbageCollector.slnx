@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/apps/" />
+  <Folder Name="/apps/apphost/">
+    <Project Path="apps/apphost/GarbageCollector.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/apps/api/">
+    <Project Path="apps/api/GarbageCollector.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GarbageCollector.AppHost.Tests/GarbageCollector.AppHost.Tests.csproj" />
+    <Project Path="tests/GarbageCollector.Api.Tests/GarbageCollector.Api.Tests.csproj" />
+    <Project Path="tests/GarbageCollector.TestRunner/GarbageCollector.TestRunner.csproj" />
+  </Folder>
+</Solution>
