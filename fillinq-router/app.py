@@ -81,7 +81,8 @@ else:
     loc_path = DEFAULT_LOCS
 locs, synthetic = get_locations(df["site"].unique(), loc_path)
 if synthetic:
-    st.sidebar.warning("Site coordinates are SYNTHETIC (illustrative). Kilometres and hours depend on them; "
+    st.sidebar.warning("PreZero has no container coordinates. Driving time uses their rule of 10 minutes between "
+                       "containers; map positions are SYNTHETIC (illustrative). "
                        "stops, fill levels and overflow results do not.")
 
 
@@ -100,11 +101,17 @@ if page.startswith("1"):
     c[3].metric("Readings at 90% or more", f"{qual['share_ge_90'] * 100:.0f}%")
     st.info("**What this says:** collection follows a schedule, not need. About 4 in 10 visits find a container at 50% or "
             "less, while about 1 in 3 finds it at 90% or more. Time since the last visit does not predict the fill level.")
-    st.subheader("Assumptions of the model (please confirm with PreZero)")
+    st.subheader("Assumptions of the model")
     st.markdown(
-        "- A reading is taken **before** emptying, and the container is emptied at that visit.\n"
-        "- Readings of 100 / *overfull* are **censored**: the true fill is at least 100%.\n"
-        "- No coordinates, container sizes or truck data are in the file, so those are settings (sidebar of the route planner).")
+        "- **Confirmed by PreZero:** a reading is taken with the device **before** emptying.\n"
+        "- **Confirmed by PreZero:** *overfull* means glass was lying next to the container. Readings of 100 / *overfull* "
+        "are treated as **censored**: the true fill is at least 100%.\n"
+        "- **From PreZero:** all containers are the same size (3 m3), a truck carries up to 12 t and takes all three colours, "
+        "the shift is 8 hours, collection runs Monday to Friday, and enough trucks are available. Truck volume is unknown, "
+        "so only the 12 t limit is used.\n"
+        "- **From PreZero:** there are no coordinates; assume 10 minutes of driving between containers.\n"
+        "- **Confirmed by PreZero:** every visit empties the container, and emptying one container takes about 5 minutes.\n"
+        "- Still our own assumption: glass density (0.35 t/m3), which converts fill level into weight, and the unloading time.")
     st.subheader("Preview")
     st.dataframe(df.head(200), width="stretch", height=300)
     cov = df.groupby("container").size().describe().round(1).to_frame("readings per container")
@@ -205,10 +212,11 @@ elif page.startswith("4"):
         cfg = OpsConfig(
             container_volume_m3=st.number_input("Container volume (m3)", 0.5, 10.0, d.container_volume_m3, 0.5),
             glass_density_t_m3=st.number_input("Glass density (t/m3)", 0.1, 1.5, d.glass_density_t_m3, 0.05),
-            truck_volume_m3=st.number_input("Truck volume per trip (m3)", 5.0, 60.0, d.truck_volume_m3, 1.0),
+            truck_volume_m3=st.number_input("Truck volume per trip (m3, 0 = no volume limit)", 0.0, 60.0, d.truck_volume_m3, 1.0),
             truck_payload_t=st.number_input("Truck payload per trip (t)", 2.0, 30.0, d.truck_payload_t, 0.5),
-            max_vehicles=int(st.number_input("Max trucks", 1, 20, d.max_vehicles)),
+            max_vehicles=int(st.number_input("Max trucks", 1, 30, d.max_vehicles)),
             shift_hours=st.number_input("Shift length (h)", 4.0, 12.0, d.shift_hours, 0.5),
+            fixed_travel_min=st.number_input("Minutes of driving between containers (0 = use coordinates)", 0.0, 60.0, d.fixed_travel_min, 1.0),
             avg_speed_kph=st.number_input("Average speed (km/h)", 10.0, 60.0, d.avg_speed_kph, 1.0),
             service_min_per_stop=st.number_input("Minutes per stop", 0.0, 20.0, d.service_min_per_stop, 0.5),
             service_min_per_bin=st.number_input("Minutes per container", 0.0, 20.0, d.service_min_per_bin, 0.5),
@@ -217,13 +225,16 @@ elif page.startswith("4"):
             lookahead_days=int(st.number_input("Look-ahead (days)", 1, 7, d.lookahead_days)),
             must_p=st.slider("Overflow risk that makes a stop mandatory", 0.1, 0.95, d.must_p, 0.01),
         )
-    st.caption("Truck, container and density values are PLACEHOLDERS - replace with PreZero's real numbers. "
-               + ("Locations are synthetic." if synthetic else "Using the uploaded site locations."))
+    st.caption("Container size, payload, shift, working days and the 10-minute driving rule come from PreZero. "
+               "Glass density and unloading time are still our assumptions. "
+               + ("Map positions are synthetic." if synthetic else "Using the uploaded site locations."))
     dmin, dmax = df["date"].min().date(), df["date"].max().date()
     default_day = pd.Timestamp("2026-08-17").date() if dmin < pd.Timestamp("2026-08-17").date() < dmax else dmax
     c1, c2 = st.columns([1, 2])
     plan_day = c1.date_input("Planning day", default_day, help="The planner only uses readings from BEFORE this day.")
     tl = c2.slider("Solver time (seconds)", 2, 30, 6)
+    if pd.Timestamp(plan_day).dayofweek not in cfg.working_weekdays:
+        st.warning("This is a Saturday or Sunday. PreZero collects Monday to Friday, so pick a weekday for a real plan.")
     known = df[df["date"] < pd.Timestamp(plan_day)]
     last_readings = known.groupby("container")["date"].max()
     state = df.drop_duplicates("container")[["container", "site", "material"]].copy()
@@ -250,8 +261,9 @@ elif page.startswith("4"):
         c[1].metric("Trips (loads)", k["trips"])
         c[2].metric("Stops served", k["stops"])
         c[3].metric("Containers emptied", k["bins"])
-        c[4].metric("Distance", f"{k['km']:.0f} km" + (" *" if synthetic else ""))
-        c[5].metric("Working hours (total)", f"{k['hours']:.1f} h" + (" *" if synthetic else ""))
+        fixed = cfg.fixed_travel_min > 0
+        c[4].metric("Distance", f"{k['km']:.0f} km" + (" *" if synthetic or fixed else ""))
+        c[5].metric("Working hours (total)", f"{k['hours']:.1f} h" + (" *" if synthetic and not fixed else ""))
         if plan.dropped_mandatory:
             st.error(f"{len(plan.dropped_mandatory)} mandatory stops could not be scheduled (shift or truck limits). "
                      "Increase max trucks or shift length.")
@@ -274,7 +286,11 @@ elif page.startswith("4"):
         for _, row in skipped.iterrows():
             folium.CircleMarker([row["lat"], row["lon"]], radius=4, color="#999", fill=True, tooltip="optional, skipped").add_to(m)
         st_folium(m, height=520, use_container_width=True, returned_objects=[])
-        if synthetic:
+        if cfg.fixed_travel_min > 0:
+            st.caption(f"Working hours use PreZero's rule of {cfg.fixed_travel_min:.0f} minutes between containers. "
+                       "* Kilometres are that driving time times the average speed. The map positions are synthetic, "
+                       "so the map only shows which truck serves which stops.")
+        elif synthetic:
             st.caption("* Positions are synthetic, so the map, kilometres and hours are illustrative.")
         # route table
         rows = []
@@ -329,11 +345,11 @@ elif page.startswith("5"):
                         st.markdown(
                             f"**{nme.replace('_', ' ')}**: site visits {100 * (r['site_visits'] / b['site_visits'] - 1):+.0f}%, "
                             f"overflow-days {100 * (r['overflow_bin_days'] / b['overflow_bin_days'] - 1):+.0f}%, "
-                            f"distance {100 * (r['km'] / b['km'] - 1):+.0f}%{' (illustrative)' if meta['synthetic_locations'] else ''}.")
+                            f"working hours {100 * (r['hours'] / b['hours'] - 1):+.0f}%, truck-days {100 * (r['truck_days'] / b['truck_days'] - 1):+.0f}%.")
         st.warning("**Read with care.** The twin shares its structure with the forecast model, and the data only has readings at visits, "
                    "so absolute numbers are indicative. Dynamic collection reduces the *time* containers sit full and the number of "
                    "wasted half-empty visits; it does not remove overflow events entirely, because individual filling cycles are "
-                   "unpredictable without live sensors. Distances use synthetic coordinates.")
+                   "unpredictable without live sensors. Working time uses PreZero's rule of 10 minutes between containers.")
 
 # ================================================================== 6 GUIDE
 else:

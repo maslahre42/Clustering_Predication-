@@ -148,7 +148,7 @@ def run_policy(tw: Twin, planner: RateModel, cfg: OpsConfig, locs=None, route=Fa
     rec = _new_rec()
     state_base = tw.cont[["container", "site", "material"]].copy()
     daily = []
-    weekdays = [d for d in pd.date_range(tw.start, tw.end, freq="D") if d.dayofweek < 5]
+    weekdays = [d for d in pd.date_range(tw.start, tw.end, freq="D") if d.dayofweek in cfg.working_weekdays]
     for n_d, date in enumerate(weekdays):
         t = tw.day_index[date]
         state = state_base.copy()

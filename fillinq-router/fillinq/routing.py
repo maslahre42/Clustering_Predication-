@@ -14,7 +14,6 @@ One planning day:
     so the number of trucks used is the fleet recommendation.
 """
 from __future__ import annotations
-from __future__ import annotations
 
 import math
 from dataclasses import dataclass
@@ -65,8 +64,14 @@ def _solve(stops: pd.DataFrame, cfg: OpsConfig, V: int, time_limit_s: int) -> Pl
     N = 1 + n + R + 1
     lat = np.concatenate([[cfg.depot_lat], stops["lat"], np.full(R, cfg.disposal_lat), [cfg.disposal_lat]])
     lon = np.concatenate([[cfg.depot_lon], stops["lon"], np.full(R, cfg.disposal_lon), [cfg.disposal_lon]])
-    km = road_km_matrix(lat, lon, cfg)
-    travel_s = km / cfg.avg_speed_kph * 3600.0
+    if cfg.fixed_travel_min > 0:
+        # PreZero: no coordinates, every drive between two different places takes a fixed time
+        place = np.concatenate([[0], np.arange(1, n + 1), np.full(R + 1, n + 1)])
+        travel_s = np.where(place[:, None] != place[None, :], cfg.fixed_travel_min * 60.0, 0.0)
+        km = travel_s / 3600.0 * cfg.avg_speed_kph
+    else:
+        km = road_km_matrix(lat, lon, cfg)
+        travel_s = km / cfg.avg_speed_kph * 3600.0
 
     service = np.zeros(N)
     nb = stops["n_bins"].to_numpy()
@@ -187,9 +192,14 @@ def _lower_bound_trucks(stops: pd.DataFrame, cfg: OpsConfig) -> int:
     from .geo import haversine_km
     vol, kg = stops["vol_l"].clip(upper=cfg.truck_volume_l), stops["kg"].clip(upper=cfg.truck_payload_kg)
     trips = max(math.ceil(vol.sum() / cfg.truck_volume_l), math.ceil(kg.sum() / cfg.truck_payload_kg), 1)
-    t_dd = haversine_km(cfg.depot_lat, cfg.depot_lon, cfg.disposal_lat, cfg.disposal_lon) * cfg.detour_factor / cfg.avg_speed_kph * 3600
+    if cfg.fixed_travel_min > 0:
+        t_dd = cfg.fixed_travel_min * 60
+        drive = len(stops) * cfg.fixed_travel_min * 60
+    else:
+        t_dd = haversine_km(cfg.depot_lat, cfg.depot_lon, cfg.disposal_lat, cfg.disposal_lon) * cfg.detour_factor / cfg.avg_speed_kph * 3600
+        drive = 0.0
     service = ((cfg.service_min_per_stop + cfg.service_min_per_bin * stops["n_bins"]) * 60).sum()
-    work = service + trips * (cfg.unload_min * 60 + t_dd) + 0.15 * service
+    work = service + drive + trips * (cfg.unload_min * 60 + t_dd) + (0.0 if drive else 0.15 * service)
     return max(1, math.ceil(work / (cfg.shift_hours * 3600)))
 
 
@@ -200,9 +210,10 @@ def plan_routes(stops: pd.DataFrame, cfg: OpsConfig, time_limit_s: int = 3, seed
     stops = stops.reset_index(drop=True)
     if len(stops) == 0:
         return Plan([], [], [], dict(trucks=0, trips=0, stops=0, bins=0, km=0.0, hours=0.0, volume_m3=0.0, weight_t=0.0))
-    lb = _lower_bound_trucks(stops, cfg)
+    must = stops[stops["must"].astype(bool)]
+    lb = _lower_bound_trucks(must if len(must) else stops, cfg)
     tries = []
-    for v in (lb + 1, lb + 3, cfg.max_vehicles):
+    for v in (lb, lb + 1, lb + 2, lb + 4, cfg.max_vehicles):
         v = int(min(max(v, 1), cfg.max_vehicles))
         if v not in tries:
             tries.append(v)

@@ -1,7 +1,7 @@
 """Central configuration. Every value here is a *setting*, not a fact.
 
-Values marked PLACEHOLDER must be replaced with real PreZero numbers
-(truck data, container sizes, depot and disposal-site locations).
+Values marked PREZERO were given by PreZero at the hackathon (14 Nov 2026).
+Values marked PLACEHOLDER are still our own assumptions.
 """
 from __future__ import annotations
 from dataclasses import dataclass, asdict
@@ -9,22 +9,24 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class OpsConfig:
-    # --- waste stream and containers (PLACEHOLDER values) -------------
-    container_volume_m3: float = 3.0      # volume of one glass container
-    glass_density_t_m3: float = 0.35      # bulk density of collected glass
+    # --- waste stream and containers ----------------------------------
+    container_volume_m3: float = 3.0      # PREZERO: all containers are the same size, 3 m3
+    glass_density_t_m3: float = 0.35      # PLACEHOLDER: bulk density of collected glass
 
-    # --- fleet (PLACEHOLDER values) -----------------------------------
-    truck_volume_m3: float = 20.0         # loading volume per trip
-    truck_payload_t: float = 12.0         # weight limit per trip
-    max_vehicles: int = 8
+    # --- fleet ----------------------------------------------------------
+    truck_volume_m3: float = 0.0          # PREZERO: volume unknown, only the 12 t limit counts; 0 = no volume limit
+    truck_payload_t: float = 12.0         # PREZERO: up to 12 t; one truck takes all three glass colours
+    max_vehicles: int = 12                # PREZERO: enough trucks are available, so this is only an upper bound
     vehicle_fixed_cost_min: float = 480.0 # fleet-size priority: one extra truck "costs" this many minutes of driving
 
     # --- shift and driving --------------------------------------------
-    shift_hours: float = 8.0              # max working time per driver
+    shift_hours: float = 8.0              # PREZERO: 8 hour shift (maybe 9)
+    fixed_travel_min: float = 10.0        # PREZERO: no coordinates, assume 10 minutes between containers; 0 = use coordinates
+    working_weekdays: tuple = (0, 1, 2, 3, 4)   # PREZERO: Monday to Friday, no collection on Saturday and Sunday
     avg_speed_kph: float = 25.0
     detour_factor: float = 1.3            # road distance = straight line * factor
-    service_min_per_stop: float = 4.0     # parking, setup
-    service_min_per_bin: float = 3.0      # emptying one container
+    service_min_per_stop: float = 0.0     # extra time per stop on top of driving (parking, setup)
+    service_min_per_bin: float = 5.0      # PREZERO: emptying one container into the truck takes about 5 minutes
     unload_min: float = 15.0              # unloading at the disposal site
 
     # --- locations (PLACEHOLDER, Heilbronn area) -----------------------
@@ -46,7 +48,7 @@ class OpsConfig:
 
     @property
     def truck_volume_l(self):
-        return self.truck_volume_m3 * 1000.0
+        return self.truck_volume_m3 * 1000.0 if self.truck_volume_m3 > 0 else 1e9
 
     @property
     def truck_payload_kg(self):

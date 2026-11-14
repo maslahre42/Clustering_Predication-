@@ -1,3 +1,4 @@
+from __future__ import annotations
 import io
 import numpy as np
 import pandas as pd
@@ -74,6 +75,7 @@ def _stops(n=12, seed=3):
 
 def test_routes_respect_capacity_and_serve_all_mandatory():
     cfg, st = _stops()
+    cfg.truck_volume_m3 = 20.0          # also test an explicit volume limit
     plan = plan_routes(st, cfg, time_limit_s=2)
     assert not plan.dropped_mandatory
     served = {s for r in plan.routes for s, _, _ in r["stops"]}
@@ -88,3 +90,19 @@ def test_routes_respect_capacity_and_serve_all_mandatory():
 def test_empty_input_gives_empty_plan():
     plan = plan_routes(pd.DataFrame(columns=["site", "lat", "lon", "vol_l", "kg", "n_bins", "must", "value"]), OpsConfig())
     assert plan.kpis["trucks"] == 0
+
+
+def test_fixed_travel_time_rule_and_weekend_window():
+    from fillinq.policy import window_end
+    cfg, st = _stops()
+    cfg.fixed_travel_min = 10.0
+    plan = plan_routes(st, cfg, time_limit_s=2)
+    assert not plan.dropped_mandatory
+    n_stops = sum(len(r["stops"]) for r in plan.routes)
+    service_h = float(((cfg.service_min_per_stop + cfg.service_min_per_bin * st["n_bins"]).sum()) / 60)
+    # every stop costs at least one 10-minute drive on top of its service time
+    assert plan.kpis["hours"] >= service_h + n_stops * 10 / 60
+    assert all(r["hours"] <= cfg.shift_hours + 1e-6 for r in plan.routes)
+    # Friday looks ahead to Monday, Monday to Tuesday
+    assert window_end("2026-08-21", cfg) == pd.Timestamp("2026-08-24")
+    assert window_end("2026-08-17", cfg) == pd.Timestamp("2026-08-18")

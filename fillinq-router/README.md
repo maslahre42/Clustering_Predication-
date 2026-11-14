@@ -44,8 +44,8 @@ unload and the drive to the depot. A fixed cost per truck makes the solver use a
 the number of trucks used is the **fleet recommendation**.
 
 **Configurable variables** (sidebar of the route planner, defaults in `fillinq/config.py`): glass density,
-container volume, truck volume and payload, number of trucks, shift length, speed, minutes per stop and per
-container, unloading time, depot and disposal location, look-ahead and risk threshold.
+container volume, truck volume and payload, number of trucks, shift length, minutes of driving between
+containers, speed, minutes per stop and per container, unloading time, depot and disposal location, look-ahead and risk threshold.
 
 ### Backtest
 
@@ -63,35 +63,42 @@ without live sensors.
 
 | | Historical schedule | Dynamic, same service | Dynamic, same effort |
 |---|---|---|---|
-| Site visits | 2,581 | **1,993 (-23%)** | 2,682 (+4%) |
-| Container-days spent full | 55.8k | 56.3k (+1%) | **42.0k (-25%)** |
-| Mean fill at collection | 64% | 74% | 67% |
-| Collections below 40% full | 31% | **20%** | 26% |
-| Truck-days | 336 | **251 (-25%)** | 297 (-12%) |
-| Working hours (illustrative) | 1,179 | 1,118 (-5%) | 1,351 (+15%) |
-| Distance in km (illustrative) | 12,205 | 12,523 (+3%) | 14,474 (+19%) |
-| Overflow events | 2,478 | 2,704 | 2,590 |
+| Site visits | 2,581 | **2,081 (-19%)** | 2,625 (+2%) |
+| Container-days spent full | 55.8k | 54.9k (-2%) | **42.6k (-24%)** |
+| Mean fill at collection | 64% | 73% | 68% |
+| Collections below 40% full | 31% | **20%** | 25% |
+| Truck-days | 217 | **194 (-11%)** | 217 (0%) |
+| Working hours | 1,211 | **1,064 (-12%)** | 1,287 (+6%) |
+| Overflow events | 2,478 | 2,694 | 2,580 |
+
+Working hours and truck-days use PreZero's rules: 10 minutes of driving between containers, 5 minutes to
+empty a container, 12 t per load, 8-hour shift, Monday to Friday.
 
 Forecast quality on held-out readings: AUC 0.84 for "needs collection (fill >= 70%)", against 0.56 when only
 the time since the last visit is known (what a fixed schedule effectively knows). Average error of predicted
 fill 16.5 points against 26.5 for guessing the mean.
 
-Read with care: distance and hours use synthetic coordinates, so do not claim kilometre savings until real
-locations are in (dynamic stops are spread thinly across days, so distance per stop rises). The robust
-findings are fewer visits, fewer truck-days, less time containers sit full, and fewer wasted half-empty
-visits. The number of overflow events does not fall, because single filling cycles are unpredictable
-without live sensors.
+Read with care: this is a simulation, not a measured saving. The robust findings are fewer visits, fewer
+truck-days, less time containers sit full, and fewer wasted half-empty visits. The number of overflow events
+does not fall, because single filling cycles are unpredictable without live sensors.
 
-### Assumptions to confirm with PreZero
+### What PreZero told us (14 Nov 2026) and what is still assumed
 
-1. A reading is taken **before** the container is emptied, and it is emptied at that visit.
-2. Container volume, glass density, truck volume and payload, depot and disposal location are
-   **placeholders** in `config.py`.
-3. The file has **no coordinates**. Positions are synthetic (spread over Heilbronn districts) until you add
-   `data/site_locations.csv`. Stop counts, fill levels and overflow results do not depend on them;
-   kilometres and hours do. Road distance is straight-line times 1.3 (swap in OSRM or OpenRouteService later).
-4. School vacation dates are Baden-Württemberg 2025/26 (`fillinq/calendar_features.py`); holidays come from the
-   `holidays` package.
+From PreZero:
+
+1. A reading is taken with the device **before** the container is emptied, and every visit empties it.
+2. *Overfull* means glass was lying next to the container.
+3. All containers are the same size (3 m3). A truck carries up to 12 t and takes all three colours in one trip.
+   Truck volume is unknown, so only the weight limit is used (`truck_volume_m3 = 0`).
+4. There are **no coordinates**. Driving between two containers is assumed to take 10 minutes
+   (`fixed_travel_min`). The same 10 minutes is used to and from the depot and the unloading site.
+5. Emptying one container takes about 5 minutes. The shift is 8 hours. Collection runs Monday to Friday, so
+   the Friday plan looks ahead to Monday. Enough trucks are available.
+
+Still our own assumptions (`fillinq/config.py`): glass density 0.35 t/m3 (turns fill level into weight) and
+15 minutes per unloading. Map positions are synthetic and only show which truck serves which stops. If you add
+`data/site_locations.csv` and set the driving minutes to 0, real distances are used.
+School vacation dates are Baden-Württemberg 2025/26 (`fillinq/calendar_features.py`).
 
 ### Ideas for next steps
 

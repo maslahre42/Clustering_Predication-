@@ -26,7 +26,7 @@ PLANNER_TRAIN_END = "2026-04-01"
 SCENARIOS = {
     "baseline_replay": None,
     "dynamic_same_service": 0.82,   # tuned: same overflow-days as the historical schedule
-    "dynamic_same_effort": 0.67,    # tuned: about the same number of site visits
+    "dynamic_same_effort": 0.70,    # tuned: about the same number of site visits
     # routed runs serve mandatory stops only (opt_p=1.01) so that distance is compared like for like
 }
 
