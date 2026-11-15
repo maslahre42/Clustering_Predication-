@@ -1,5 +1,7 @@
 # 449 synthetic locations: Heilbronn and the nearest surrounding towns
 
+**Superseded on 2026-11-15 by the [Karlsruhe replacement](karlsruhe-locations.md).** This document describes the previous geography.
+
 **Applied at the user's request on 2026-11-14T13:11:21.830249+00:00.** All 449 existing location UUIDs now use the reviewed coordinates. All 11,701 collection observations and the database schema were preserved. Every assignment remains `is_synthetic = 1` because its relationship to a mapped glass-container site is invented.
 
 A full database backup was created and verified **before** the update: [original database backup](../backups/sql-before-regional-locations-20261114T131121740554Z.db). The [application audit](../backups/location-update-20261114T131121740554Z.json) records original and new positions, coordinate provenance, timestamps and database hashes. Integrity checks passed for the backup and updated database. The update was committed only after its results matched the reviewed proposal and collection history was verified unchanged.

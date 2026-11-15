@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Garbage Collector',
-      meta: [{ name: 'description', content: 'Glass collection history in Heilbronn' }],
+      meta: [{ name: 'description', content: 'Glass collection history in Karlsruhe' }],
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
     },
   },

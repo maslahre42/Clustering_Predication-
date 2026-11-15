@@ -1,12 +1,14 @@
-import type { CollectionProposal } from '../../../shared/api/contracts/proposal'
+import type { CollectionProposal, ProposalStop } from '../../../shared/api/contracts/proposal'
 import type { Location } from '../../../shared/api/contracts/locations'
 import { REASON_LABELS } from './proposal.ts'
+
+export type RouteMapProposal = Pick<CollectionProposal, 'planDate' | 'settings' | 'plan' | 'routing'> & { stops: (Omit<ProposalStop, 'risk'> & { risk: number | null })[] }
 
 const COLORS = ['#087f48', '#3568d4', '#a347ba', '#ce7325', '#087f91', '#c14764', '#776629']
 export interface MapPoint { latitude: number; longitude: number }
 export interface RouteMapStop extends MapPoint {
   key: string; locationId: string; truck: number; load: number; sequence: number; color: string
-  materials: string[]; weightKg: number; risk: number; mandatory: boolean
+  materials: string[]; weightKg: number; risk: number | null; mandatory: boolean
   provenance: 'synthetic' | 'imported' | 'unverified'
 }
 export interface MapPath { load: number; points: MapPoint[]; returning: boolean }
@@ -24,7 +26,7 @@ export function mapPoint(latitude: number | null | undefined, longitude: number 
 }
 
 /** Render only returned street geometry. Stop order never becomes invented straight-line geometry. */
-export function proposalMap(proposal: CollectionProposal, locations: readonly Location[] = []): RouteMapModel {
+export function proposalMap(proposal: RouteMapProposal, locations: readonly Location[] = []): RouteMapModel {
   const yard = mapPoint(proposal.routing?.yard?.roadLatitude ?? proposal.settings.depotLatitude, proposal.routing?.yard?.roadLongitude ?? proposal.settings.depotLongitude)
   const disposal = mapPoint(proposal.routing?.disposal?.roadLatitude ?? proposal.settings.disposalLatitude, proposal.routing?.disposal?.roadLongitude ?? proposal.settings.disposalLongitude)
   const inventory = new Map(locations.map(location => [location.locationId, location]))

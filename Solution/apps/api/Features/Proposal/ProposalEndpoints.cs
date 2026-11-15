@@ -11,6 +11,7 @@ public static class ProposalEndpoints
     /// </summary>
     public static void MapProposalEndpoints(this WebApplication app)
     {
+        app.MapCapacityPlanning();
         app.MapGet("/api/fill-state", async (HistoryDbContext db, IForecastEngine engine, string asOf, CancellationToken ct) =>
         {
             if (!HistoricalCutoff.IsValid(asOf))

@@ -20,7 +20,7 @@ public sealed record OperationsSettings
     public double GreenCompartmentM3 { get; init; }
     public double WhiteCompartmentM3 { get; init; }
     public double CostPerKmEuro { get; init; }
-    public double FixedTruckCostEuro { get; init; }
+    public double FixedTruckCostEuro { get; init; } = 500; // Provider: truck + driver per scheduled day
     public int MaxVehicles { get; init; } = 12;
     // Public routes obtain driving costs from OSRM. Hidden values below only support the C# reference model.
     public double ShiftHours { get; init; } = 8.0;
@@ -37,11 +37,11 @@ public sealed record OperationsSettings
     public bool WorkWednesday { get; init; } = true;
     public bool WorkThursday { get; init; } = true;
     public bool WorkFriday { get; init; } = true;
-    // Yard and unloading site (placeholders near Heilbronn)
-    public double DepotLatitude { get; init; } = 49.1427;
-    public double DepotLongitude { get; init; } = 9.2185;
-    public double DisposalLatitude { get; init; } = 49.1650;
-    public double DisposalLongitude { get; init; } = 9.2350;
+    // Yard and unloading site (demo placeholders in Karlsruhe; same point until operational sites are configured)
+    public double DepotLatitude { get; init; } = 49.0094;
+    public double DepotLongitude { get; init; } = 8.4044;
+    public double DisposalLatitude { get; init; } = 49.0094;
+    public double DisposalLongitude { get; init; } = 8.4044;
     // Selection rules
     public int LookaheadDays { get; init; } = 1;
     public double MustProbability { get; init; } = 0.70;

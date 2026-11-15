@@ -7,7 +7,7 @@ defineProps<{
 <template>
   <UiCard class="location-profile">
     <p class="eyebrow">LOCATION PROFILE</p>
-    <h2>Heilbronn</h2>
+    <h2>Karlsruhe</h2>
     <p>Manually collected glass-bin history</p>
     <dl>
       <dt>Coordinates</dt>

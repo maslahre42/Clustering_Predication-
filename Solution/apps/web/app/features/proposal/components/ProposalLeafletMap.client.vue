@@ -68,7 +68,7 @@ function draw() {
   fit(); focus();
 }
 onMounted(() => {
-  map = L.map(host.value!, { scrollWheelZoom: false }).setView([49.1427, 9.2185], 12);
+  map = L.map(host.value!, { scrollWheelZoom: false }).setView([49.0094, 8.4044], 12);
   L.tileLayer(basemap.url, { attribution: basemap.attribution, maxZoom: basemap.maxZoom }).addTo(map)
     .on('tileerror', () => { tilesUnavailable.value = true })
     .on('tileload', () => { tilesUnavailable.value = false });

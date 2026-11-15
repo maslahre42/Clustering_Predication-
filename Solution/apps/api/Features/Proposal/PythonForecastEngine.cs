@@ -11,7 +11,7 @@ public interface IForecastEngine
     Task<JsonElement> RunAsync(string action, string asOf, OperationsSettings settings,
         IReadOnlyCollection<Observation> observations, IReadOnlyCollection<BinLocation> locations,
         string? locationId = null, string? material = null, int horizonDays = 60,
-        string? start = null, string? end = null, int seed = 7, CancellationToken cancellationToken = default, string? csv = null);
+        string? start = null, string? end = null, int seed = 7, CancellationToken cancellationToken = default, string? csv = null, CapacityScenarioRequest? capacityScenario = null);
 }
 
 public sealed class PythonForecastEngine(IConfiguration configuration, IHostEnvironment environment) : IForecastEngine
@@ -21,7 +21,7 @@ public sealed class PythonForecastEngine(IConfiguration configuration, IHostEnvi
     public async Task<JsonElement> RunAsync(string action, string asOf, OperationsSettings settings,
         IReadOnlyCollection<Observation> observations, IReadOnlyCollection<BinLocation> locations,
         string? locationId = null, string? material = null, int horizonDays = 60,
-        string? start = null, string? end = null, int seed = 7, CancellationToken cancellationToken = default, string? csv = null)
+        string? start = null, string? end = null, int seed = 7, CancellationToken cancellationToken = default, string? csv = null, CapacityScenarioRequest? capacityScenario = null)
     {
         var python = configuration["Forecast:Python"] ?? Path.GetFullPath("../../.venv/bin/python", environment.ContentRootPath);
         var script = Path.GetFullPath(configuration["Forecast:Script"] ?? "../../forecast_service/worker.py", environment.ContentRootPath);
@@ -35,12 +35,12 @@ public sealed class PythonForecastEngine(IConfiguration configuration, IHostEnvi
         info.ArgumentList.Add(script);
         using var process = Process.Start(info) ?? throw new InvalidOperationException("Cannot start the forecasting engine.");
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        timeout.CancelAfter(TimeSpan.FromMinutes(4));
+        timeout.CancelAfter(TimeSpan.FromMinutes(capacityScenario?.Optimize == true ? 8 : 4));
         var output = process.StandardOutput.ReadToEndAsync(timeout.Token);
         var errors = process.StandardError.ReadToEndAsync(timeout.Token);
         try
         {
-            var payload = new { action, asOf, settings, observations, locations, locationId, material, horizonDays, start, end, seed, csv };
+            var payload = new { action, asOf, settings, observations, locations, locationId, material, horizonDays, start, end, seed, csv, capacityScenario };
             await process.StandardInput.WriteAsync(JsonSerializer.Serialize(payload, Json).AsMemory(), timeout.Token);
             process.StandardInput.Close();
             await process.WaitForExitAsync(timeout.Token);
@@ -66,7 +66,7 @@ public sealed class PythonForecastEngine(IConfiguration configuration, IHostEnvi
         {
             if (!process.HasExited) process.Kill(entireProcessTree: true);
             cancellationToken.ThrowIfCancellationRequested();
-            throw new InvalidOperationException("The forecast/simulation exceeded four minutes. Try a shorter simulation window or solver time limit.");
+            throw new InvalidOperationException("The planning calculation exceeded its time limit. Try a shorter planning cycle or simulation window.");
         }
     }
 }

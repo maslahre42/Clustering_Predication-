@@ -32,7 +32,6 @@ const { view, inspectedLocation } = workspace.navigation
       </main>
       <footer class="workspace-footer">
         <strong>Garbage Collector</strong>
-        <span>Heilbronn · manual collection history</span>
       </footer>
     </div>
   </div>

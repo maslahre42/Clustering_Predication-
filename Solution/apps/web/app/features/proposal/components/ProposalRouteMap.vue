@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
-import type { CollectionProposal } from '~/shared/api/contracts/proposal';
+import type { RouteMapProposal } from '../domain/routeMap';
 import type { Location } from '~/shared/api/contracts/locations';
 import { formatHours, formatRisk } from '../domain/proposal';
 import { createRouteMapState } from '../state/createRouteMapState';
-const props = withDefaults(defineProps<{ proposal: CollectionProposal; locations?: Location[] }>(), { locations: () => [] });
+const props = withDefaults(defineProps<{ proposal: RouteMapProposal; locations?: Location[] }>(), { locations: () => [] });
 const state = createRouteMapState(toRef(props, 'proposal'), toRef(props, 'locations'));
 const { model, selectedTruck, selectedLoad, selectedStop, showUnserved, expanded, fitVersion,
   visibleTrucks, stops, activeStop, missing, provenance, loads } = state;
@@ -44,7 +44,7 @@ const { model, selectedTruck, selectedLoad, selectedStop, showUnserved, expanded
             <p v-if="index === 0 || truck.stops[index - 1]?.load !== stop.load" class="proposal-map-load">Load {{ stop.load }}</p>
             <button class="proposal-map-stop" type="button" :aria-pressed="selectedStop === stop.key" :aria-label="`Truck ${stop.truck}, stop ${stop.sequence}, location ${stop.locationId}`" @click="selectedStop = stop.key">
               <span class="proposal-map-stop-number" :style="{ background: stop.color }">{{ stop.sequence }}</span>
-              <span><strong>Location {{ stop.locationId.slice(0, 8) }}</strong><small>{{ stop.materials.join(' · ') }} · {{ Math.round(stop.weightKg) }} kg</small><small>{{ stop.mandatory ? 'Must empty' : 'If time allows' }} · {{ formatRisk(stop.risk) }} risk</small></span>
+              <span><strong>Location {{ stop.locationId.slice(0, 8) }}</strong><small>{{ stop.materials.join(' · ') }} · {{ Math.round(stop.weightKg) }} kg</small><small>{{ stop.mandatory ? 'Must empty' : 'If time allows' }} · {{ stop.risk == null ? 'Fill-target schedule' : `${formatRisk(stop.risk)} risk` }}</small></span>
             </button>
             <p v-if="index === truck.stops.length - 1 || truck.stops[index + 1]?.load !== stop.load" class="proposal-map-endpoint">U · Unload {{ stop.load }}</p>
           </template>

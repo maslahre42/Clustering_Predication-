@@ -7,7 +7,7 @@ const { selectedBins } = useCollectionPlan();
   <div class="planning-view">
     <header class="section-title">
       <div>
-        <p class="eyebrow">HEILBRONN OPERATIONS / GLASS COLLECTION</p>
+        <p class="eyebrow">KARLSRUHE OPERATIONS / GLASS COLLECTION</p>
         <h1>Route planner & collection map</h1>
         <p>Review fill after recorded emptyings, inspect locations, and build a collection plan.</p>
       </div>

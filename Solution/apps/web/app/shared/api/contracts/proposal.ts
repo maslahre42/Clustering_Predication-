@@ -27,7 +27,9 @@ export interface ProposalStop {
   roadLatitude?: number; roadLongitude?: number; snapDistanceM?: number
 }
 export interface ProposalTrip { stops: string[]; weightKg: number; volumeL: number; volumeByMaterialL?: Record<string, number> | null }
-export interface OperatingCost { configured: boolean; partial: boolean; variableEuro: number | null; fixedEuro: number | null; totalEuro: number | null; costPerKmEuro: number; fixedTruckCostEuro: number; trucks: number; distanceKm: number | null }
+export interface OperatingCost {
+  drivingIncluded?: boolean
+  configured: boolean; partial: boolean; variableEuro: number | null; fixedEuro: number | null; totalEuro: number | null; costPerKmEuro: number; fixedTruckCostEuro: number; trucks: number; distanceKm: number | null }
 export interface BinFillTiming { locationId: string; material: string; lastEmptied: string; historyCycles: number; censoredCycles: number; medianDaysUntilFull: number | null; earlyDaysUntilFull: number | null; lateDaysUntilFull: number | null; predictedFullDate: string | null; reason: string | null }
 export interface RoadPath { load: number; returning: boolean; points: [number, number][]; distanceKm: number; drivingSeconds: number }
 export interface ProposalRoute { truck: number; trips: ProposalTrip[]; hours: number; distanceKm: number | null; bins: number; territory?: string; roadPaths?: RoadPath[]; drivingHours?: number }

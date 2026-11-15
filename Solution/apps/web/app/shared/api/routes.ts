@@ -8,5 +8,6 @@ export const API_ROUTES = {
   proposal: '/api/proposal',
   forecast: '/api/forecast',
   simulation: '/api/simulation',
+  'capacity-scenario': '/api/capacity-scenario',
   health: '/api/health',
 } as const

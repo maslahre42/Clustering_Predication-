@@ -16,7 +16,8 @@ def operating_cost(distance_km, trucks, settings):
     money = lambda value: float(cents(value))
     variable_amount = None if per_km > 0 and distance_km is None else Decimal(str(distance_km or 0)) * Decimal(str(per_km))
     fixed_amount = Decimal(str(trucks)) * Decimal(str(fixed))
-    return dict(configured=configured,partial=configured and (per_km == 0 or fixed == 0),
+    return dict(configured=configured,partial=configured and (fixed == 0 or (per_km > 0 and distance_km is None)),
+        drivingIncluded=fixed > 0 and per_km == 0,
         variableEuro=money(variable_amount) if configured and variable_amount is not None else None,
         fixedEuro=money(fixed_amount) if configured else None,
         totalEuro=money(cents(variable_amount) + cents(fixed_amount)) if configured and variable_amount is not None else None,

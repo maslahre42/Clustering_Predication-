@@ -49,7 +49,7 @@ test('time-to-full sorts overdue first and retains explicit missing estimates',(
 
 test('cost panel distinguishes unpriced and partial costs',async t=>{
  const Cost=await component('OperatingCosts')
- assert.match(mount(t,Cost).text(),/Enter your variable cost/)
+ assert.match(mount(t,Cost).text(),/Enter your truck-day package/)
  const costs={...plan().costs,partial:true}
  const m=mount(t,Cost,{costs})
  assert.match(m.text(),/Partial estimate/);assert.match(m.text(),/once per scheduled truck/);assert.match(m.text(),/165.00/)
@@ -87,4 +87,11 @@ test('presentation navigates six actual-data slides, exports and closes by Escap
  m.all().find(n=>n.tag==='button'&&n.text.includes('Download')).props.onClick();assert.equal(exports,1)
  dialog.props.onCancel({preventDefault(){}});assert.equal(closed,1)
  assert.equal(nextSlide(0,-1),0);assert.equal(nextSlide(5,1),5)
+})
+
+test('inclusive truck-day pricing shows driving included with no misleading zero-per-km line',async t=>{
+ const costs={configured:true,partial:false,drivingIncluded:true,costPerKmEuro:0,fixedTruckCostEuro:500,variableEuro:0,fixedEuro:1500,totalEuro:1500,trucks:3,distanceKm:759.1}
+ const m=mount(t,await component('OperatingCosts'),{costs})
+ assert.match(m.text(),/Included in truck-day package/);assert.match(m.text(),/759.1.*road km/);assert.match(m.text(),/Total estimate/);assert.match(m.text(),/1,500.00/)
+ assert.doesNotMatch(m.text(),/Not priced|Partial estimate|0.00.*km/)
 })

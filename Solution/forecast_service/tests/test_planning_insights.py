@@ -130,3 +130,14 @@ def test_public_explanations_describe_methods_without_contributor_credits():
         *[s['label'] for s in simulation['scenarios']],*[m['label'] for m in simulation['forecastComparison']['models']],
         simulation['forecastComparison']['note'],simulation['optimizationCheck'].get('note','')]
     assert not re.search(r'\b(omar|kaise|zakaria|zakarea)\b',json.dumps(visible),re.I)
+
+
+def test_truck_day_package_includes_driving_without_a_second_kilometre_charge():
+    settings={'fixedTruckCostEuro':500,'costPerKmEuro':0}
+    a=operating_cost(759.1,3,settings)
+    b=operating_cost(1200,3,settings)
+    assert a['drivingIncluded'] and not a['partial']
+    assert a['totalEuro']==1500==b['totalEuro']
+    assert a['variableEuro']==0
+    extra=operating_cost(100,3,{**settings,'costPerKmEuro':1})
+    assert not extra['drivingIncluded'] and extra['totalEuro']==1600

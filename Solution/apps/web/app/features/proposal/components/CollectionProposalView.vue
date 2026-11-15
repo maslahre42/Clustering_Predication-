@@ -52,7 +52,7 @@ function useAsPlan() {
       <div>
         <p class="eyebrow">FORECAST & ROUTE PROPOSAL</p>
         <h1>Plan your next collection.</h1>
-        <nav class="proposal-workflow" aria-label="Forecast and simulation sections"><a href="#proposal-setup"><span>1</span> Set your options</a><a href="#route-proposal"><span>2</span> Review routes</a><a href="#simulation"><span>3</span> Test a scenario</a></nav>
+        <nav class="proposal-workflow" aria-label="Forecast and simulation sections"><a href="#proposal-setup"><span>1</span> Set your options</a><a href="#route-proposal"><span>2</span> Review routes</a><a href="#capacity-planning"><span>3</span> Compare financial impact</a><a href="#simulation"><span>4</span> Backtest policies</a></nav>
         <p v-if="ready && data">Uses collection records through {{ asOf }} only. Proposal for the next collection day: <strong>{{ data.planDate }}</strong>.</p>
         <p v-else>Uses collection records through {{ asOf }} only.</p>
       </div>
@@ -75,6 +75,7 @@ function useAsPlan() {
       <ProposalSettingsForm :settings="settings.draft.value" :errors="settings.errors.value" :dirty="settings.dirty.value"
         @number="settings.setNumber" @flag="settings.setFlag" @apply="apply" @reset="reset" />
     </section>
+    <CapacityPlanning :locations="dataset ? [] : clusters" :as-of="asOf" :settings="stored" :dataset="dataset" :dirty="settings.dirty.value" :bins="dataset ? data?.bins ?? [] : clusters.flatMap(c => c.bins)" />
     <div class="proposal-section-heading"><p class="eyebrow">2 · REVIEW ROUTES</p><h2>Your collection proposal</h2><p>Calculated with your applied options. Review the route before accepting it.</p></div>
     <UiInfoCard v-if="settings.dirty.value" headline="You have unapplied changes" color="warning" role="status"><p>Apply your options above to update these routes and enable simulation.</p></UiInfoCard>
     <WorkspaceState v-if="error" state="error" title="Proposal unavailable" :description="problem || 'Check the API connection, the selected date and the operating numbers.'" action="Retry" @action="refresh()" />

@@ -70,7 +70,7 @@ onBeforeUnmount(() => { resizeObserver?.disconnect(); map?.remove(); });
 </script>
 <template>
   <div class="map-wrapper">
-    <div ref="host" class="map" :aria-label="`Map of bin locations in Heilbronn · ${basemap.provider} · ${coordinateSourceLabel(locations)}`" />
+    <div ref="host" class="map" :aria-label="`Map of bin locations in Karlsruhe · ${basemap.provider} · ${coordinateSourceLabel(locations)}`" />
     <a v-if="basemap.provider === 'MapTiler OMT'" class="maptiler-logo" href="https://www.maptiler.com/" target="_blank" rel="noopener noreferrer" aria-label="MapTiler map provider">
       <img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler" width="100" height="25" />
     </a>

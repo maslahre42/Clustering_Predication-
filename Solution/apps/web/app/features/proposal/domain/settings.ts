@@ -19,12 +19,12 @@ export const DEFAULT_PROPOSAL_SETTINGS: Readonly<ProposalSettings> = Object.free
   containerVolumeM3: 3, glassDensityKgM3: 350,
   truckPayloadT: 12, truckVolumeM3: 0, maxVehicles: 12,
   brownCompartmentM3: 0, greenCompartmentM3: 0, whiteCompartmentM3: 0,
-  costPerKmEuro: 0, fixedTruckCostEuro: 0,
+  costPerKmEuro: 0, fixedTruckCostEuro: 500,
   shiftHours: 8,
   serviceMinPerBin: 5, serviceMinPerStop: 0, unloadMin: 15,
   workSaturday: false, workSunday: false,
   workMonday: true, workTuesday: true, workWednesday: true, workThursday: true, workFriday: true,
-  depotLatitude: 49.1427, depotLongitude: 9.2185, disposalLatitude: 49.165, disposalLongitude: 9.235,
+  depotLatitude: 49.0094, depotLongitude: 8.4044, disposalLatitude: 49.0094, disposalLongitude: 8.4044,
   lookaheadDays: 1, mustProbability: 0.7, neighbourProbability: 0.12, neighbourFillPercent: 40, optionalProbability: 0.4,
   optionalValueMin: 0, solverTimeLimitSeconds: 3,
 })
@@ -51,8 +51,8 @@ export const SETTING_GROUPS: readonly { title: string; fields: readonly SettingF
     { key: 'whiteCompartmentM3', label: 'White glass compartment', unit: 'm³', min: 0, max: 500, step: 0.5, source: 'Assumption', help: 'Configure all three compartments together. All colors unload at the disposal site.' },
   ] },
   { title: 'Operating costs', fields: [
-    { key: 'costPerKmEuro', label: 'Variable road cost', unit: '€ per km', min: 0, max: 1000, step: 0.01, source: 'Assumption', help: 'Fuel and other variable distance costs. Zero leaves this part unpriced.' },
-    { key: 'fixedTruckCostEuro', label: 'Fixed truck shift cost', unit: '€ per truck', min: 0, max: 100000, step: 1, source: 'Assumption', help: 'Fixed cost of each scheduled truck shift, excluding the per-km costs above. Zero leaves this part unpriced.' },
+    { key: 'costPerKmEuro', label: 'Additional distance charge', unit: '€ per km', min: 0, max: 1000, step: 0.01, source: 'Assumption', help: 'Driving kilometres are included in the €500 truck-day package. Leave zero. Enter a positive rate only for an additional charge outside that package.' },
+    { key: 'fixedTruckCostEuro', label: 'Truck-day package', unit: '€ per truck', min: 0, max: 100000, step: 1, source: 'PreZero', help: 'Provider: €500 per truck-day includes truck, driver and driving kilometres. Counted once per scheduled day, including multiple unloading loads.' },
   ] },
   { title: 'Selection rule', fields: [
     { key: 'lookaheadDays', label: 'Look-ahead', unit: 'collection days', min: 1, max: 14, step: 1, source: 'Planner', integer: true, help: '1 = empty what would overflow before the next collection day.' },

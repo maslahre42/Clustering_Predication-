@@ -1,9 +1,9 @@
 import { computed, ref, watch, type Ref } from 'vue'
-import type { CollectionProposal } from '../../../shared/api/contracts/proposal'
+import type { RouteMapProposal } from '../domain/routeMap'
 import type { Location } from '../../../shared/api/contracts/locations'
 import { proposalMap } from '../domain/routeMap.ts'
 
-export function createRouteMapState(proposal: Readonly<Ref<CollectionProposal>>, locations: Readonly<Ref<readonly Location[]>>) {
+export function createRouteMapState(proposal: Readonly<Ref<RouteMapProposal>>, locations: Readonly<Ref<readonly Location[]>>) {
   const selectedTruck = ref<number | null>(null)
   const selectedLoad = ref('')
   const selectedStop = ref('')

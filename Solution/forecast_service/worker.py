@@ -327,6 +327,21 @@ def simulation(payload):
           'The twin shares the seasonal forecast model family and can favor it. The real-reading benchmark is separate. Repeat with other seeds and settings before drawing conclusions.'])
 
 
+def capacity_scenario(payload):
+    from integrations.capacity_planning import compare, validate
+    df = readings(payload)
+    cfg = config(payload['settings'])
+    enable_street_routing(cfg)
+    try:
+        validate(payload['capacityScenario'])
+        if payload['capacityScenario'].get('optimize'):
+            from integrations.joint_planning import optimize
+            return optimize(df, payload, cfg, street_route_shapes)
+        return compare(df, payload, cfg)
+    except ValueError as error:
+        raise DatasetValidationError([dict(rule_id='capacity_scenario', row_number=0, message=str(error))]) from error
+
+
 def clean(value):
     if isinstance(value,dict): return {str(k):clean(v) for k,v in value.items()}
     if isinstance(value,(list,tuple)): return [clean(v) for v in value]
@@ -338,7 +353,7 @@ if __name__ == '__main__':
     try:
         payload = json.load(sys.stdin)
         with contextlib.redirect_stdout(io.StringIO()):
-            result = {'proposal':proposal,'forecast':forecast,'simulation':simulation,'state':selected_day_state}[payload['action']](payload)
+            result = {'proposal':proposal,'forecast':forecast,'simulation':simulation,'state':selected_day_state,'capacity':capacity_scenario}[payload['action']](payload)
         print(json.dumps(clean(result),allow_nan=False))
     except Exception as exc:
         print(json.dumps({'error':str(exc), **({'validation':{'errors':exc.errors,'warnings':exc.warnings}} if isinstance(exc,DatasetValidationError) else {})}))

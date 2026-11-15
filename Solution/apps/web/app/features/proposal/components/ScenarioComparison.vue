@@ -23,7 +23,7 @@ const plans = computed(() => props.baseline ? [props.baseline,props.proposal] : 
         <tr><th>Working hours</th><td v-for="(p,i) in plans" :key="i">{{ p.plan.totals.hours.toFixed(1) }}</td></tr>
         <tr><th>Containers collected</th><td v-for="(p,i) in plans" :key="i">{{ p.plan.totals.bins }}</td></tr>
         <tr><th>Missed urgent sites</th><td v-for="(p,i) in plans" :key="i">{{ missedUrgent(p) }}</td></tr>
-        <tr><th>Variable €/km / fixed €/shift</th><td v-for="(p,i) in plans" :key="i">{{ p.settings.costPerKmEuro || 'Unpriced' }} / {{ p.settings.fixedTruckCostEuro || 'Unpriced' }}</td></tr>
+        <tr><th>Additional €/km / package €/day</th><td v-for="(p,i) in plans" :key="i">{{ p.settings.costPerKmEuro || (p.settings.fixedTruckCostEuro > 0 ? 'Driving included' : 'Unpriced') }} / {{ p.settings.fixedTruckCostEuro || 'Unpriced' }}</td></tr>
         <tr><th>Estimated cost</th><td v-for="(p,i) in plans" :key="i">{{ euro(p.costs?.totalEuro) }}{{ p.costs?.partial ? ' (partial)' : '' }}</td></tr>
       </tbody></table></div>
       <p v-if="comparison.comparable">Matched completed service. Road-distance reduction: {{ comparison.savedKm?.toFixed(1) ?? 'Unavailable' }} km. Estimated cost reduction: {{ euro(comparison.savedEuro) }}{{ proposal.costs?.partial ? ' (partial cost categories)' : '' }}. Negative values mean an increase. These are modelled differences, not measured savings.</p>

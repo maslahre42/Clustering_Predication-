@@ -34,6 +34,9 @@ const components = {
   SimulationResults: 'features/proposal/components/SimulationResults.vue',
   ProjectValidationResults: 'features/proposal/components/ProjectValidationResults.vue',
   ProposalDataEvidence: 'features/proposal/components/ProposalDataEvidence.vue',
+  CapacityPlanning: 'features/proposal/components/CapacityPlanning.vue',
+  CapacityResults: 'features/proposal/components/CapacityResults.vue',
+  JointPlanningResults: 'features/proposal/components/JointPlanningResults.vue',
 }
 
 /** Compile actual components. Resolve runtime imports against their original source. */

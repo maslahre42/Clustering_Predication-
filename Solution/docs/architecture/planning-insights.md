@@ -1,6 +1,6 @@
 # Compartments, costs, timing and scenario evidence
 
-The live proposal uses `forecast_service/integrations/planning_insights.py` for cost arithmetic and time-to-full explanations. `OperationsSettings.cs` owns HTTP validation; web `domain/settings.ts` mirrors the editable contract. All new rates/capacities default to zero: unpriced or unknown, not an invented equal split.
+The live proposal uses `forecast_service/integrations/planning_insights.py` for cost arithmetic and time-to-full explanations. `OperationsSettings.cs` owns HTTP validation; web `domain/settings.ts` mirrors the editable contract. Glass compartment capacities default to zero (unknown). Additional distance charge defaults to zero because driving kilometres are included in the daily package. Following provider confirmation on 15 November 2026, truck, driver and driving kilometres default to an inclusive €500 per scheduled truck-day. See [capacity/frequency and financial scenarios](capacity-planning.md).
 
 ## Physical capacity
 
@@ -10,7 +10,7 @@ The same material demand and capacities reach historical/Omar/Zakaria policy rep
 
 ## Operating costs
 
-`road km × variable EUR/km + scheduled truck shifts × fixed EUR/shift`. Only trucks with served collections count; multiple unloading loads do not create extra fixed charges. Replay counts actual truck-days. Decimal arithmetic rounds each cost category to cents, then sums those displayed categories. Both rates zero means unpriced, not a free operation. One rate zero is explicitly a partial estimate. A positive distance rate without street distance cannot yield a total. These prices explain plans; the routing objective remains road distance with hard service/capacity/shift constraints.
+`road km × variable EUR/km + scheduled truck shifts × fixed EUR/shift`. Only trucks with served collections count; multiple unloading loads do not create extra fixed charges. Replay counts actual truck-days. Decimal arithmetic rounds each cost category to cents, then sums those displayed categories. Both rates zero means unpriced, not a free operation. A positive truck-day package with zero additional €/km includes driving and is a complete operating-cost estimate. A missing truck-day price remains partial. Positive €/km is only an explicitly added charge outside the package. A positive distance rate without street distance cannot yield a total. These prices explain plans; the routing objective remains road distance with hard service/capacity/shift constraints.
 
 ## Time until full
 
