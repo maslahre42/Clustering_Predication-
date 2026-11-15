@@ -11,6 +11,15 @@ public static class ProposalEndpoints
     /// </summary>
     public static void MapProposalEndpoints(this WebApplication app)
     {
+        app.MapGet("/api/fill-state", async (HistoryDbContext db, IForecastEngine engine, string asOf, CancellationToken ct) =>
+        {
+            if (!HistoricalCutoff.IsValid(asOf))
+                return Results.Problem("Use an ISO date (yyyy-MM-dd) for asOf.", statusCode: 400);
+            var observations = await db.Observations.AsNoTracking().Through(HistoricalCutoff.Parse(asOf)).ToListAsync(ct);
+            try { return Results.Ok(await engine.RunAsync("state", asOf, OperationsSettings.Default, observations, [], cancellationToken: ct)); }
+            catch (DatasetRejectedException ex) { return Results.Json(new { detail = ex.Message, validation = ex.Validation }, statusCode: 400); }
+            catch (InvalidOperationException ex) { return Results.Problem(ex.Message, statusCode: 503, title: "Selected-day fill estimates unavailable"); }
+        });
         app.MapGet("/api/proposal", async (HistoryDbContext db, IForecastEngine engine, string asOf, [AsParameters] ProposalRequest request, CancellationToken ct) =>
         {
             if (!HistoricalCutoff.IsValid(asOf))

@@ -1,12 +1,12 @@
-# Build with the repository root as context; only code is copied, never the source database.
+# Build with the standalone project root as context; only code is copied, never the source database.
 FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS build
 WORKDIR /src
-COPY Solution/global.json Solution/NuGet.Config Solution/
-COPY Solution/apps/api/ Solution/apps/api/
-COPY Solution/forecast_service/worker.py Solution/forecast_service/requirements.txt Solution/forecast_service/
-COPY Solution/forecast_service/integrations/ Solution/forecast_service/integrations/
-COPY Omar-Work/fillinq/ Omar-Work/fillinq/
-RUN dotnet publish Solution/apps/api/GarbageCollector.Api.csproj -c Release -o /publish
+COPY global.json NuGet.Config ./
+COPY apps/api/ apps/api/
+COPY forecast_service/worker.py forecast_service/requirements.txt forecast_service/
+COPY forecast_service/integrations/ forecast_service/integrations/
+COPY forecast_service/vendor/fillinq/ forecast_service/vendor/fillinq/
+RUN dotnet publish apps/api/GarbageCollector.Api.csproj -c Release -o /publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble
 WORKDIR /app

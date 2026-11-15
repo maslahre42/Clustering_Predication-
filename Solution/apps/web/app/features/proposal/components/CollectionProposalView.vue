@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ProposalDataset, DataIssue } from '~/shared/api/contracts/comparison';
+import { createScenarioComparison } from '../state/createScenarioComparison';
 import { createProposalDataset } from '../state/createProposalDataset';
 import type { ProposalSettings } from '~/shared/api/contracts/proposal';
 import { downloadCsv } from '~/shared/browser/download';
@@ -8,7 +9,7 @@ import { REASON_LABELS, formatHours, proposalCsv, proposalSummary } from '../dom
 import { DEFAULT_PROPOSAL_SETTINGS } from '../domain/settings';
 import { createProposalSettings } from '../state/createProposalSettings';
 
-const { asOf } = useWorkspaceData();
+const { asOf, clusters } = useWorkspaceData();
 const { view } = useWorkspaceNavigation();
 const plan = useCollectionPlan();
 // Applied settings survive switching between workspace modules.
@@ -16,9 +17,13 @@ const stored = useState<ProposalSettings>('proposal-settings', () => ({ ...DEFAU
 const dataset = useState<ProposalDataset | null>('proposal-dataset', () => null);
 const upload = createProposalDataset(dataset);
 watch(dataset, () => plan.clearPlan(), { flush: 'sync' });
-const settings = createProposalSettings(stored.value);
+const settings = createProposalSettings(stored.value, DEFAULT_PROPOSAL_SETTINGS);
 const { data, error, status, refresh, ready, problem } = useCollectionProposal(asOf, stored, dataset);
 
+const scenarioContext = computed(() => JSON.stringify([asOf.value,dataset.value]));
+const scenarios = createScenarioComparison(data,scenarioContext);
+const presenting = ref(false);
+watch([data,asOf,dataset,settings.dirty],() => { presenting.value = false }, { flush: 'sync' });
 const validationIssues = computed(() => (error.value?.data as { validation?: { errors: DataIssue[] } } | undefined)?.validation?.errors ?? []);
 async function selectFile(event: Event) {
   const input = event.target as HTMLInputElement;
@@ -58,7 +63,7 @@ function useAsPlan() {
         <details class="proposal-disclosure">
           <summary>Import a different CSV <span>Optional</span></summary>
           <div class="proposal-disclosure-content">
-            <p>Use your own readings for routes, forecasts and simulation. The original inventory stays unchanged.</p>
+            <p>Use your own readings for routes, forecasts and simulation. The original inventory stays unchanged. Road routes require coordinates for each location; readings without coordinates can still be inspected and forecast.</p>
             <label>Readings CSV (up to 2 MB)<input type="file" accept=".csv,text/csv" :disabled="upload.reading.value" @change="selectFile" /></label>
             <p>Required columns: Location_id, material_type, date, fill_level_perc. Dates: YYYY-MM-DD. Materials: brown, green, white. Fill: integer 0–100 or overfull.</p>
           </div>
@@ -83,12 +88,21 @@ function useAsPlan() {
           <MetricCard label="CONTAINERS EMPTIED" :value="data.plan.totals.bins" :caption="`${summary.due} are due · the rest sit at sites a truck visits anyway`" />
           <MetricCard label="WORKING TIME" :value="formatHours(data.plan.totals.hours)" :caption="`All trucks together · about ${data.plan.totals.weightT.toFixed(1)} t of glass`" compact />
         </div>
-        <UiInfoCard v-if="summary.unservedMandatory" headline="Some urgent stops do not fit" color="danger" role="alert">
-          <p>{{ summary.unservedMandatory }} stops that must be emptied are not in the plan. Add trucks or lengthen the shift in your options above.</p>
+        <UiInfoCard headline="Street routes · coordinated service sectors">
+          <p>{{ data.plan.totals.distanceKm?.toFixed(1) ?? '—' }} km on car-accessible streets. Each truck serves a compact sector across its loads. Road distance is the routing objective; estimated driving times, collection service, unloading and the yard return must fit the shift.</p>
         </UiInfoCard>
+        <UiInfoCard v-if="summary.unservedMandatory" headline="Some urgent stops do not fit" color="danger" role="alert">
+          <p>{{ summary.unservedMandatory }} stops that must be emptied are not in the plan. Review the reasons below; adjust available trucks, shift length or the routing search budget before dispatch.</p>
+        </UiInfoCard>
+        <UiInfoCard v-if="!data.settings.brownCompartmentM3" headline="Glass compartment sizes are unknown"><p>This plan enforces total volume and payload only. Enter the actual brown, green and white capacities in Glass compartments above to check each colour separately.</p></UiInfoCard>
+        <OperatingCosts :costs="data.costs" />
+        <ScenarioComparison :proposal="data" :baseline="scenarios.baseline.value" :dirty="settings.dirty.value" @save="scenarios.save" @clear="scenarios.clear" />
+        <UiButton label="Present this plan" mode="outline" :disabled="settings.dirty.value" @click="presenting = true" />
+        <PlanPresentation v-if="presenting" :proposal="data" :baseline="scenarios.baseline.value" @close="presenting = false" @export="exportSheet" />
         <UiCard id="route-proposal" class="analytics-panel">
           <h2>Proposed routes for {{ data.planDate }}</h2>
           <p>A truck unloads when its next stop would exceed the load limit and then continues. Fill levels and weights are forecasts, not measurements.</p>
+          <ProposalRouteMap :proposal="data" :locations="dataset ? [] : clusters" />
           <ProposalRoutesTable :proposal="data" />
           <ul v-if="unservedByReason.length" class="proposal-unserved">
             <li v-for="[reason, count] in unservedByReason" :key="reason">{{ count }} stops not served — {{ reason }}</li>
@@ -99,6 +113,7 @@ function useAsPlan() {
           </div>
           <p v-if="dataset">Export uploaded-data routes here. The collection manifest uses the original inventory; switch back to the original dataset to accept a plan there.</p>
         </UiCard>
+        <FillTimingTable :rows="data.fillTiming ?? []" />
         <ForecastAnalysis :as-of="asOf" :settings="stored" :settings-dirty="settings.dirty.value" :proposal="data" :dataset="dataset" />
         <div class="proposal-section-heading"><p class="eyebrow">SUPPORTING DETAILS</p><h2>Understand the forecast</h2><p>Inspect overflow risk, data quality and model assumptions.</p></div>
         <details class="proposal-disclosure proposal-support"><summary>Containers most likely to overflow</summary>
@@ -112,7 +127,7 @@ function useAsPlan() {
         <details class="proposal-disclosure proposal-support"><summary>How the forecast works & assumptions</summary>
         <UiCard class="analytics-panel proposal-model">
           <h2>How the forecast works</h2>
-          <p>Omar’s Python model learns from {{ data.model.cycles.toLocaleString('en-US') }} filling periods ({{ data.model.censoredCycles.toLocaleString('en-US') }} censored). Container rates borrow from glass-type averages, with month and school-vacation effects. Engine: {{ data.model.engine || 'C# baseline' }}.</p>
+          <p>The seasonal cycle model learns from {{ data.model.cycles.toLocaleString('en-US') }} filling periods ({{ data.model.censoredCycles.toLocaleString('en-US') }} censored). Container rates borrow from glass-type averages, with month and school-vacation effects.</p>
           <p v-if="data.model.vacationMultiplier != null">Fitted school-vacation multiplier: {{ data.model.vacationMultiplier.toFixed(2) }}. This is a model association, not proof of causality.</p>
           <details v-if="data.model.seasonality?.length"><summary>Fitted monthly rate multipliers</summary><table><thead><tr><th>Month</th><th>Multiplier</th></tr></thead><tbody><tr v-for="row in data.model.seasonality" :key="row.month"><td>{{ row.month }}</td><td>{{ row.multiplier.toFixed(2) }}</td></tr></tbody></table></details>
           <dl>

@@ -1,0 +1,58 @@
+[project]
+name = "wasterouting"
+version = "0.1.0"
+description = "WasteRouting.AI: explainable glass-waste collection forecasting and route-optimisation prototype (PreZero/Heilbronn challenge)"
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+# Upper bound <3.15: as of 2026-11-14 ortools (9.15) publishes wheels only up to
+# cp314; resolution on 3.15 fails. Relax when ortools ships cp315 wheels.
+dependencies = [
+    "pandas>=3.1.1",
+    "numpy>=2.5.4",
+    "scikit-learn>=1.9.1",
+    "ortools>=9.15.6755",
+    "fastapi>=0.162.7",
+    "uvicorn>=0.54.0",
+    "python-multipart>=0.0.20",
+    "pydantic>=2.14.3",
+    "matplotlib>=3.11.2",  # approved by user 2026-11-14 for M3 reproducible EDA plots
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.5",
+    "mypy>=2.4.1",
+    "httpx>=0.28",  # FastAPI TestClient dependency (M10 contract tests)
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+# `src` is an implicit namespace package (no src/__init__.py): modules are
+# imported as `src.data`, `src.api`, ... from the repository root.
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+namespaces = true
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "."
+files = ["src"]

@@ -19,7 +19,7 @@ The reused source files and integration adaptations are documented in [contribut
 5. Choose a simulation window of 1–31 days and run it. Compare historical-calendar, Omar and Zakaria policies, then inspect the separate real-reading forecast comparison and independent optimization check.
 6. Export the selected dataset's route sheet. Original-data proposals can also be accepted into the collector manifest. Uploaded datasets remain scoped to this analysis module; their routes cannot be silently applied to the unrelated original inventory.
 
-Changing the dataset clears the collection draft and invalidates analyses. Changing dates/settings invalidates dependent results. Uploading a CSV never writes SQLite, replaces inventory in other modules, imports coordinates from unrelated UUIDs, or loads another contributor's saved metrics. Imported data has no coordinates: use fixed travel minutes; coordinate mode reports missing positions rather than inventing geography.
+Changing the dataset clears the collection draft and invalidates analyses. Changing dates/settings invalidates dependent results. Uploading a CSV never writes SQLite, replaces inventory in other modules, imports coordinates from unrelated UUIDs, or loads another contributor's saved metrics. CSV-only readings have no coordinates: missing positions remain unserved. Public routing now requires OSRM car streets and never invents geometry or uses fixed journey times. See [street routing](architecture/street-routing.md).
 
 ## Evaluation contract
 
@@ -41,6 +41,6 @@ The UI shows optimal/feasible/infeasible/unavailable status, sampled sites, capa
 
 Existing GET endpoints continue to use read-only SQLite snapshots. POST `/api/proposal`, `/api/forecast` and `/api/simulation` accept `{ "csv": "..." }` with the same date/settings query parameters. POST does not mix imported observations with SQLite or its coordinates. Validation errors return HTTP 400 with `validation.errors` and `validation.warnings`; dependency/runtime failures remain HTTP 503. The Nuxt proxy permits POST only for these analysis endpoints.
 
-Python integration packages and contributor source travel with .NET publish and the API Docker context. No generated environment, raw CSV, database or license is bundled in the image.
+All Python source is owned inside this standalone project: `forecast_service/integrations` and `forecast_service/vendor/fillinq`. The same files travel with .NET publish and the project-local API Docker context; no sibling project folders are required. No generated environment, raw CSV, database or license is bundled in the image.
 
 See [verification](combined-project-verification.md) for executed checks and real-data results.

@@ -19,9 +19,10 @@ const trucks = computed(() => props.proposal.plan.routes.map(route => ({
         <li v-for="truck in trucks" :key="truck.truck">
           <strong>Truck {{ truck.truck }}</strong>
           <span>{{ truck.loads }} {{ truck.loads === 1 ? 'load' : 'loads' }} · {{ truck.stops }} stops · {{ truck.bins }} containers</span>
-          <span>{{ truck.time }}<template v-if="truck.distance != null"> · {{ truck.distance.toFixed(1) }} km straight-line × detour</template></span>
+          <span>{{ truck.time }}<template v-if="truck.distance != null"> · {{ truck.distance.toFixed(1) }} km by road</template></span>
         </li>
       </ul>
+      <details><summary>Glass volume by load</summary><p>Volumes are forecast estimates. All compartments reset when unloading. Zero configured capacity means unknown; no equal split is assumed.</p><ul><template v-for="route in proposal.plan.routes" :key="route.truck"><li v-for="(trip,index) in route.trips" :key="index">Truck {{ route.truck }} · load {{ index+1 }} · {{ (trip.volumeL/1000).toFixed(2) }} m³ total<template v-if="trip.volumeByMaterialL"><span v-for="(litres,material) in trip.volumeByMaterialL" :key="material"> · {{ material }} {{ (litres/1000).toFixed(2) }} / {{ proposal.settings[`${material}CompartmentM3` as 'brownCompartmentM3'] || 'unknown' }} m³</span></template></li></template></ul></details>
       <UiTable :table-attrs="{ 'aria-label': 'Proposed stops in driving order' }" density="compact">
         <template #head>
           <tr>

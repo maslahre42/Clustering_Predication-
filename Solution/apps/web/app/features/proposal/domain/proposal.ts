@@ -18,6 +18,10 @@ export const REASON_LABELS: Record<UnservedReason, string> = {
   optional_not_scheduled: 'Optional: no spare time',
   missing_coordinates: 'No coordinates for this site',
   solver_no_solution: 'The solver found no feasible route within its budget',
+  road_unreachable: 'No nearby connected driving access',
+  sector_limit: 'Not scheduled within sector, shift and search limits',
+  exceeds_compartment_capacity: 'A glass compartment is too small for this pickup',
+  material_demand_unknown: 'Glass-specific load volumes are unavailable',
 }
 const COLLECTED: readonly BinDecision[] = ['due', 'neighbour', 'optional']
 const isCollected = (bin: ProposalBin) => COLLECTED.includes(bin.decision)

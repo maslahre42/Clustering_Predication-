@@ -93,7 +93,7 @@ def evidence(df,payload):
     groups = dict(method=grouped.method,gate=grouped.gate,silhouetteByK=grouped.silhouette_by_k,
                   eligible=grouped.n_eligible,insufficient=sum(x['group']=='insufficient_history' for x in labels),
                   profiles=profile_rows,labels=labels,
-                  note='Kaise’s interpretability gates; reset-aware cycle rates replace consecutive fill differences. Descriptive groups do not determine dispatch.')
+                  note='Interpretability gates; reset-aware cycle rates replace consecutive fill differences. Descriptive groups do not determine dispatch.')
     return dict(source=kind,fingerprint=fingerprint,rows=len(df),bins=int(df.container.nunique()),
                 dateMin=None if df.empty else df.date.min().date().isoformat(),dateMax=None if df.empty else df.date.max().date().isoformat(),
                 unknown=int(df.fill.isna().sum()),overfull=int(df.overfull.sum()),warnings=warnings,grouping=groups)

@@ -2,7 +2,7 @@ import { computed, inject, provide, type InjectionKey } from 'vue'
 import { createPlanningDate } from '~/features/workspace/planningDate'
 import type { DatasetDateRange } from '~/shared/api/contracts/dataset'
 import type { Location } from '~/shared/api/contracts/locations'
-import type { PlanningSnapshot } from '~/shared/api/contracts/planning'
+import type { SelectedDayFill, PlanningSnapshot } from '~/shared/api/contracts/planning'
 import { API_ROUTES } from '~/shared/api/routes'
 import { planCsv } from '~/features/manifest/domain/planExport'
 import { proposalCsv } from '~/features/proposal/domain/proposal'
@@ -15,16 +15,18 @@ export function createCollectionWorkspace() {
   const dateRangeRequest = useFetch<DatasetDateRange>(API_ROUTES['data-range'])
   const query = computed(() => ({ asOf: asOf.value }))
   const snapshotRequest = useFetch<PlanningSnapshot>(API_ROUTES.planning, { query })
+  const fillStateRequest = useFetch<SelectedDayFill>(API_ROUTES['fill-state'], { query, timeout: 240000 })
+  const fillStatePending = computed(() => fillStateRequest.status.value === 'pending')
   const locationRequest = useFetch<Location[]>(API_ROUTES.locations)
   const healthRequest = useFetch<{ status: string }>(API_ROUTES.health)
   const error = computed(() => snapshotRequest.error.value || locationRequest.error.value)
   const loading = computed(() => snapshotRequest.status.value === 'pending' || locationRequest.status.value === 'pending')
-  const model = createWorkspaceModel(asOf, { snapshot: snapshotRequest.data, locations: locationRequest.data, error })
+  const model = createWorkspaceModel(asOf, { snapshot: snapshotRequest.data, locations: locationRequest.data, error,fillState:fillStateRequest.data,fillStatePending,fillStateError:fillStateRequest.error })
 
   const planningDate = createPlanningDate(asOf, dateRangeRequest.data)
   async function retry() {
     await dateRangeRequest.refresh()
-    await Promise.all([snapshotRequest.refresh(), locationRequest.refresh(), healthRequest.refresh()])
+    await Promise.all([snapshotRequest.refresh(), locationRequest.refresh(), healthRequest.refresh(), fillStateRequest.refresh()])
   }
   function exportCsv() {
     if (model.plan.stops.value.length) {

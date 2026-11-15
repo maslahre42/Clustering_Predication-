@@ -17,8 +17,8 @@ public class SimulationRulesTests
     [Fact]
     public void PythonOperatingOverridesAreBoundAndValidated()
     {
-        var settings = new ProposalRequest { VehicleFixedCostMin = 600, OptionalValueMin = 25, SolverTimeLimitSeconds = 2 }.ToSettings();
-        Assert.Equal(600, settings.VehicleFixedCostMin);
+        var settings = new ProposalRequest { OptionalValueMin = 25, SolverTimeLimitSeconds = 2 }.ToSettings();
+        Assert.Equal(480, settings.VehicleFixedCostMin);
         Assert.Equal(25, settings.OptionalValueMin);
         Assert.Equal(2, settings.SolverTimeLimitSeconds);
         Assert.Empty(settings.Validate());

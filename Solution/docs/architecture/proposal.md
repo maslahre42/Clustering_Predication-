@@ -22,7 +22,7 @@ After changing API code, restart the API/Aspire host. Source Python is loaded af
 1. ASP.NET validates dates, operations and request-specific bounds.
 2. Its read-only query includes only observations dated on or before the active historical cutoff.
 3. `PythonForecastEngine` starts `forecast_service/worker.py` using the configured interpreter. JSON goes over standard input/output, with no shell interpolation, shared model singleton or extra public network service.
-4. The worker imports the repository's `Omar-Work/fillinq` modules. Published applications include those Python source files under `forecast_service/vendor/fillinq`.
+4. The worker imports the bundled `forecast_service/vendor/fillinq` modules. Development and published applications use the same source; no sibling project folders are required.
 5. It fits the model and returns JSON consumed by typed frontend contracts. Dependency errors are visible, not replaced by a fake forecast or the older C# approximation.
 6. Cancellation stops the process tree. A four-minute limit bounds a calculation; interactive simulations accept at most 31 days.
 
@@ -38,11 +38,11 @@ All accept the same optional `ProposalRequest` operating overrides, including se
 
 Omar's `RateModel` fits partially pooled bin/material log rates, month effects and a BW school-vacation effect with a censored likelihood for numeric 100/overfull cycles. An unknown recorded reading still resets the bin but does not supply a model rate. A zero-day forecast now returns exactly zero fill/risk/quantiles. Future-only bins do not enter historical inventory.
 
-The UI exposes all numeric operations: bin size, density, truck payload/volume, fleet upper bound, shift, fixed driving time or coordinate-based speed/detour, yard/disposal positions, per-bin and per-stop service, unloading, lookahead, mandatory/neighbor/optional thresholds, optional detour value, fixed vehicle cost and solver budget. Calendar flags allow any nonempty collection-week pattern. Applied values survive module navigation; changing them invalidates prior analysis results.
+The UI exposes bin size, density, truck payload/volume, fleet availability, shift, yard/disposal positions, service/unloading, risk thresholds, optional collection value and search budget. Driving distances and times come from OSRM streets; fixed-time, assumed-speed and aerial-detour controls are removed. Calendar flags allow any nonempty collection-week pattern. Applied values survive module navigation; changing them invalidates prior analysis results.
 
 Month multipliers and the fitted school-vacation multiplier are visible. These are fitted associations, not causal findings. Calendar data remains Omar's BW calendar implementation; future regions/years need corresponding calendar maintenance. Model bands/probabilities are not calibrated service guarantees.
 
-OR-Tools groups selected materials into physical sites, enforces payload and optional volume capacity, shifts, intermediate unloading and final return. Oversized/shift-impossible sites are reported rather than clipped. Failed solves retain mandatory status; drop penalties prefer higher-risk mandatory service under constraints. Reported loads are rounded conservatively upward, capacities downward. Fixed-minute mode intentionally reports no kilometers. Coordinate mode retains synthetic provenance and uses haversine × detour, not road navigation.
+OR-Tools groups selected materials into physical sites, enforces payload and optional volume capacity, shifts, intermediate unloading and final return. Oversized/shift-impossible sites are reported rather than clipped. Failed solves retain mandatory status; drop penalties prefer higher-risk mandatory service under constraints. Reported loads are rounded conservatively upward, capacities downward. Public routes use directional OSRM car-road matrices and returned street geometry, with compact sector ownership across truck loads. No constant-time or aerial fallback is used; see [street routing](street-routing.md).
 
 ## Simulation meaning
 

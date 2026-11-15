@@ -5,13 +5,13 @@ const score = (value: number | null) => value == null ? 'Not enough common cases
 </script>
 <template>
   <section class="analytics-panel surface">
-    <h3>Three-project forecast comparison on real observations</h3>
+    <h3>Forecast comparison on real observations</h3>
     <p>{{ comparison.targets }} eligible targets · {{ comparison.commonNumericCases }} shared uncensored numeric cases · {{ comparison.commonCensoredCases }} shared lower-bound cases · {{ comparison.unknownTargets }} unknown targets.</p>
     <div class="table-scroll"><table><thead><tr><th>Forecast</th><th>Available cases</th><th>Mean absolute error (pp)</th><th>Bias (pp)</th><th>Lower-bound shortfall (pp)</th></tr></thead><tbody>
       <tr v-for="model in comparison.models" :key="model.name"><td>{{ model.label }}</td><td>{{ model.available }} / {{ comparison.evaluated }}</td><td>{{ score(model.mae) }}</td><td>{{ score(model.bias) }}</td><td>{{ score(model.lowerBoundShortfall) }}</td></tr>
     </tbody></table></div>
     <p>{{ comparison.note }}</p>
-    <h3>Zakaria’s independent optimization check</h3>
+    <h3>Independent optimization check</h3>
     <p>{{ optimization.date }} · {{ optimization.sites.length }} sampled sites · <strong>{{ optimization.status }}</strong>. {{ optimization.message }}</p>
     <p v-if="optimization.trucks != null">{{ optimization.trucks }} one-load trucks scheduled; capacity lower bound {{ optimization.fleetLowerBound }}.</p>
     <table v-if="optimization.routes?.length"><thead><tr><th>Truck</th><th>Sites in order</th><th>Weight</th><th>Volume</th><th>Hours</th></tr></thead><tbody>

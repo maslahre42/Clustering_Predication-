@@ -21,6 +21,14 @@ test('route table lists stops per truck and load with weights and urgency', asyn
   assert.match(text, /1 h 45 min/)
 })
 
+test('settings require streets and have no fixed-time challenge controls', async t => {
+  const m = mount(t, await component('ProposalSettingsForm'), { settings: { ...DEFAULT_PROPOSAL_SETTINGS },
+    errors: {}, dirty: false }, undefined, await controls())
+  assert.match(m.text(), /OSRM/)
+  assert.match(m.text(), /compact service sectors/)
+  assert.doesNotMatch(m.text(), /Fixed-time challenge|Driving time between stops|Straight-line detour/)
+})
+
 test('route table says so when nothing needs collecting', async t => {
   const proposal = sampleProposal(); proposal.plan.routes = []; proposal.plan.unserved = []; proposal.stops = []
   const m = mount(t, await component('ProposalRoutesTable'), { proposal }, undefined, await controls())
@@ -121,11 +129,11 @@ test('simulation waits for applied settings and appears before optional forecast
 
 test('combined-project validation reports matched cases and distinguishes the bounded one-load check',async t=>{
   const comparison={targets:10,evaluated:10,commonNumericCases:6,commonCensoredCases:2,unknownTargets:0,note:'Identical targets; lower bounds excluded from MAE.',
-    models:[{name:'omar',label:'Omar',available:10,mae:12,bias:-2,lowerBoundShortfall:5},{name:'zakaria',label:'Zakaria',available:10,mae:14,bias:3,lowerBoundShortfall:7},{name:'kaise',label:'Kaise persistence',available:8,mae:20,bias:-5,lowerBoundShortfall:15}]}
+    models:[{name:'omar',label:'Seasonal cycle model',available:10,mae:12,bias:-2,lowerBoundShortfall:5},{name:'zakaria',label:'Frozen cycle-median model',available:10,mae:14,bias:3,lowerBoundShortfall:7},{name:'kaise',label:'Persistence reference',available:8,mae:20,bias:-5,lowerBoundShortfall:15}]}
   const optimization={date:'2026-08-10',sites:['A','B'],status:'solver_unavailable',message:'Configure a valid license.',scope:'one-load-per-truck',complete:false,note:'Sample only; one load per truck.'}
   const m=mount(t,await component('ProjectValidationResults'),{comparison,optimization})
   assert.match(m.text(),/6 shared uncensored numeric cases/)
-  assert.match(m.text(),/Kaise persistence/);assert.match(m.text(),/12.00/)
+  assert.match(m.text(),/Persistence reference/);assert.match(m.text(),/12.00/)
   assert.match(m.text(),/solver_unavailable/);assert.match(m.text(),/Sample only/)
 })
 

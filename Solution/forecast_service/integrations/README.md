@@ -1,6 +1,6 @@
 # Contributor integrations
 
-These are selective, namespaced copies of the contributor implementations, not replacement models attributed to them. They avoid the two projects' conflicting `src` package names and travel with the published API. Original projects and notebooks remain usable separately.
+These are selective, namespaced copies of the contributor implementations, not replacement models attributed to them. They avoid the two projects' conflicting `src` package names and travel with the published API. The standalone application needs no original project folders or notebooks. The source-project paths below document provenance, not runtime dependencies.
 
 | Source | Reused code | Integration adaptations |
 | --- | --- | --- |
@@ -9,7 +9,7 @@ These are selective, namespaced copies of the contributor implementations, not r
 | `Kaise-Work/src/forecasting/{baseline,features,targets}.py` | Persistence reference and prediction-time feature/target contracts | Used on matched real-reading evaluation cases; the original change-rate baseline is deliberately not used for pre-emptying dispatch |
 | `Zakaria-Work/src/{data_loader,clustering,predictor}.py` | Cycle-median profiles, material fallback, reset-aware demand forecast, site-neighbor selection | Adapter builds equivalent profile input from the common snapshot; rates stay frozen during evaluation; only actual simulated collection changes reset dates |
 | `Zakaria-Work/src/{optimizer,distance_provider}.py` | Independent Gurobi one-load-per-truck MILP, status/unserved accounting, consistent geography | Optimizer accepts extra per-site service minutes; fixed-travel adapter preserves distinct site identities even at coincident/missing coordinates; no claimed kilometers in fixed-time mode |
-| `Omar-Work/fillinq/` | Main seasonal forecast, risk policy, multi-load OR-Tools routing and digital twin | Imported directly in development and vendored during .NET publish, as before |
+| `forecast_service/vendor/fillinq/` | Main seasonal forecast, risk policy, multi-load OR-Tools routing and digital twin | Bundled source used in both development and .NET publish |
 
 `dataset.py` and `comparison.py` are the integration adapters. The original contributor defaults are not blended: physical/fleet/calendar assumptions come from one applied settings object. Zakaria's comparison policy explicitly retains his 80% urgent / 60% same-site selection thresholds; Omar uses probability thresholds. The UI identifies these different decision policies.
 

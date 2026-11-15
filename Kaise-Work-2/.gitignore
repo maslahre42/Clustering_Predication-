@@ -1,0 +1,21 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+.venv/
+node_modules/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.sqlite
+data/derived/
+data/raw/
+.DS_Store
+*.egg-info/
+*.tsbuildinfo
+.coverage
+htmlcov/
+
+# Partner prototype material (private, never committed)
+data/from_partner/

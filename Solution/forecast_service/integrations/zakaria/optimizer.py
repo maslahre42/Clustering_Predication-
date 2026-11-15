@@ -35,7 +35,7 @@ def solve_collection_routes(candidates_df, dist_provider, waste_density_kg_m3=35
                            truck_max_weight_kg=12000.0, max_shift_hours=8.0,
                            max_fleet_vehicles=4, avg_speed_kmh=28.0,
                            service_time_min=5.0, unloading_time_min=15.0,
-                           time_limit_sec=20, mip_gap=0.02, service_time_per_stop_min=0.0):
+                           time_limit_sec=20, mip_gap=0.02, service_time_per_stop_min=0.0, compartment_capacities_m3=None):
     for name, value in [('density', waste_density_kg_m3), ('container_volume', container_volume_m3),
                         ('truck_volume', truck_max_volume_m3), ('truck_payload', truck_max_weight_kg),
                         ('shift', max_shift_hours), ('speed', avg_speed_kmh), ('time_limit', time_limit_sec)]:
@@ -70,21 +70,42 @@ def solve_collection_routes(candidates_df, dist_provider, waste_density_kg_m3=35
     nb = df['n_bins'].to_numpy(dtype=float) if 'n_bins' in df else np.ones(n)
     if not np.isfinite(nb).all() or (nb < 1).any() or (nb != np.floor(nb)).any():
         raise ValueError('n_bins must be positive integers.')
+    caps = compartment_capacities_m3 or {}
+    materials = ('brown','green','white')
+    demands = {}
+    if caps:
+        if set(caps) != set(materials) or any(not np.isfinite(v) or v < .001 for v in caps.values()):
+            raise ValueError('Configure all three material compartments with positive capacities.')
+        for material in materials:
+            if f'{material}_m3' not in df:
+                raise ValueError('Material demand is required for configured compartments.')
+            demands[material] = df[f'{material}_m3'].to_numpy(dtype=float)
+            if not np.isfinite(demands[material]).all() or (demands[material] < 0).any():
+                raise ValueError('Material demand must be finite and nonnegative.')
+        if not np.allclose(sum(demands.values()), vol, atol=1e-7, rtol=1e-7):
+            raise ValueError('Material demand must sum to total volume.')
     service = nb * service_time_min + service_time_per_stop_min
     shift = max_shift_hours * 60
-    back = float(dist_provider.travel_minutes(dist_provider.disposal_to_depot_km, avg_speed_kmh))
-    depot_t = dist_provider.travel_minutes(dist_provider.depot_dist, avg_speed_kmh)
-    disposal_t = dist_provider.travel_minutes(dist_provider.disposal_dist, avg_speed_kmh)
-    between_t = dist_provider.travel_minutes(dist_provider.inter_bin_matrix, avg_speed_kmh)
+    if hasattr(dist_provider, 'road_duration_minutes'):
+        depot_t, disposal_t, between_t, back = dist_provider.road_duration_minutes
+    else:
+        back = float(dist_provider.travel_minutes(dist_provider.disposal_to_depot_km, avg_speed_kmh))
+        depot_t = dist_provider.travel_minutes(dist_provider.depot_dist, avg_speed_kmh)
+        disposal_t = dist_provider.travel_minutes(dist_provider.disposal_dist, avg_speed_kmh)
+        between_t = dist_provider.travel_minutes(dist_provider.inter_bin_matrix, avg_speed_kmh)
     effective_volume = min(truck_max_volume_m3, truck_max_weight_kg / waste_density_kg_m3)
     lower = max(math.ceil(vol.sum()/truck_max_volume_m3-1e-10),
                 math.ceil(wt.sum()/truck_max_weight_kg-1e-10), 1)
+
+    lower = max([lower, *[math.ceil(demands[m].sum()/caps[m]-1e-10) for m in caps]])
 
     def failure(status, reason, **kwargs):
         return RoutingResult(status, reason, unserved=pd.DataFrame({'Location_id': df['Location_id'], 'reason': reason}),
                              distance_provenance=provenance, fleet_lower_bound=lower, **kwargs)
 
     oversize = (vol > truck_max_volume_m3+1e-8) | (wt > truck_max_weight_kg+1e-8)
+    for material in caps:
+        oversize |= demands[material] > caps[material]+1e-8
     if oversize.any():
         return failure('infeasible', f'Unsplittable sites exceed one truck capacity: {df.loc[oversize, "Location_id"].tolist()}')
     if (depot_t + service + disposal_t + unloading_time_min + back > shift+1e-8).any():
@@ -120,6 +141,7 @@ def solve_collection_routes(candidates_df, dist_provider, waste_density_kg_m3=35
                 model.Params.Threads = 1
                 x = model.addVars(arcs, vtype=GRB.BINARY, name='arc')
                 load = model.addVars(nodes, lb=0, ub=effective_volume, name='volume_load')
+                material_loads = {m:model.addVars(nodes, lb=0, ub=caps[m], name=f'{m}_load') for m in caps}
                 arrival = model.addVars(nodes, lb=0, ub=shift, name='arrival_min')
                 order = model.addVars(nodes, lb=1, ub=n, name='order')
                 departures = gp.quicksum(x[0,j] for j in nodes)
@@ -130,12 +152,16 @@ def solve_collection_routes(candidates_df, dist_provider, waste_density_kg_m3=35
                     model.addConstr(x.sum('*', i) == 1)
                     model.addConstr(x.sum(i, '*') == 1)
                     model.addConstr(load[i] >= vol[i-1])
+                    for material in caps:
+                        model.addConstr(material_loads[material][i] >= demands[material][i-1])
                     model.addConstr(arrival[i] >= depot_t[i-1])
                     model.addConstr(arrival[i] + service[i-1] + disposal_t[i-1] + unloading_time_min + back <= shift)
                 for i,j in arcs:
                     if i == 0 or j == end:
                         continue
                     model.addConstr(load[j] >= load[i] + vol[j-1] - effective_volume*(1-x[i,j]))
+                    for material in caps:
+                        model.addConstr(material_loads[material][j] >= material_loads[material][i] + demands[material][j-1] - caps[material]*(1-x[i,j]))
                     model.addConstr(order[j] >= order[i] + 1 - n*(1-x[i,j]))
                     travel_service = service[i-1] + between_t[i-1,j-1]
                     model.addConstr(arrival[j] >= arrival[i] + travel_service - (shift+travel_service)*(1-x[i,j]))
@@ -170,6 +196,8 @@ def solve_collection_routes(candidates_df, dist_provider, waste_density_kg_m3=35
                     v, w = float(vol[sequence].sum()), float(wt[sequence].sum())
                     if v > truck_max_volume_m3+1e-6 or w > truck_max_weight_kg+1e-6 or minutes > shift+1e-6:
                         raise RuntimeError('Extracted route violates capacity/shift; refusing to export.')
+                    if any(demands[m][sequence].sum() > caps[m]+1e-6 for m in caps):
+                        raise RuntimeError('Extracted route exceeds a material compartment.')
                     records.append(dict(vehicle=f'Truck #{len(records)+1}', num_stops=len(sequence), num_bins=int(nb[sequence].sum()),
                         ordered_stop_indices=sequence, ordered_locations=df.loc[sequence,'Location_id'].tolist(),
                         total_volume_m3=v, volume_utilization_pct=v/truck_max_volume_m3*100,

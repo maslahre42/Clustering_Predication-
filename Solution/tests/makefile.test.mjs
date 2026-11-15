@@ -80,7 +80,7 @@ test('combined tests honor configuration and run the in-process backend runner b
   assert.equal(commands[0].args[commands[0].args.indexOf('--configuration') + 1], 'Release')
   assert.deepEqual(commands[1], { tool: 'dotnet', args: ['tests/GarbageCollector.TestRunner/bin/Release/net10.0/GarbageCollector.TestRunner.dll'] })
   assert.deepEqual(commands[2], { tool: 'pnpm', args: ['--dir', 'apps/web', 'test'] })
-  assert.deepEqual(commands[3], { tool: 'python', args: ['-m', 'pytest', '-q', 'forecast_service/tests', '../Omar-Work/tests'] })
+  assert.deepEqual(commands[3], { tool: 'python', args: ['-m', 'pytest', '-q', 'forecast_service/tests'] })
 })
 
 test('backend build failure stops the test workflow before any runner or frontend command', t => {

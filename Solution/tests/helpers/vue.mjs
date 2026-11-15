@@ -8,15 +8,26 @@ const { createRenderer, h, nextTick, ref } = require('vue')
 export { h, nextTick, ref }
 
 const appRoot = new URL('../../apps/web/app/', import.meta.url)
-const output = new URL('../../apps/web/.nuxt/component-tests/', import.meta.url)
+// Node runs test files in separate processes. Shared output names can be read mid-write by another process.
+const output = new URL(`../../apps/web/.nuxt/component-tests/${process.pid}/`, import.meta.url)
 const components = {
+  LocationClusterList: 'features/planning/components/LocationClusterList.vue',
+  PlanningFillMeter: 'features/planning/components/PlanningFillMeter.vue',
+  PlanningFilters: 'features/planning/components/PlanningFilters.vue',
+  HistoricalFillMeter: 'shared/ui/HistoricalFillMeter.vue',
   CollectionDatePicker: 'shared/ui/CollectionDatePicker.vue',
   HistoryTable: 'features/history/components/HistoryTable.vue',
   MonthlyCollectionTable: 'features/analytics/components/MonthlyCollectionTable.vue',
   MaterialAnalyticsTable: 'features/analytics/components/MaterialAnalyticsTable.vue',
   CollectionPatternTrends: 'features/analytics/components/CollectionPatternTrends.vue',
+  CollectionDynamicsPanel: 'features/analytics/components/CollectionDynamicsPanel.vue',
   CollectionPatternEvidence: 'features/analytics/components/CollectionPatternEvidence.vue',
+  OperatingCosts: 'features/proposal/components/OperatingCosts.vue',
+  FillTimingTable: 'features/proposal/components/FillTimingTable.vue',
+  ScenarioComparison: 'features/proposal/components/ScenarioComparison.vue',
+  PlanPresentation: 'features/proposal/components/PlanPresentation.vue',
   ProposalRoutesTable: 'features/proposal/components/ProposalRoutesTable.vue',
+  ProposalRouteMap: 'features/proposal/components/ProposalRouteMap.vue',
   ProposalSettingsForm: 'features/proposal/components/ProposalSettingsForm.vue',
   ForecastAnalysis: 'features/proposal/components/ForecastAnalysis.vue',
   ForecastExplorer: 'features/proposal/components/ForecastExplorer.vue',

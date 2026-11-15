@@ -29,6 +29,7 @@ const { data, error, status, refresh, ready } = useHistoricalAnalytics(asOf);
           <MonthlyCollectionTable :months="data.months" :as-of="data.asOf" :first-date="data.patterns.firstDate" />
         </UiCard>
         <FillDistributionPanel :materials="data.materials" />
+        <CollectionDynamicsPanel v-if="data.patterns.dynamics" :dynamics="data.patterns.dynamics" @inspect="inspect" />
         <CollectionPatternEvidence :patterns="data.patterns" @inspect="inspect" />
       </template>
     </template>

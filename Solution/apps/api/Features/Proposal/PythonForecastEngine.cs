@@ -26,14 +26,14 @@ public sealed class PythonForecastEngine(IConfiguration configuration, IHostEnvi
         var python = configuration["Forecast:Python"] ?? Path.GetFullPath("../../.venv/bin/python", environment.ContentRootPath);
         var script = Path.GetFullPath(configuration["Forecast:Script"] ?? "../../forecast_service/worker.py", environment.ContentRootPath);
         if (!File.Exists(python) || !File.Exists(script))
-            throw new InvalidOperationException("Omar's Python engine is not configured. Run make setup-python in Solution, or set Forecast__Python to the Python environment containing forecast_service/requirements.txt.");
+            throw new InvalidOperationException("The forecasting engine is not configured. Run make setup-python in Solution, or set Forecast__Python to the Python environment containing forecast_service/requirements.txt.");
         var info = new ProcessStartInfo(python)
         {
             RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true,
             UseShellExecute = false, CreateNoWindow = true,
         };
         info.ArgumentList.Add(script);
-        using var process = Process.Start(info) ?? throw new InvalidOperationException("Cannot start Omar's Python engine.");
+        using var process = Process.Start(info) ?? throw new InvalidOperationException("Cannot start the forecasting engine.");
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(TimeSpan.FromMinutes(4));
         var output = process.StandardOutput.ReadToEndAsync(timeout.Token);

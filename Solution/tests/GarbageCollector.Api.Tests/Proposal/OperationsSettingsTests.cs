@@ -4,6 +4,35 @@ namespace GarbageCollector.Api.Tests;
 public class OperationsSettingsTests
 {
     [Fact]
+    public void CompartmentsRequireAnExplicitCompleteLayoutAndFitTheTruck()
+    {
+        Assert.Equal(0, OperationsSettings.Default.BrownCompartmentM3);
+        Assert.Equal(0, OperationsSettings.Default.CostPerKmEuro);
+        Assert.NotEmpty((OperationsSettings.Default with { BrownCompartmentM3 = 2 }).Validate());
+        var settings = new ProposalRequest { BrownCompartmentM3 = 2, GreenCompartmentM3 = 3, WhiteCompartmentM3 = 4, CostPerKmEuro = 1.2, FixedTruckCostEuro = 150 }.ToSettings();
+        Assert.Empty(settings.Validate());
+        Assert.Equal(3, settings.GreenCompartmentM3);
+        Assert.Equal(4, settings.WhiteCompartmentM3);
+        Assert.Equal(1.2, settings.CostPerKmEuro);
+        Assert.Equal(150, settings.FixedTruckCostEuro);
+        Assert.NotEmpty((settings with { TruckVolumeM3 = 8 }).Validate());
+        Assert.NotEmpty((settings with { WhiteCompartmentM3 = .0001 }).Validate());
+        Assert.NotEmpty((settings with { CostPerKmEuro = double.NaN }).Validate());
+        Assert.NotEmpty((settings with { FixedTruckCostEuro = -1 }).Validate());
+    }
+
+    [Fact]
+    public void PublicStreetRoutingHasNoFixedTimeOrAerialCostParameters()
+    {
+        var json = System.Text.Json.JsonSerializer.Serialize(OperationsSettings.Default);
+        foreach (var name in new[] { "FixedTravelMin", "AvgSpeedKph", "DetourFactor", "VehicleFixedCostMin" })
+        {
+            Assert.DoesNotContain(name, json);
+            Assert.Null(typeof(ProposalRequest).GetProperty(name));
+        }
+        Assert.Equal(0, OperationsSettings.Default.OptionalValueMin);
+    }
+    [Fact]
     public void DefaultsAreTheNumbersPreZeroGave()
     {
         var settings = OperationsSettings.Default;

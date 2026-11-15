@@ -6,7 +6,7 @@ const label = (value: string) => value.replaceAll('_', ' ');
 <template>
   <UiCard class="analytics-panel">
     <h2>Data quality & behavioral groups</h2>
-    <p>Kaise’s validation and interpretability safeguards · {{ evidence.rows }} observations · {{ evidence.bins }} containers · {{ evidence.dateMin || '—' }}–{{ evidence.dateMax || '—' }}.</p>
+    <p>Data validation and grouping evidence · {{ evidence.rows }} observations · {{ evidence.bins }} containers · {{ evidence.dateMin || '—' }}–{{ evidence.dateMax || '—' }}.</p>
     <p>{{ evidence.unknown }} unknown readings · {{ evidence.overfull }} overfull observations · {{ evidence.warnings.length }} validation warnings. Unknown and overfull retain separate meanings.</p>
     <p>Grouping: <strong>{{ evidence.grouping.method === 'kmeans' ? 'Interpretable clusters' : 'Descriptive pressure tiers' }}</strong>. {{ evidence.grouping.eligible }} eligible containers; {{ evidence.grouping.insufficient }} with insufficient history.</p>
     <p>{{ evidence.grouping.note }}</p>

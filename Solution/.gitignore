@@ -1,0 +1,23 @@
+.DS_Store
+**/.venv/
+**/__pycache__/
+*.py[cod]
+**/.pytest_cache/
+**/bin/
+**/obj/
+**/node_modules/
+**/.nuxt/
+**/.output/
+.env
+*.db-wal
+*.db-shm
+*.db-journal
+
+**/TestResults/
+**/aspire-output/
+**/.aspire/
+
+# Cluster access credentials belong outside the repository.
+*.kubeconfig
+kubeconfig*.yaml
+kubeconfig*.yml

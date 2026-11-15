@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { historicalFillLabel, historicalFillState } from '~/shared/domain/fill';
 import { workspaceIcons } from '~/shared/ui/icons';
 const props = defineProps<{

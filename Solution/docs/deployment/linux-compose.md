@@ -20,7 +20,7 @@ Install:
 
 The frontend builds inside its generated Node 22 container. Host-side Node/pnpm are still required for local `dotnet run --project apps/apphost`, but are not required for these container build stages.
 
-Copy or clone the repository onto the server. Run deployment commands on that server; they operate on the Docker host available to the command, not automatically on a remote machine.
+Copy the standalone project directory (the contents of `Solution/`, including its Dockerfile and bundled Python source) or clone its repository onto the server. No sibling contributor folders are needed. Run deployment commands on that server; they operate on the Docker host available to the command, not automatically on a remote machine.
 
 From the repository root, put the existing database in a persistent directory:
 

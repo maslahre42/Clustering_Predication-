@@ -1,6 +1,8 @@
 # Garbage Collector
 
-**Challenge handover:** [demo guide, deliverables and current verification](docs/challenge-demo-guide.md). The connected prototype includes CSV upload, historical pattern charts and review flags, forecasts/groups, configurable multi-load routes and fleet recommendations, simulation, and collector export. Latest checks: **370 tests passed**, type checking and both builds passed. The guide records live verification and prototype limits.
+**Challenge handover:** [demo guide, deliverables and current verification](docs/challenge-demo-guide.md). The connected prototype includes CSV upload, historical pattern charts and review flags, forecasts/groups, configurable multi-load routes and fleet recommendations, simulation, configured glass compartments, editable cost estimates, time-to-full ranges, scenario baselines, a guided presentation and collector export. Latest checks: **437 tests passed**, type checking and both builds passed. The guide records live verification and prototype limits.
+
+**Street routing:** optimized routes use OSRM car-street distances, driving times and map geometry. Trucks keep compact collection sectors across loads. Fixed-time and aerial-distance controls are removed; optional detour value defaults to zero. See [routing method, provider/cache configuration and limits](docs/architecture/street-routing.md).
 
 **Forecasts and simulation:** open **Forecast, routes & simulation** in the sidebar, then **Forecast curves** or **Simulation & backtest** at the top. This now runs Omar's actual Python seasonal model, OR-Tools router and digital twin. Run `make setup-python PYTHON=python3.12` once for an existing checkout, then restart the API/Aspire host. New `make setup` includes Python setup. [Method, parameters, limits and API](docs/architecture/proposal.md).
 
@@ -8,8 +10,21 @@ Local ASP.NET Core 10 + Nuxt 4/Vue foundation for historical glass-bin collectio
 
 For code changes, start with the [code index](CODE_INDEX.md) and [contributor guidance](AGENTS.md). They map each feature to its source and tests.
 
+## Standalone project
+
+This directory is the complete application. Copy only `Solution/` (including `sql.db`) to a new location; the directory can be renamed. No sibling project folders or parent repository are required. Run commands from the directory containing this Makefile and `GarbageCollector.slnx`.
+
+The forecast/routing engine is bundled in `forecast_service/vendor/fillinq`, with tests in `forecast_service/tests/engine`. Other integrations are already inside `forecast_service/integrations`. Docker uses this directory as its build context:
+
+```sh
+docker build -f apps/api/Dockerfile -t garbage-collector-api .
+```
+
+Exclude `.venv`, `node_modules`, build outputs, caches, local `.env` files, `backups/` and `aspire-output/` from a source hand-off. Recreate dependencies with `make setup PYTHON=python3.12`. Keep `sql.db` unchanged; production mounts a read-only copy separately. The local ignore files travel with the standalone project. See [standalone verification](docs/standalone-project.md).
+
 ## Requirements
 
+- Python 3.12 (verified) for forecasts, routing and simulation.
 - .NET SDK 10 (global.json accepts installed .NET 10 feature bands).
 - Node >= 22.23 and pnpm 10.12.1 (pinned in the frontend package.json).
 - Existing `sql.db` at the repository root with `raw_data` and `locations` tables.
@@ -99,12 +114,17 @@ See [Linux deployment instructions](docs/deployment/linux-compose.md) for first-
 
 The database is opened **read-only**. No migrations, seeding, `EnsureCreated`, or schema changes run on startup. Missing files fail startup rather than silently creating an empty database. Historical rows are mapped as keyless EF entities because the source table has no primary key. Fill percentages are converted to nullable numbers in API responses. The explicit `overfull` category is preserved as `isOverfull` in history and `lastIsOverfull` in planning summaries, with a null numeric percentage. Malformed or out-of-range values remain unknown; no 110% value is invented.
 
+## Selected-day fill
+
+The planner defaults to **Selected-day estimate** with **Estimated fill ≥ 50%**. Reset filters restores 50%. Recorded visits reset the modeled bin to zero on that date; following days estimate new accumulation from the last recorded emptying. For example, 100% before emptying on 30 September does not remain the current fill on 1 October. **Last recorded before emptying** restores the historical reading. Filters, sorting and location details follow the selected view. Missing/failed estimates stay unknown, and source history is preserved. Only recorded visits reset bins; a new date or proposed route does not execute a collection. [Semantics and verification](docs/architecture/selected-day-fill.md).
+
 ## API
 
 - `GET /api/health`: verifies access to both required tables.
 - `GET /api/data-range`: global observation date bounds and the maximum planning date (last observation + 7 days).
 - `GET /api/locations`: locations and synthetic-coordinate flags.
 - `GET /api/planning?asOf=2026-03-01`: historical snapshot through the required ISO date (inclusive). Returns only known bins, counts, date bounds, and latest pre-emptying readings at that cutoff. Records after the cutoff are filtered in SQLite and excluded again by the summary rules.
+- `GET /api/fill-state?asOf=2026-10-01`: modeled fill after recorded emptyings on the selected day; later dates estimate refill. Historical readings remain unchanged.
 - `GET /api/analytics?asOf=2026-03-01`: cutoff-safe material/monthly collection statistics, fill distributions, median intervals, and sparse-history counts.
 - `GET /api/history`: paginated observations; optional `locationId`, `material` (`brown`, `green`, `white`), `from`/`to` and `asOf` (`yyyy-MM-dd`), `page` (default 1), `pageSize` (default 50, maximum 200), partial `locationSearch`, `sortBy` (`date`, `location`, `material`, `fill`) and `sortDirection` (`asc`, `desc`; default newest first). Sorting applies before pagination; unknown fill stays last and overfull remains a distinct category. Date bounds are inclusive. `asOf` is an upper bound even when `to` is later.
 - `GET /openapi/v1.json`: OpenAPI contract on the backend.
@@ -143,7 +163,7 @@ Run frontend unit tests from the repository root:
 pnpm --dir apps/web test
 ```
 
-Omar’s Python forecasting, constrained OR-Tools routing and digital-twin simulation are connected in **Forecast, routes & simulation**. Road-network navigation, color-chamber constraints and verified operating assets remain future work.
+Omar’s Python forecasting, constrained OR-Tools routing and digital-twin simulation are connected in **Forecast, routes & simulation**. Truck-specific access profiles, color-chamber constraints and verified operating assets remain extensions.
 
 Leaflet uses MapTiler OMT when a browser key is configured, otherwise the public OpenStreetMap tile service for local demonstration. Provider attribution stays visible. Choose a suitable tile provider and review its usage policy before wider deployment; no offline tile downloading is implemented. The map needs an internet connection.
 
@@ -153,7 +173,7 @@ See [PROJECT_IDEA.md](PROJECT_IDEA.md) for the product plan and remaining decisi
 
 ## Verification status
 
-Current verification: **370 tests passed** (209 API, 6 AppHost, 126 frontend/tooling, 29 Python), plus Vue/TypeScript checking, .NET solution build and Nuxt production build. The source SQLite file remains byte-identical to its committed version.
+Current verification: **437 tests passed** (216 API, 6 AppHost, 156 frontend/tooling, 59 Python), plus Vue/TypeScript checking, .NET solution build and Nuxt production build. The source SQLite file remains byte-identical to its committed version.
 
 Live API and browser checks cover the real-data challenge workflow, partial-month statistics, forecast and route feasibility, simulation, uploads, manifest export and draft clearing. See [the challenge handover](docs/challenge-demo-guide.md) for settings, measured results, artifacts and limitations. Physical printing, production hosting and real road operations are separate checks.
 
@@ -185,7 +205,7 @@ Optional backend coverage report:
 dotnet test GarbageCollector.slnx --collect:"XPlat Code Coverage"
 ```
 
-Verified results: **209 API tests, 6 AppHost tests, 126 frontend/tooling tests and 29 Python tests pass (370 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
+Verified results: **216 API tests, 6 AppHost tests, 156 frontend/tooling tests and 59 Python tests pass (437 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
 
 For environments where the standard `dotnet test` runner cannot start its communication socket, a fallback is included. A small in-process runner calls the real xUnit discovery/execution API, including theories and async fixtures; it does not replace assertions or manually call test methods. Run both suites without a local test socket:
 

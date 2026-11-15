@@ -9,6 +9,8 @@ public sealed record ReviewBin(string LocationId, string Material, int Collectio
 public sealed record CollectionPatterns(string? FirstDate, string? LastDate,
     MaterialCyclePattern[] Cycles, int ReviewBinCount, ReviewBin[] ReviewBins)
 {
+    public MaterialDynamics[] Dynamics { get; init; } = [];
+
     public static CollectionPatterns Create(IEnumerable<Observation> source, string asOf)
     {
         var cutoff = HistoricalCutoff.Parse(asOf);
@@ -47,6 +49,6 @@ public sealed record CollectionPatterns(string? FirstDate, string? LastDate,
             review.OrderByDescending(bin => bin.Reason == "repeated_overfull")
                 .ThenByDescending(bin => bin.Reason == "repeated_overfull" ? bin.OverfullCollections : bin.LowCollections)
                 .ThenBy(bin => bin.LocationId, StringComparer.Ordinal).ThenBy(bin => bin.Material, StringComparer.Ordinal)
-                .Take(20).ToArray());
+                .Take(20).ToArray()) { Dynamics = CollectionDynamics.Create(rows, asOf) };
     }
 }

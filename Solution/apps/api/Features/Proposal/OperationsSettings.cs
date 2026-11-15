@@ -16,12 +16,17 @@ public sealed record OperationsSettings
     // Fleet. Truck volume 0 = unknown, so only the weight limit applies.
     public double TruckPayloadT { get; init; } = 12.0;
     public double TruckVolumeM3 { get; init; }
+    public double BrownCompartmentM3 { get; init; }
+    public double GreenCompartmentM3 { get; init; }
+    public double WhiteCompartmentM3 { get; init; }
+    public double CostPerKmEuro { get; init; }
+    public double FixedTruckCostEuro { get; init; }
     public int MaxVehicles { get; init; } = 12;
-    // Shift and driving. Fixed travel 0 = use coordinates (straight line × detour factor).
+    // Public routes obtain driving costs from OSRM. Hidden values below only support the C# reference model.
     public double ShiftHours { get; init; } = 8.0;
-    public double FixedTravelMin { get; init; } = 10.0;
-    public double AvgSpeedKph { get; init; } = 25.0;
-    public double DetourFactor { get; init; } = 1.3;
+    [JsonIgnore] public double FixedTravelMin { get; init; } = 10.0;
+    [JsonIgnore] public double AvgSpeedKph { get; init; } = 25.0;
+    [JsonIgnore] public double DetourFactor { get; init; } = 1.3;
     public double ServiceMinPerBin { get; init; } = 5.0;
     public double ServiceMinPerStop { get; init; }
     public double UnloadMin { get; init; } = 15.0;
@@ -43,8 +48,8 @@ public sealed record OperationsSettings
     public double NeighbourProbability { get; init; } = 0.12;
     public double NeighbourFillPercent { get; init; } = 40.0;
     public double OptionalProbability { get; init; } = 0.40;
-    public double VehicleFixedCostMin { get; init; } = 480;
-    public double OptionalValueMin { get; init; } = 15;
+    [JsonIgnore] public double VehicleFixedCostMin { get; init; } = 480;
+    public double OptionalValueMin { get; init; }
     public int SolverTimeLimitSeconds { get; init; } = 3;
 
     [JsonIgnore] public double TruckPayloadKg => TruckPayloadT * 1000;
@@ -67,6 +72,8 @@ public sealed record OperationsSettings
     [
         (nameof(ContainerVolumeM3), 0, 100, true), (nameof(GlassDensityKgM3), 0, 5000, true),
         (nameof(TruckPayloadT), 0, 100, true), (nameof(TruckVolumeM3), 0, 500, false),
+        (nameof(BrownCompartmentM3), 0, 500, false), (nameof(GreenCompartmentM3), 0, 500, false), (nameof(WhiteCompartmentM3), 0, 500, false),
+        (nameof(CostPerKmEuro), 0, 1000, false), (nameof(FixedTruckCostEuro), 0, 100000, false),
         (nameof(MaxVehicles), 1, 200, false), (nameof(ShiftHours), 0, 24, true),
         (nameof(FixedTravelMin), 0, 600, false), (nameof(AvgSpeedKph), 0, 150, true), (nameof(DetourFactor), 1, 5, false),
         (nameof(ServiceMinPerBin), 0, 240, false), (nameof(ServiceMinPerStop), 0, 240, false), (nameof(UnloadMin), 0, 600, false),
@@ -91,6 +98,14 @@ public sealed record OperationsSettings
         }
         if (TruckPayloadKg > 0 && TruckPayloadKg < 1) errors.Add("TruckPayloadT must allow at least one kilogram for integer routing loads.");
         if (TruckVolumeM3 > 0 && TruckVolumeL < 1) errors.Add("TruckVolumeM3 must allow at least one litre, or use zero for unknown volume.");
+        double[] compartments = [BrownCompartmentM3, GreenCompartmentM3, WhiteCompartmentM3];
+        if (compartments.Any(value => value > 0))
+        {
+            foreach (var name in new[] { nameof(BrownCompartmentM3), nameof(GreenCompartmentM3), nameof(WhiteCompartmentM3) })
+                if (Convert.ToDouble(Property(name).GetValue(this)) < .001) errors.Add($"{name} must allow at least one litre when compartments are configured. Enter all three capacities, or leave all three zero.");
+            if (TruckVolumeM3 > 0 && compartments.Sum() > TruckVolumeM3 + 1e-9)
+                errors.Add("TruckVolumeM3 must cover the sum of BrownCompartmentM3, GreenCompartmentM3 and WhiteCompartmentM3.");
+        }
         if (!(WorkMonday || WorkTuesday || WorkWednesday || WorkThursday || WorkFriday || WorkSaturday || WorkSunday)) errors.Add("Choose at least one working collection day.");
         return errors;
     }
@@ -118,11 +133,13 @@ public sealed class ProposalRequest
     public double? GlassDensityKgM3 { get; set; }
     public double? TruckPayloadT { get; set; }
     public double? TruckVolumeM3 { get; set; }
+    public double? BrownCompartmentM3 { get; set; }
+    public double? GreenCompartmentM3 { get; set; }
+    public double? WhiteCompartmentM3 { get; set; }
+    public double? CostPerKmEuro { get; set; }
+    public double? FixedTruckCostEuro { get; set; }
     public int? MaxVehicles { get; set; }
     public double? ShiftHours { get; set; }
-    public double? FixedTravelMin { get; set; }
-    public double? AvgSpeedKph { get; set; }
-    public double? DetourFactor { get; set; }
     public double? ServiceMinPerBin { get; set; }
     public double? ServiceMinPerStop { get; set; }
     public double? UnloadMin { get; set; }
@@ -142,7 +159,6 @@ public sealed class ProposalRequest
     public double? NeighbourProbability { get; set; }
     public double? NeighbourFillPercent { get; set; }
     public double? OptionalProbability { get; set; }
-    public double? VehicleFixedCostMin { get; set; }
     public double? OptionalValueMin { get; set; }
     public int? SolverTimeLimitSeconds { get; set; }
 
@@ -153,9 +169,11 @@ public sealed class ProposalRequest
         {
             ContainerVolumeM3 = ContainerVolumeM3 ?? d.ContainerVolumeM3, GlassDensityKgM3 = GlassDensityKgM3 ?? d.GlassDensityKgM3,
             TruckPayloadT = TruckPayloadT ?? d.TruckPayloadT, TruckVolumeM3 = TruckVolumeM3 ?? d.TruckVolumeM3,
+            BrownCompartmentM3 = BrownCompartmentM3 ?? d.BrownCompartmentM3, GreenCompartmentM3 = GreenCompartmentM3 ?? d.GreenCompartmentM3,
+            WhiteCompartmentM3 = WhiteCompartmentM3 ?? d.WhiteCompartmentM3, CostPerKmEuro = CostPerKmEuro ?? d.CostPerKmEuro,
+            FixedTruckCostEuro = FixedTruckCostEuro ?? d.FixedTruckCostEuro,
             MaxVehicles = MaxVehicles ?? d.MaxVehicles, ShiftHours = ShiftHours ?? d.ShiftHours,
-            FixedTravelMin = FixedTravelMin ?? d.FixedTravelMin, AvgSpeedKph = AvgSpeedKph ?? d.AvgSpeedKph,
-            DetourFactor = DetourFactor ?? d.DetourFactor, ServiceMinPerBin = ServiceMinPerBin ?? d.ServiceMinPerBin,
+            ServiceMinPerBin = ServiceMinPerBin ?? d.ServiceMinPerBin,
             ServiceMinPerStop = ServiceMinPerStop ?? d.ServiceMinPerStop, UnloadMin = UnloadMin ?? d.UnloadMin,
             WorkSaturday = WorkSaturday ?? d.WorkSaturday, WorkSunday = WorkSunday ?? d.WorkSunday,
             WorkMonday = WorkMonday ?? d.WorkMonday, WorkTuesday = WorkTuesday ?? d.WorkTuesday,
@@ -167,7 +185,6 @@ public sealed class ProposalRequest
             NeighbourProbability = NeighbourProbability ?? d.NeighbourProbability,
             NeighbourFillPercent = NeighbourFillPercent ?? d.NeighbourFillPercent,
             OptionalProbability = OptionalProbability ?? d.OptionalProbability,
-            VehicleFixedCostMin = VehicleFixedCostMin ?? d.VehicleFixedCostMin,
             OptionalValueMin = OptionalValueMin ?? d.OptionalValueMin,
             SolverTimeLimitSeconds = SolverTimeLimitSeconds ?? d.SolverTimeLimitSeconds,
         };

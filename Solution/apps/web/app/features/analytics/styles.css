@@ -36,3 +36,16 @@
   .analytics-trend-track { grid-column: 1 / -1; grid-row: 2; }
   .analytics-trend-value { grid-column: 2; grid-row: 1; }
 }
+
+.dynamics-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin-block: 1.5rem; }
+.dynamics-chart { min-width: 0; padding: 1rem; border: 1px solid var(--surface-border); border-radius: .6rem; }
+.dynamics-chart h3 { margin-block: 0 .75rem; }
+.dynamics-filling-time { grid-column: 1 / -1; }
+.dynamics-filling-time svg { width: 100%; max-width: 900px; height: auto; display: block; margin-inline: auto; }
+.dynamics-filling-time svg text { fill: var(--text-secondary); font-size: 12px; }
+.dynamics-histogram { display: grid; grid-template-columns: repeat(8,minmax(0,1fr)); gap: .4rem; list-style: none; padding: 0; margin-top: 1.5rem; text-align: center; font-size: 11px; }
+.dynamics-histogram li { min-width: 0; }
+.dynamics-bar-space { height: 120px; display: flex; align-items: flex-end; margin-block: .3rem; border-bottom: 1px solid var(--surface-border); }
+.dynamics-bar-space span { display: block; width: 100%; border-radius: .25rem .25rem 0 0; }
+.dynamics-histogram small { display: block; overflow-wrap: anywhere; color: var(--text-secondary); }
+@media (max-width: 850px) { .dynamics-grid { grid-template-columns: 1fr; } }

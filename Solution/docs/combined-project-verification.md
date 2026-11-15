@@ -1,5 +1,7 @@
 # Combined project verification
 
+Historical snapshot before the street-routing upgrade. Current road geometry, compact-sector routing and public settings are documented in [street routing](architecture/street-routing.md). The fixed-time results below are archived evidence, not current route predictions.
+
 Verified locally on 14 November 2026. See [implemented behavior and limitations](combined-project-integration.md) and [source attribution](../forecast_service/integrations/README.md).
 
 ## Executed checks

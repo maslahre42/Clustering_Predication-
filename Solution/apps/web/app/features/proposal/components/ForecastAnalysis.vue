@@ -23,7 +23,7 @@ function choose(value: string) {
     <p class="eyebrow">3 · TEST A SCENARIO</p>
     <h2>Simulation & backtest</h2>
     <p>Compare collection policies over a past period using your applied settings. Choose up to 31 days ending on or before {{ asOf }}.</p>
-    <details class="proposal-disclosure"><summary>What does the simulation compare?</summary><p>Replay the recorded collection calendar and compare it with Omar’s dynamic policy and Zakaria’s corrected median policy. Kaise’s persistence is evaluated separately against real readings. Training ends before the simulation starts.</p></details>
+    <details class="proposal-disclosure"><summary>What does the simulation compare?</summary><p>Replay the recorded collection calendar and compare it with the forecast-driven policy and the cycle-median policy. Persistence is evaluated separately against real readings. Training ends before the simulation starts.</p></details>
     <p v-if="settingsDirty" class="proposal-settings-notice" role="status">Apply your collection settings above before running a simulation.</p>
     <div class="proposal-analysis-controls">
       <label>Start<input v-model="simulationInput.start" type="date" :max="asOf" /></label>

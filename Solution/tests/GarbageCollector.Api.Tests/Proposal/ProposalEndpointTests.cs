@@ -54,15 +54,31 @@ public class ProposalEndpointTests
             await endpoint.RequestDelegate!(context);
             return context.Response.StatusCode;
         }
-        Assert.Equal(200, await Request("/api/proposal", "?asOf=2026-08-14&vehicleFixedCostMin=600&optionalValueMin=25&solverTimeLimitSeconds=2&neighbourProbability=0.2&avgSpeedKph=30&workSaturday=true"));
+        Assert.Equal(200, await Request("/api/proposal", "?asOf=2026-08-14&vehicleFixedCostMin=600&optionalValueMin=25&solverTimeLimitSeconds=2&neighbourProbability=0.2&avgSpeedKph=30&workSaturday=true&brownCompartmentM3=2&greenCompartmentM3=3&whiteCompartmentM3=4&costPerKmEuro=1.2&fixedTruckCostEuro=150"));
         Assert.Equal("proposal", engine.Action);
-        Assert.Equal(600, engine.Settings!.VehicleFixedCostMin);
+        Assert.Equal(480, engine.Settings!.VehicleFixedCostMin); // removed query values cannot select a legacy travel model
         Assert.Equal(25, engine.Settings.OptionalValueMin);
         Assert.Equal(2, engine.Settings.SolverTimeLimitSeconds);
         Assert.Equal(0.2, engine.Settings.NeighbourProbability);
-        Assert.Equal(30, engine.Settings.AvgSpeedKph);
+        Assert.Equal(25, engine.Settings.AvgSpeedKph);
         Assert.True(engine.Settings.WorkSaturday);
+        Assert.Equal(2, engine.Settings.BrownCompartmentM3);
+        Assert.Equal(3, engine.Settings.GreenCompartmentM3);
+        Assert.Equal(4, engine.Settings.WhiteCompartmentM3);
+        Assert.Equal(1.2, engine.Settings.CostPerKmEuro);
+        Assert.Equal(150, engine.Settings.FixedTruckCostEuro);
+        var beforeInvalid = engine.Calls;
+        Assert.Equal(400, await Request("/api/proposal", "?asOf=2026-08-14&brownCompartmentM3=2"));
+        Assert.Equal(beforeInvalid, engine.Calls);
         Assert.Equal("2026-08-01", Assert.Single(engine.Observations!).Date);
+        Assert.Equal(200, await Request("/api/fill-state", "?asOf=2026-08-14"));
+        Assert.Equal("state", engine.Action);
+        Assert.Equal(OperationsSettings.Default, engine.Settings);
+        Assert.Equal("2026-08-01", Assert.Single(engine.Observations!).Date);
+        Assert.Empty(engine.Locations!);
+        var beforeInvalidState = engine.Calls;
+        Assert.Equal(400, await Request("/api/fill-state", "?asOf=2026-13-01"));
+        Assert.Equal(beforeInvalidState, engine.Calls);
         Assert.Equal(200, await Request("/api/forecast", "?asOf=2026-08-14&locationId=A&material=white&horizonDays=30"));
         Assert.Equal(("forecast", "A", "white", 30), (engine.Action, engine.LocationId, engine.Material, engine.Horizon));
         Assert.Equal(200, await Request("/api/simulation", "?asOf=2026-08-14&start=2026-08-10&end=2026-08-14&seed=42&truckPayloadT=8"));
@@ -88,6 +104,9 @@ public class ProposalEndpointTests
         Assert.Equal(count, engine.Calls);
         engine.Reject = true;
         Assert.Equal(400, await Request("/api/proposal", "?asOf=2026-08-14", "POST", upload));
+        Assert.Equal(400, await Request("/api/fill-state", "?asOf=2026-08-14"));
+        engine.Reject = false; engine.Unavailable = true;
+        Assert.Equal(503, await Request("/api/fill-state", "?asOf=2026-08-14"));
     }
 
     private sealed class BodyFeature : Microsoft.AspNetCore.Http.Features.IHttpRequestBodyDetectionFeature
@@ -98,18 +117,20 @@ public class ProposalEndpointTests
     private sealed class CaptureEngine : IForecastEngine
     {
         public string? Action, LocationId, Material, Start, End, Csv;
-        public bool Reject;
+        public bool Reject, Unavailable;
         public int Horizon, Seed, Calls;
         public OperationsSettings? Settings;
         public IReadOnlyCollection<Observation>? Observations;
+        public IReadOnlyCollection<BinLocation>? Locations;
         public Task<JsonElement> RunAsync(string action, string asOf, OperationsSettings settings,
             IReadOnlyCollection<Observation> observations, IReadOnlyCollection<BinLocation> locations,
             string? locationId = null, string? material = null, int horizonDays = 60,
             string? start = null, string? end = null, int seed = 7, CancellationToken cancellationToken = default, string? csv = null)
         {
+            if (Unavailable) throw new InvalidOperationException("Engine unavailable");
             if (Reject) throw new DatasetRejectedException(JsonSerializer.SerializeToElement(new { errors = new[] { new { rule_id = "R5", row_number = 1, message = "Invalid fill" } } }));
             Csv = csv;
-            Calls++; Action = action; Settings = settings; Observations = observations;
+            Calls++; Action = action; Settings = settings; Observations = observations; Locations = locations;
             LocationId = locationId; Material = material; Horizon = horizonDays; Start = start; End = end; Seed = seed;
             return Task.FromResult(JsonSerializer.SerializeToElement(new { asOf }));
         }

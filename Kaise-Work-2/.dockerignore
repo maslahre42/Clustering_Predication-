@@ -1,0 +1,22 @@
+# Keep the build context small and data-free: nothing from data/ (raw
+# challenge CSV included) may enter the image or the context (deployment
+# brief §2). Demo data is mounted read-only at runtime if available.
+.git/
+.gitignore
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+data/
+docs/
+tests/
+docs/figures/
+dist/
+*.sqlite
+*.sqlite3
+.env*
+node_modules/
+frontend/dist/
+frontend/node_modules/

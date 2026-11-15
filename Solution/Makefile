@@ -29,7 +29,7 @@ setup-python: ## Install combined forecast, routing, simulation and validation d
 	"$(PYTHON_ENGINE)" -m pip install -r forecast_service/requirements.txt pytest
 
 test-python: ## Test combined engines and the app bridge (setup-python first)
-	"$(PYTHON_ENGINE)" -m pytest -q forecast_service/tests ../Omar-Work/tests
+	"$(PYTHON_ENGINE)" -m pytest -q forecast_service/tests
 
 run: ## Start API, frontend and dashboard with Aspire; Ctrl+C stops them
 	"$(DOTNET)" run --project apps/apphost

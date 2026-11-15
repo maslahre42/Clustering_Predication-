@@ -27,6 +27,7 @@ const hasErrors = () => Object.keys(props.errors).length > 0;
     <h2>Collection settings</h2>
     <p>Check truck capacity, working time and collection days, then apply your options to update the proposal.</p>
     <p>Every number is editable. <strong>PreZero</strong> values were given by PreZero, <strong>Assumption</strong> values are ours until measured, <strong>Planner</strong> values tune the selection rule.</p>
+    <p class="proposal-road-summary">Routes use OpenStreetMap car streets through OSRM. Trucks are assigned compact service sectors to avoid repeated trips across the city. Kilometers and driving times come from the road network.</p>
     <details v-for="group in SETTING_GROUPS" :key="group.title" class="proposal-disclosure proposal-setting-group"
       :open="['Trucks', 'Working time'].includes(group.title) || group.fields.some(field => errors[field.key])">
       <summary>{{ group.title }} <span v-if="!['Trucks', 'Working time'].includes(group.title)">Advanced</span></summary>

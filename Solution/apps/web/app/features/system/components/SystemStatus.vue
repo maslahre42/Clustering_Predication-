@@ -62,7 +62,7 @@ const healthy = computed(() => healthRequest.data.value?.status === 'healthy' &&
         <h2>Forecast and remaining integrations</h2>
         <dl>
           <dt>Forecast model</dt>
-          <dd>Omar’s Python seasonal/censored-rate model. Open Forecast, routes & simulation for live results or dependency errors.</dd>
+          <dd>Seasonal cycle-rate forecasting with censored observations. Open Forecast, routes & simulation for live results or dependency errors.</dd>
           <dt>Simulation</dt>
           <dd>Historical calendar versus dynamic collection, with routed service and missed-stop accounting.</dd>
           <dt>Sensor telemetry</dt>

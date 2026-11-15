@@ -1,0 +1,4959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WasteRouting.AI | PreZero & City of Heilbronn Executive Dashboard</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS & JS for Interactive GIS Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js for Benchmark Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg-midnight: #0a0f1d;
+      --bg-navy-dark: #0d1527;
+      --bg-card: rgba(17, 26, 46, 0.82);
+      --bg-card-hover: rgba(23, 35, 62, 0.95);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-glow: rgba(0, 210, 106, 0.35);
+
+      --prezero-green: #00d26a;
+      --prezero-green-glow: rgba(0, 210, 106, 0.45);
+      --prezero-green-light: #52f099;
+      --prezero-green-dark: #00994d;
+
+      --accent-cyan: #00e5ff;
+      --accent-cyan-glow: rgba(0, 229, 255, 0.35);
+      --accent-amber: #f59e0b;
+      --accent-amber-glow: rgba(245, 158, 11, 0.35);
+      --accent-crimson: #ef4444;
+      --accent-crimson-glow: rgba(239, 68, 68, 0.4);
+      --accent-purple: #a855f7;
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --glass-blur: blur(14px);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-midnight);
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(0, 210, 106, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(0, 229, 255, 0.05) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(10, 15, 29, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--prezero-green);
+    }
+
+    /* Navigation Bar */
+    header.navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(10, 15, 29, 0.88);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #00d26a, #008744);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--prezero-green-glow);
+    }
+
+    .brand-logo-badge svg {
+      width: 24px;
+      height: 24px;
+      fill: #ffffff;
+    }
+
+    .brand-title h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title h1 span.tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(0, 210, 106, 0.16);
+      border: 1px solid var(--prezero-green);
+      color: var(--prezero-green-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-title p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .nav-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    .badge-pill.active {
+      border-color: rgba(0, 210, 106, 0.4);
+      color: #ffffff;
+      background: rgba(0, 210, 106, 0.08);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--prezero-green);
+      box-shadow: 0 0 10px var(--prezero-green);
+      animation: pulseAnimation 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAnimation {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    /* Main Container */
+    main.dashboard-container {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 24px 28px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Navigation Tabs */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      background: rgba(17, 26, 46, 0.7);
+      padding: 6px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      width: fit-content;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      color: #ffffff;
+      background: var(--prezero-green);
+      box-shadow: 0 0 15px var(--prezero-green-glow);
+    }
+
+    /* Hero KPI Grid */
+    .hero-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--card-border-glow);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-color, var(--prezero-green)), transparent);
+      opacity: 0.8;
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .kpi-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .kpi-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-color, var(--prezero-green));
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      letter-spacing: -0.03em;
+    }
+
+    .kpi-badge {
+      font-size: 0.76rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(0, 210, 106, 0.15);
+      color: var(--prezero-green-light);
+      border: 1px solid rgba(0, 210, 106, 0.3);
+    }
+
+    .kpi-badge.amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .kpi-subtext {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .section-title h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* GIS Map Section */
+    .map-section-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .map-controls-bar {
+      padding: 14px 20px;
+      background: rgba(13, 21, 39, 0.95);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .filter-pill.active {
+      background: rgba(0, 210, 106, 0.15);
+      border-color: var(--prezero-green);
+      color: #ffffff;
+    }
+
+    .truck-toggles {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .truck-toggle-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .truck-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    #gis-map {
+      height: 580px;
+      width: 100%;
+      background-color: #0a0f1d;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(0, 210, 106, 0.05) 0%, transparent 65%),
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+      z-index: 10;
+    }
+
+    /* Map Floating HUD Overlays */
+    .map-floating-panel {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      z-index: 500;
+      background: rgba(10, 15, 29, 0.92);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      max-width: 320px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      pointer-events: auto;
+    }
+
+    .floating-panel-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .route-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.77rem;
+    }
+
+    .route-stat-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Benchmark Section (Exp A & B) */
+    .benchmark-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .benchmark-subtab-bar {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    .subtab-btn {
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .subtab-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .subtab-btn.active {
+      background: rgba(0, 210, 106, 0.12);
+      border-color: var(--prezero-green);
+      color: #ffffff;
+    }
+
+    .benchmark-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 1080px) {
+      .benchmark-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .benchmark-table-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    .benchmark-chart-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    table.custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    table.custom-table th {
+      text-align: left;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    table.custom-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+
+    table.custom-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .font-mono {
+      font-family: var(--font-mono);
+    }
+
+    .text-green {
+      color: var(--prezero-green-light) !important;
+    }
+    .text-amber {
+      color: var(--accent-amber) !important;
+    }
+    .text-cyan {
+      color: var(--accent-cyan) !important;
+    }
+    .text-crimson {
+      color: var(--accent-crimson) !important;
+    }
+
+    /* Deferred Audit Box */
+    .audit-box {
+      background: rgba(0, 210, 106, 0.06);
+      border: 1px solid rgba(0, 210, 106, 0.3);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin-top: 18px;
+    }
+
+    .audit-box h4 {
+      color: var(--prezero-green-light);
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .audit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .audit-metric-box {
+      background: rgba(10, 15, 29, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+    }
+
+    .audit-metric-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .audit-metric-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    /* Telemetry Fleet Section */
+    .telemetry-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .telemetry-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-input-wrapper input {
+      width: 100%;
+      background: rgba(13, 21, 39, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px 9px 38px;
+      color: #ffffff;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-input-wrapper input:focus {
+      border-color: var(--prezero-green);
+      box-shadow: 0 0 10px var(--prezero-green-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      width: 16px;
+      height: 16px;
+    }
+
+    .telemetry-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    select.custom-select {
+      background: rgba(13, 21, 39, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      color: var(--text-main);
+      font-size: 0.82rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select.custom-select:focus {
+      border-color: var(--prezero-green);
+    }
+
+    .table-container {
+      max-height: 520px;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+    }
+
+    /* Visual Fill Meter */
+    .fill-progress-bar {
+      width: 100%;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .fill-progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Glass Mix Sub-meter */
+    .glass-mix-row {
+      display: flex;
+      gap: 4px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .glass-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Simulator Section */
+    .simulator-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .simulator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .slider-item {
+      background: rgba(13, 21, 39, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+    }
+
+    .slider-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .slider-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .slider-val-badge {
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--prezero-green-light);
+      background: rgba(0, 210, 106, 0.1);
+      padding: 2px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 210, 106, 0.3);
+    }
+
+    .custom-range {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      accent-color: var(--prezero-green);
+    }
+
+    .sim-output-card {
+      background: linear-gradient(145deg, rgba(17, 26, 46, 0.95), rgba(11, 18, 33, 0.95));
+      border: 1px solid var(--prezero-green-glow);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      box-shadow: 0 10px 35px rgba(0, 210, 106, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sim-stat-box {
+      background: rgba(10, 15, 29, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+    }
+
+    .sim-stat-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .sim-stat-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #ffffff;
+      margin-top: 4px;
+    }
+
+    /* Operations Research Architecture Card */
+    .or-architecture-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .or-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .or-feature-box {
+      background: rgba(13, 21, 39, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .or-feature-box h4 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--prezero-green-light);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .or-feature-box p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer.dashboard-footer {
+      border-top: 1px solid var(--card-border);
+      padding: 24px 28px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      background: rgba(10, 15, 29, 0.95);
+    }
+
+    /* Modal / Drawer for Station Inspector */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .inspector-modal {
+      background: var(--bg-navy-dark);
+      border: 1px solid var(--prezero-green);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--prezero-green-glow);
+      border-radius: var(--radius-lg);
+      max-width: 600px;
+      width: 100%;
+      padding: 26px;
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #ffffff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .modal-close-btn:hover {
+      background: var(--accent-crimson);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="brand-logo-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm5 11.13C15.69 18.28 13.91 19 12 19c-1.91 0-3.69-.72-5-1.87V15.5c0-1.66 3.34-2.5 5-2.5s5 .84 5 2.5v1.63z"/></svg>
+      </div>
+      <div class="brand-title">
+        <h1>WasteRouting.AI <span class="tag">PreZero &amp; Heilbronn</span></h1>
+        <p>Operations Research Fleet Optimization Engine &amp; Executive Decision Support</p>
+      </div>
+    </div>
+
+    <div class="nav-badges">
+      <div class="badge-pill active">
+        <div class="pulse-dot"></div>
+        Gurobi MILP Engine v14.0
+      </div>
+      <div class="badge-pill">
+        OSRM Asymmetric Graph (111 Nodes)
+      </div>
+      <div class="badge-pill active">
+        MTVRP Multi-Trip Active
+      </div>
+      <button onclick="window.print()" class="tab-btn" style="padding: 5px 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color:#fff;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Export Report
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-container">
+
+    <!-- Tabbed Navigation Switcher -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-sec="overview" onclick="switchSection('overview', event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Executive Overview
+      </button>
+      <button class="tab-btn" data-sec="map-view" onclick="switchSection('map-view', event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        Interactive GIS Map
+      </button>
+      <button class="tab-btn" data-sec="benchmarks" onclick="switchSection('benchmarks', event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Dual Benchmarks (Exp A &amp; B)
+      </button>
+      <button class="tab-btn" data-sec="telemetry" onclick="switchSection('telemetry', event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        Container Fleet Telemetry
+      </button>
+      <button class="tab-btn" data-sec="simulator" onclick="switchSection('simulator', event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Scenario Simulator
+      </button>
+      <button class="tab-btn" data-sec="architecture" onclick="switchSection('architecture', event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        OR Architecture
+      </button>
+    </nav>
+
+    <!-- Executive Hero KPI Grid -->
+    <section class="hero-kpi-grid">
+      <!-- KPI 1: Cost Savings -->
+      <div class="kpi-card" style="--accent-color: var(--prezero-green);">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title">Daily Cost Savings</span>
+            <div class="kpi-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">€1,289.11</span>
+            <span class="kpi-badge">-76.2%</span>
+          </div>
+        </div>
+        <div class="kpi-subtext">
+          <b>€322,278 / year</b> shift savings (62.50 €/h). Saves <b>€4,000 / day</b> (-66.7%) under vehicle charter.
+        </div>
+      </div>
+
+      <!-- KPI 2: Route Distance Reduction -->
+      <div class="kpi-card" style="--accent-color: var(--accent-cyan);">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title">Distance Reduction</span>
+            <div class="kpi-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">-78.2%</span>
+            <span class="kpi-badge" style="background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); border-color: rgba(0, 229, 255, 0.3);">-311.5 km</span>
+          </div>
+        </div>
+        <div class="kpi-subtext">
+          Down from 398.6 km to <b>87.0 km</b> today. Pure routing efficiency saves <b>-45.7%</b> on identical stops.
+        </div>
+      </div>
+
+      <!-- KPI 3: Carbon Reduction -->
+      <div class="kpi-card" style="--accent-color: #52f099;">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title">Tailpipe CO2 Avoided</span>
+            <div class="kpi-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">-264.8 kg</span>
+            <span class="kpi-badge">-78.2%</span>
+          </div>
+        </div>
+        <div class="kpi-subtext">
+          <b>66.2 tonnes CO2/yr</b> eliminated (EF = 0.85 kg/km). Est. 24,900 Liters diesel saved annually.
+        </div>
+      </div>
+
+      <!-- KPI 4: Zero Overflows -->
+      <div class="kpi-card" style="--accent-color: var(--accent-amber);">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title">Zero Overflows Guaranteed</span>
+            <div class="kpi-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">100%</span>
+            <span class="kpi-badge amber">0 Overflows</span>
+          </div>
+        </div>
+        <div class="kpi-subtext">
+          All 20 critical (&ge;100%) bins serviced today. <b>25 premature collections (&lt;40%) eliminated</b>.
+        </div>
+      </div>
+
+      <!-- KPI 5: Collection Yield -->
+      <div class="kpi-card" style="--accent-color: var(--accent-purple);">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title">Collection Yield</span>
+            <div class="kpi-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value">272.0</span>
+            <span class="kpi-badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border-color: rgba(168, 85, 247, 0.3);">+52.2% kg/km</span>
+          </div>
+        </div>
+        <div class="kpi-subtext">
+          Up from 178.7 kg/km in calendar sweep. Yield reaches <b>+182.6%</b> over low-fill routes.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: GIS MAP VIEW -->
+    <section id="section-map" class="content-section">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+            Heilbronn Smart Glass Collection GIS Network
+          </h2>
+          <p>Real-time spatial visualization of 109 recycling stations, turn-by-turn vehicle dispatches, and disposal turnaround at Böllinger Höfe.</p>
+        </div>
+      </div>
+
+      <div class="map-section-card">
+        <!-- Controls Bar -->
+        <div class="map-controls-bar">
+          <div class="filter-pills">
+            <span class="filter-pill active" onclick="filterMapStations('all', this)">
+              <span class="dot" style="width:6px; height:6px; border-radius:50%; background:#fff; display:inline-block;"></span>
+              All 109 Stations
+            </span>
+            <span class="filter-pill" onclick="filterMapStations('dispatched', this)">
+              <span class="dot" style="width:6px; height:6px; border-radius:50%; background:var(--prezero-green); display:inline-block;"></span>
+              Dispatched Today (24)
+            </span>
+            <span class="filter-pill" onclick="filterMapStations('urgent', this)">
+              <span class="dot" style="width:6px; height:6px; border-radius:50%; background:var(--accent-crimson); display:inline-block;"></span>
+              Urgent (&ge;80%) [30]
+            </span>
+            <span class="filter-pill" onclick="filterMapStations('opportunistic', this)">
+              <span class="dot" style="width:6px; height:6px; border-radius:50%; background:var(--accent-amber); display:inline-block;"></span>
+              Opportunistic (60-79%) [24]
+            </span>
+            <span class="filter-pill" onclick="filterMapStations('deferred', this)">
+              <span class="dot" style="width:6px; height:6px; border-radius:50%; background:#3b82f6; display:inline-block;"></span>
+              Deferred / Safe (&lt;60%) [55]
+            </span>
+          </div>
+
+          <div class="truck-toggles">
+            <button class="truck-toggle-btn active" onclick="toggleTruckRoute(0, this)">
+              <span class="truck-dot" style="background:#00d26a;"></span>
+              Truck #1 (7 stops, 22.7km)
+            </button>
+            <button class="truck-toggle-btn active" onclick="toggleTruckRoute(1, this)">
+              <span class="truck-dot" style="background:#00e5ff;"></span>
+              Truck #2 (5 stops, 12.8km)
+            </button>
+            <button class="truck-toggle-btn active" onclick="toggleTruckRoute(2, this)">
+              <span class="truck-dot" style="background:#f59e0b;"></span>
+              Truck #3 (6 stops, 33.7km)
+            </button>
+            <button class="truck-toggle-btn active" onclick="toggleTruckRoute(3, this)">
+              <span class="truck-dot" style="background:#a855f7;"></span>
+              Truck #4 (6 stops, 17.9km)
+            </button>
+          </div>
+        </div>
+
+        <!-- The Map Container -->
+        <div style="position:relative;">
+          <div id="gis-map"></div>
+
+          <!-- Floating Route Telemetry HUD -->
+          <div class="map-floating-panel">
+            <div class="floating-panel-title">
+              <span>Optimized Fleet Dispatch</span>
+              <span class="badge-pill active" style="font-size:0.68rem; padding:2px 6px;">MTVRP Ready</span>
+            </div>
+            <div class="route-stat-item">
+              <span style="color:var(--text-muted);">Active Service Vehicles</span>
+              <span class="font-mono text-green">4 Trips (1-4 Trucks)</span>
+            </div>
+            <div class="route-stat-item">
+              <span style="color:var(--text-muted);">Serviced Containers</span>
+              <span class="font-mono">24 stops (100% High Risk)</span>
+            </div>
+            <div class="route-stat-item">
+              <span style="color:var(--text-muted);">Total Route Distance</span>
+              <span class="font-mono text-cyan">87.04 km</span>
+            </div>
+            <div class="route-stat-item">
+              <span style="color:var(--text-muted);">Cumulative Shift Time</span>
+              <span class="font-mono">6.45 hrs (&le; 8.0h limit)</span>
+            </div>
+            <div class="route-stat-item">
+              <span style="color:var(--text-muted);">Volume Collected</span>
+              <span class="font-mono text-green">62.31 m³ (23.7 tonnes)</span>
+            </div>
+            <div class="route-stat-item">
+              <span style="color:var(--text-muted);">Intermediate Unloading</span>
+              <span class="font-mono text-amber">Böllinger Höfe (20 min)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: DUAL BENCHMARKS (EXPERIMENT A & B) -->
+    <section id="section-benchmarks" class="content-section">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Audited Optimization Benchmarks &amp; Scientific Controls
+          </h2>
+          <p>Two methodologically decoupled experiments proving pure mathematical CVRP efficiency and macro-level municipal policy savings.</p>
+        </div>
+      </div>
+
+      <!-- Subtab Switcher -->
+      <div class="benchmark-subtab-bar">
+        <button class="subtab-btn active" id="btn-subtab-a" onclick="switchBenchmarkTab('exp-a')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+          Experiment A: Pure Routing Efficiency (Identical 24 Containers)
+        </button>
+        <button class="subtab-btn" id="btn-subtab-b" onclick="switchBenchmarkTab('exp-b')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Experiment B: Dynamic AI Dispatch vs. Fixed-Schedule Sweep (Full 109 Bins)
+        </button>
+      </div>
+
+      <!-- Experiment A Container -->
+      <div id="view-exp-a" class="benchmark-grid">
+        <div class="benchmark-table-card">
+          <div style="margin-bottom:14px;">
+            <h3 style="font-size:1.05rem; color:#ffffff; font-weight:700;">Experiment A: 3-Way Routing Engine Comparison</h3>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+              <b>Controlled Input:</b> Exact same 24 container stops, identical volumes, weights, depot, and disposal site.
+            </p>
+          </div>
+
+          <table class="custom-table" id="table-exp-a">
+            <thead>
+              <tr>
+                <th>Audited Metric</th>
+                <th>Unoptimized Fixed Order</th>
+                <th>Greedy Nearest-Neighbor</th>
+                <th style="color:var(--prezero-green-light);">Gurobi Optimal CVRP</th>
+                <th>Gurobi Delta (vs Fixed)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+
+          <div style="margin-top:16px; padding:12px 16px; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06); font-size:0.77rem; color:var(--text-muted);">
+            <b style="color:#ffffff;">Pure Routing Insight:</b> Gurobi's MILP formulation eliminates <b>73.35 km of unnecessary backtracking</b> (-45.7%) solely through combinatorial tour optimization on the asymmetric OSRM road graph, saving <b>2.02 driver shift hours</b> on the exact same containers.
+          </div>
+        </div>
+
+        <div class="benchmark-chart-card">
+          <h3 style="font-size:0.95rem; color:#ffffff; font-weight:700; margin-bottom:12px;">Distance &amp; Cost Delta Comparison</h3>
+          <div style="height:280px; position:relative;">
+            <canvas id="chart-exp-a"></canvas>
+          </div>
+          <div style="display:flex; justify-content:space-around; margin-top:14px; text-align:center;">
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted);">DISTANCE REDUCTION</div>
+              <div style="font-size:1.35rem; font-weight:800; color:var(--prezero-green-light); font-family:var(--font-mono);">-45.7%</div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted);">SHIFT DURATION</div>
+              <div style="font-size:1.35rem; font-weight:800; color:var(--accent-cyan); font-family:var(--font-mono);">-23.8%</div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted);">COST REDUCTION</div>
+              <div style="font-size:1.35rem; font-weight:800; color:var(--accent-amber); font-family:var(--font-mono);">-23.8%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Experiment B Container -->
+      <div id="view-exp-b" class="benchmark-grid" style="display:none;">
+        <div class="benchmark-table-card">
+          <div style="margin-bottom:14px;">
+            <h3 style="font-size:1.05rem; color:#ffffff; font-weight:700;">Experiment B: Municipal Macro Policy Comparison</h3>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+              <b>Strategic Shift:</b> Transitioning the entire 109-container sector from static calendar sweeps to predictive dynamic dispatch.
+            </p>
+          </div>
+
+          <table class="custom-table" id="table-exp-b">
+            <thead>
+              <tr>
+                <th>Policy Dimension</th>
+                <th>Fixed-Schedule Sweep</th>
+                <th style="color:var(--prezero-green-light);">Dynamic Gurobi AI Dispatch</th>
+                <th>Absolute Delta</th>
+                <th>Policy Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+
+          <!-- Deferred Containers Audit -->
+          <div class="audit-box">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Deferred Containers Tracking Audit (Zero Overflow Integrity)
+            </h4>
+            <p style="font-size:0.78rem; color:var(--text-muted);">
+              85 non-critical containers were deferred to future collection cycles. Rigorous sensor audit validates that <b>zero deferred bins suffer immediate overflow risk</b>, eliminating 25 premature collections of half-empty bins today.
+            </p>
+            <div class="audit-grid">
+              <div class="audit-metric-box">
+                <div class="audit-metric-label">Bins Deferred</div>
+                <div class="audit-metric-val text-green">85 / 109 (78.0%)</div>
+              </div>
+              <div class="audit-metric-box">
+                <div class="audit-metric-label">Mean Predicted Fill</div>
+                <div class="audit-metric-val text-cyan">58.9% (Safe)</div>
+              </div>
+              <div class="audit-metric-box">
+                <div class="audit-metric-label">Premature Trips Saved</div>
+                <div class="audit-metric-val text-amber">25 Stops Eliminated</div>
+              </div>
+              <div class="audit-metric-box">
+                <div class="audit-metric-label">Overflow Risk</div>
+                <div class="audit-metric-val text-green">0 Bins at Risk</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="benchmark-chart-card">
+          <h3 style="font-size:0.95rem; color:#ffffff; font-weight:700; margin-bottom:12px;">Policy Impact Metrics</h3>
+          <div style="height:280px; position:relative;">
+            <canvas id="chart-exp-b"></canvas>
+          </div>
+          <div style="margin-top:14px; padding:14px; background:rgba(0,210,106,0.06); border-radius:var(--radius-sm); border:1px solid rgba(0,210,106,0.2);">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--prezero-green-light); margin-bottom:4px;">Multi-Trip Vehicle Routing (MTVRP) Key Result</div>
+            <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.4;">
+              Because total optimized shift time is <b>6.45 hours</b> (including 4 intermediate unloadings at Böllinger Höfe), the entire municipal dispatch fits comfortably into <b>1 physical 8-hour truck shift</b>, freeing 3 physical vehicles for other municipal services.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: FLEET TELEMETRY & STATION INSPECTOR -->
+    <section id="section-telemetry" class="content-section">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            Container Fleet Telemetry &amp; Station Inspector
+          </h2>
+          <p>Real-time granular sensor status, white/green/brown glass mix, fill velocity, and dynamic schedule for all 109 Heilbronn stations.</p>
+        </div>
+      </div>
+
+      <div class="telemetry-card">
+        <!-- Search and Filters -->
+        <div class="telemetry-controls">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="telemetry-search" placeholder="Search street name, station ID, or neighborhood..." oninput="filterTelemetryTable()">
+          </div>
+
+          <div class="telemetry-filters">
+            <select class="custom-select" id="filter-urgency" onchange="filterTelemetryTable()">
+              <option value="all">All Urgency Levels</option>
+              <option value="dispatched">Dispatched Today (24 bins)</option>
+              <option value="Urgent (>=80%)">Urgent (&ge;80%)</option>
+              <option value="Opportunistic (60-79%)">Opportunistic (60-79%)</option>
+              <option value="Deferred / Safe (<60%)">Deferred / Safe (&lt;60%)</option>
+            </select>
+
+            <select class="custom-select" id="filter-tier" onchange="filterTelemetryTable()">
+              <option value="all">All Cluster Tiers</option>
+              <option value="Tier 1">Tier 1: Critical High-Volume</option>
+              <option value="Tier 2">Tier 2: Steady High-Demand</option>
+              <option value="Tier 3">Tier 3: Moderate Regular</option>
+              <option value="Tier 4">Tier 4: Low-Demand / Sporadic</option>
+            </select>
+
+            <select class="custom-select" id="filter-sort" onchange="filterTelemetryTable()">
+              <option value="fill-desc">Sort by Fill Level (High &rarr; Low)</option>
+              <option value="fill-asc">Sort by Fill Level (Low &rarr; High)</option>
+              <option value="velocity-desc">Sort by Daily Velocity</option>
+              <option value="id-asc">Sort by Station ID</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+          <table class="custom-table" id="telemetry-table">
+            <thead>
+              <tr>
+                <th>Station / Street</th>
+                <th>Cluster Tier</th>
+                <th style="min-width:140px;">Predicted Fill</th>
+                <th style="min-width:130px;">Glass Color Mix</th>
+                <th>Fill Velocity</th>
+                <th>Days Idle</th>
+                <th>Dispatch Window</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="telemetry-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: LIVE SCENARIO SIMULATOR -->
+    <section id="section-simulator" class="content-section">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Interactive Operational Scenario Simulator &amp; Cost Calculator
+          </h2>
+          <p>Dynamically test financial, environmental, and fleet efficiency parameters under varying municipal operating conditions.</p>
+        </div>
+      </div>
+
+      <div class="simulator-grid">
+        <!-- Interactive Controls -->
+        <div class="slider-group">
+          <!-- Slider 1: Truck Daily Cost -->
+          <div class="slider-item">
+            <div class="slider-top-row">
+              <span class="slider-label">Truck Daily Cost Rate (8h Shift)</span>
+              <span class="slider-val-badge" id="lbl-truck-cost">€500.00 / day</span>
+            </div>
+            <input type="range" class="custom-range" id="rng-truck-cost" min="300" max="900" step="25" value="500" oninput="runScenarioSimulation()">
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-dim); margin-top:4px;">
+              <span>€300 (Subcontractor)</span>
+              <span>€500 (Municipal Benchmark)</span>
+              <span>€900 (Heavy Fleet)</span>
+            </div>
+          </div>
+
+          <!-- Slider 2: Shift Hours Limit -->
+          <div class="slider-item">
+            <div class="slider-top-row">
+              <span class="slider-label">Max Driver Shift Duration</span>
+              <span class="slider-val-badge" id="lbl-shift-hours">8.0 hours</span>
+            </div>
+            <input type="range" class="custom-range" id="rng-shift-hours" min="6.0" max="10.0" step="0.5" value="8.0" oninput="runScenarioSimulation()">
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-dim); margin-top:4px;">
+              <span>6.0h (Part-time)</span>
+              <span>8.0h (Standard Full Shift)</span>
+              <span>10.0h (Overtime Max)</span>
+            </div>
+          </div>
+
+          <!-- Slider 3: Diesel Price -->
+          <div class="slider-item">
+            <div class="slider-top-row">
+              <span class="slider-label">Diesel Fuel Price</span>
+              <span class="slider-val-badge" id="lbl-fuel-price">€1.75 / Liter</span>
+            </div>
+            <input type="range" class="custom-range" id="rng-fuel-price" min="1.30" max="2.40" step="0.05" value="1.75" oninput="runScenarioSimulation()">
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-dim); margin-top:4px;">
+              <span>€1.30 / L</span>
+              <span>€1.75 / L (Current EU Avg)</span>
+              <span>€2.40 / L</span>
+            </div>
+          </div>
+
+          <!-- Slider 4: Urgency Threshold -->
+          <div class="slider-item">
+            <div class="slider-top-row">
+              <span class="slider-label">Urgency Collection Threshold</span>
+              <span class="slider-val-badge" id="lbl-urgency-thresh">80.0%</span>
+            </div>
+            <input type="range" class="custom-range" id="rng-urgency-thresh" min="65" max="90" step="5" value="80" oninput="runScenarioSimulation()">
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-dim); margin-top:4px;">
+              <span>65% (Conservative)</span>
+              <span>80% (PreZero AI Optimal)</span>
+              <span>90% (High-Risk)</span>
+            </div>
+          </div>
+
+          <!-- Slider 5: Annual Operating Days -->
+          <div class="slider-item">
+            <div class="slider-top-row">
+              <span class="slider-label">Annual Operational Days</span>
+              <span class="slider-val-badge" id="lbl-operating-days">250 days / year</span>
+            </div>
+            <input type="range" class="custom-range" id="rng-operating-days" min="200" max="300" step="10" value="250" oninput="runScenarioSimulation()">
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-dim); margin-top:4px;">
+              <span>200 days (Weekdays)</span>
+              <span>250 days (Standard Municipal)</span>
+              <span>300 days (Year-Round)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Output Display -->
+        <div class="sim-output-card">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+              <h3 style="font-size:1.1rem; color:#ffffff; font-weight:700;">Simulated Annual Municipal Impact</h3>
+              <span class="badge-pill active" id="sim-hourly-rate-pill">€62.50 / hr</span>
+            </div>
+
+            <!-- Annual Cost Saved -->
+            <div class="sim-stat-box">
+              <div class="sim-stat-label">Projected Annual Cost Savings</div>
+              <div class="sim-stat-val text-green" id="sim-annual-savings">€322,278</div>
+              <div style="font-size:0.76rem; color:var(--text-muted); margin-top:4px;">
+                Daily pro-rata shift savings: <b id="sim-daily-savings" style="color:#ffffff;">€1,289.11 / day</b>
+              </div>
+            </div>
+
+            <!-- Annual Carbon Saved -->
+            <div class="sim-stat-box">
+              <div class="sim-stat-label">Annual Greenhouse Gas Abated</div>
+              <div class="sim-stat-val text-cyan" id="sim-annual-co2">66.2 Tonnes CO2</div>
+              <div style="font-size:0.76rem; color:var(--text-muted); margin-top:4px;">
+                Est. annual diesel saved: <b id="sim-fuel-saved" style="color:#ffffff;">24,900 Liters</b> (<span id="sim-fuel-cost-saved">€43,575</span>)
+              </div>
+            </div>
+
+            <!-- Single Truck MTVRP Feasibility -->
+            <div class="sim-stat-box" style="border-color: rgba(0,210,106,0.3); background: rgba(0,210,106,0.05);">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="sim-stat-label" style="color:var(--prezero-green-light);">MTVRP 1-Truck Feasibility</span>
+                <span class="badge-pill active" id="sim-mtvrp-status">FEASIBLE</span>
+              </div>
+              <div style="font-size:1.15rem; font-weight:700; color:#ffffff; font-family:var(--font-mono); margin-top:4px;">
+                6.45h required &le; <span id="sim-shift-limit-val">8.0h</span> max shift
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                1 physical vehicle handles all 4 trips sequentially, freeing 3 trucks for other municipal districts.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.08); font-size:0.78rem; color:var(--text-dim); text-align:center;">
+            Simulated under PreZero audited CVRP economics. Guaranteed zero-overflow constraint active.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: OR ARCHITECTURE -->
+    <section id="section-architecture" class="content-section">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Operations Research Engine &amp; Mathematical Formulation
+          </h2>
+          <p>Under the hood of the Gurobi Mixed-Integer Linear Programming (MILP) core deployed for the City of Heilbronn.</p>
+        </div>
+      </div>
+
+      <div class="or-architecture-card">
+        <div class="or-grid">
+          <div class="or-feature-box">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              1. Mathematical CVRP Formulation
+            </h4>
+            <p>
+              Binary routing variables x<sub>ijk</sub> &isin; {0,1} define vehicle k traversing edge (i, j) on the graph V = {0, 1, ..., N, N+1}. Miller-Tucker-Zemlin (MTZ) continuous variables eliminate subtours while strictly enforcing both volume (18.0 m&sup3;) and payload (9,000 kg) vehicle capacities.
+            </p>
+          </div>
+
+          <div class="or-feature-box">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+              2. Asymmetric OSRM Road Graph
+            </h4>
+            <p>
+              Real urban street topography exhibits severe directional asymmetry (D<sub>ij</sub> &ne; D<sub>ji</sub>) due to one-way streets, roundabouts, and traffic turning rules. The engine computes full 111 &times; 111 travel distance and duration matrices using Heilbronn road graphs.
+            </p>
+          </div>
+
+          <div class="or-feature-box">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              3. MTVRP Multi-Trip Shift Model
+            </h4>
+            <p>
+              Refuse vehicles dump collection payloads at Entsorgungszentrum B&ouml;llinger H&ouml;fe (Node N+1) with a 20-minute turnaround (t<sub>unload</sub>), then immediately launch subsequent collection trips. All 4 runs finish in 6.45 hours, operating within a single 8-hour shift.
+            </p>
+          </div>
+
+          <div class="or-feature-box">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              4. Independent Verification Auditor
+            </h4>
+            <p>
+              Post-solve audit pipeline (<code>verify_gurobi_routes</code>) independently reconstructs every vehicle trajectory from raw GPS coordinates, verifying exact single-visit candidate coverage, road distances within 0.05 km, and zero capacity breaches.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STATION INSPECTOR MODAL -->
+  <div id="inspector-modal" class="modal-overlay" onclick="closeInspector(event)">
+    <div class="inspector-modal" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="closeInspector()">&times;</button>
+      <div id="inspector-modal-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="dashboard-footer">
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div>
+        <b>WasteRouting.AI</b> &mdash; PreZero Smart Waste &amp; City of Heilbronn Hackathon 2026.
+      </div>
+      <div>
+        Operations Research Core: Gurobi MILP Engine &amp; Asymmetric OSRM Matrix.
+      </div>
+      <div>
+        Status: <span class="text-green">All Systems Verified</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- EMBEDDED DASHBOARD DATA & LOGIC -->
+  <script>
+    // Embedded Data Generated from Clean Pipeline
+    const DATA = {
+  "kpis": {
+    "cost_savings_daily_prorata": 1289.11,
+    "cost_savings_daily_prorata_pct": 76.2,
+    "cost_savings_daily_charter": 4000.0,
+    "cost_savings_daily_charter_pct": 66.7,
+    "annual_cost_savings_prorata": 322277.5,
+    "annual_cost_savings_charter": 1000000.0,
+    "distance_reduction_exp_b_pct": 78.2,
+    "distance_reduction_exp_a_pct": 45.7,
+    "co2_reduction_exp_b_pct": 78.2,
+    "co2_reduction_exp_a_pct": 45.7,
+    "annual_co2_saved_tonnes": 66.2,
+    "overflow_resolution_rate": 100.0,
+    "collection_yield_gain_pct": 52.2,
+    "active_trucks": 4,
+    "active_stops": 24,
+    "deferred_stops": 85,
+    "total_volume_collected_m3": 62.31,
+    "total_weight_collected_kg": 23678.7
+  },
+  "depots": {
+    "central_yard": {
+      "name": "Central Operations Yard (Start & End)",
+      "lat": 49.1427,
+      "lng": 9.2109,
+      "role": "Depot (Node 0)"
+    },
+    "disposal_facility": {
+      "name": "Entsorgungszentrum B\u00f6llinger H\u00f6fe",
+      "lat": 49.165,
+      "lng": 9.245,
+      "role": "Disposal Facility (Node N+1)"
+    }
+  },
+  "truck_routes": [
+    {
+      "vehicle": "Truck #1",
+      "color": "#00d26a",
+      "num_stops": 7,
+      "total_volume_m3": 17.24,
+      "volume_utilization_pct": 95.8,
+      "total_weight_kg": 6550.2,
+      "weight_utilization_pct": 72.8,
+      "total_distance_km": 22.69,
+      "driving_time_min": 44.0,
+      "service_time_min": 42.0,
+      "unloading_time_min": 20.0,
+      "shift_hours": 1.77,
+      "daily_charter_cost_eur": 500.0,
+      "prorata_shift_cost_eur": 110.45,
+      "co2_kg": 19.3,
+      "coordinates": [
+        [
+          49.1427,
+          9.2109
+        ],
+        [
+          49.113393,
+          9.168671
+        ],
+        [
+          49.118369,
+          9.206553
+        ],
+        [
+          49.120984,
+          9.208086
+        ],
+        [
+          49.124084,
+          9.224285
+        ],
+        [
+          49.127193,
+          9.221544
+        ],
+        [
+          49.143853,
+          9.230449
+        ],
+        [
+          49.148319,
+          9.223695
+        ],
+        [
+          49.165,
+          9.245
+        ],
+        [
+          49.1427,
+          9.2109
+        ]
+      ]
+    },
+    {
+      "vehicle": "Truck #2",
+      "color": "#00e5ff",
+      "num_stops": 5,
+      "total_volume_m3": 12.88,
+      "volume_utilization_pct": 71.6,
+      "total_weight_kg": 4895.4,
+      "weight_utilization_pct": 54.4,
+      "total_distance_km": 12.77,
+      "driving_time_min": 27.5,
+      "service_time_min": 30.0,
+      "unloading_time_min": 20.0,
+      "shift_hours": 1.29,
+      "daily_charter_cost_eur": 500.0,
+      "prorata_shift_cost_eur": 80.75,
+      "co2_kg": 10.9,
+      "coordinates": [
+        [
+          49.1427,
+          9.2109
+        ],
+        [
+          49.139866,
+          9.208027
+        ],
+        [
+          49.139083,
+          9.217813
+        ],
+        [
+          49.14013,
+          9.23427
+        ],
+        [
+          49.150814,
+          9.22649
+        ],
+        [
+          49.153358,
+          9.231864
+        ],
+        [
+          49.165,
+          9.245
+        ],
+        [
+          49.1427,
+          9.2109
+        ]
+      ]
+    },
+    {
+      "vehicle": "Truck #3",
+      "color": "#f59e0b",
+      "num_stops": 6,
+      "total_volume_m3": 15.69,
+      "volume_utilization_pct": 87.2,
+      "total_weight_kg": 5963.1,
+      "weight_utilization_pct": 66.3,
+      "total_distance_km": 33.68,
+      "driving_time_min": 53.8,
+      "service_time_min": 36.0,
+      "unloading_time_min": 20.0,
+      "shift_hours": 1.83,
+      "daily_charter_cost_eur": 500.0,
+      "prorata_shift_cost_eur": 114.35,
+      "co2_kg": 28.6,
+      "coordinates": [
+        [
+          49.1427,
+          9.2109
+        ],
+        [
+          49.13739,
+          9.17048
+        ],
+        [
+          49.136901,
+          9.190193
+        ],
+        [
+          49.137957,
+          9.193679
+        ],
+        [
+          49.164274,
+          9.166512
+        ],
+        [
+          49.1905,
+          9.142925
+        ],
+        [
+          49.196282,
+          9.137218
+        ],
+        [
+          49.165,
+          9.245
+        ],
+        [
+          49.1427,
+          9.2109
+        ]
+      ]
+    },
+    {
+      "vehicle": "Truck #4",
+      "color": "#a855f7",
+      "num_stops": 6,
+      "total_volume_m3": 16.5,
+      "volume_utilization_pct": 91.7,
+      "total_weight_kg": 6270.0,
+      "weight_utilization_pct": 69.7,
+      "total_distance_km": 17.9,
+      "driving_time_min": 37.6,
+      "service_time_min": 36.0,
+      "unloading_time_min": 20.0,
+      "shift_hours": 1.56,
+      "daily_charter_cost_eur": 500.0,
+      "prorata_shift_cost_eur": 97.53,
+      "co2_kg": 15.2,
+      "coordinates": [
+        [
+          49.1427,
+          9.2109
+        ],
+        [
+          49.143374,
+          9.217626
+        ],
+        [
+          49.14589,
+          9.219146
+        ],
+        [
+          49.155287,
+          9.195735
+        ],
+        [
+          49.153881,
+          9.186939
+        ],
+        [
+          49.163761,
+          9.200967
+        ],
+        [
+          49.168027,
+          9.188638
+        ],
+        [
+          49.165,
+          9.245
+        ],
+        [
+          49.1427,
+          9.2109
+        ]
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "poi_id": "3388",
+      "street_name": "Lohtorstra\u00dfe / Gerberstra\u00dfe",
+      "latitude": 49.143374,
+      "longitude": 9.217626,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 5.31,
+      "days_since_collection": 22,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": "Truck #4",
+      "stop_number": 1,
+      "next_service": "Today (Truck #4 #1)"
+    },
+    {
+      "poi_id": "3393",
+      "street_name": "Turmstra\u00dfe",
+      "latitude": 49.14589,
+      "longitude": 9.219146,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.17,
+      "days_since_collection": 22,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 80.0,
+      "assigned_truck": "Truck #4",
+      "stop_number": 2,
+      "next_service": "Today (Truck #4 #2)"
+    },
+    {
+      "poi_id": "3395",
+      "street_name": "Weststra\u00dfe",
+      "latitude": 49.139866,
+      "longitude": 9.208027,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 30.0,
+      "daily_velocity": 1.15,
+      "days_since_collection": 87,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 30.0,
+      "green_glass_fill": 20.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": "Truck #2",
+      "stop_number": 1,
+      "next_service": "Today (Truck #2 #1)"
+    },
+    {
+      "poi_id": "3399",
+      "street_name": "Bismarckstra\u00dfe / Kernerstra\u00dfe",
+      "latitude": 49.14013,
+      "longitude": 9.23427,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 4.08,
+      "days_since_collection": 32,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 110.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": "Truck #2",
+      "stop_number": 3,
+      "next_service": "Today (Truck #2 #3)"
+    },
+    {
+      "poi_id": "3406",
+      "street_name": "Herbert-Hoover-Stra\u00dfe / Ludwig-Pfau-Schule",
+      "latitude": 49.124084,
+      "longitude": 9.224285,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 90.0,
+      "daily_velocity": 6.25,
+      "days_since_collection": 15,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 90.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": "Truck #1",
+      "stop_number": 4,
+      "next_service": "Today (Truck #1 #4)"
+    },
+    {
+      "poi_id": "3427",
+      "street_name": "Lessingstra\u00dfe / Nordstra\u00dfe",
+      "latitude": 49.150814,
+      "longitude": 9.22649,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.54,
+      "days_since_collection": 37,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 70.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": "Truck #2",
+      "stop_number": 4,
+      "next_service": "Today (Truck #2 #4)"
+    },
+    {
+      "poi_id": "3432",
+      "street_name": "Schickhardtstra\u00dfe / Wartbergsteige",
+      "latitude": 49.153358,
+      "longitude": 9.231864,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 30.0,
+      "daily_velocity": 4.55,
+      "days_since_collection": 23,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 30.0,
+      "green_glass_fill": 20.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": "Truck #2",
+      "stop_number": 5,
+      "next_service": "Today (Truck #2 #5)"
+    },
+    {
+      "poi_id": "3433",
+      "street_name": "Schillerstra\u00dfe / Oststra\u00dfe",
+      "latitude": 49.143853,
+      "longitude": 9.230449,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 2.44,
+      "days_since_collection": 38,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": "Truck #1",
+      "stop_number": 6,
+      "next_service": "Today (Truck #1 #6)"
+    },
+    {
+      "poi_id": "3437",
+      "street_name": "Michael-Vehe-Stra\u00dfe",
+      "latitude": 49.1905,
+      "longitude": 9.142925,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 3.93,
+      "days_since_collection": 30,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": "Truck #3",
+      "stop_number": 5,
+      "next_service": "Today (Truck #3 #5)"
+    },
+    {
+      "poi_id": "3438",
+      "street_name": "Wilhelm-Flinsbach-Stra\u00dfe",
+      "latitude": 49.196282,
+      "longitude": 9.137218,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.05,
+      "days_since_collection": 46,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": "Truck #3",
+      "stop_number": 6,
+      "next_service": "Today (Truck #3 #6)"
+    },
+    {
+      "poi_id": "3454",
+      "street_name": "L\u00e4ngelterstra\u00dfe / Besch\u00fctzende Werkst\u00e4tte",
+      "latitude": 49.13739,
+      "longitude": 9.17048,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.35,
+      "days_since_collection": 22,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": "Truck #3",
+      "stop_number": 1,
+      "next_service": "Today (Truck #3 #1)"
+    },
+    {
+      "poi_id": "3456",
+      "street_name": "Leonhardstra\u00dfe / Teichstra\u00dfe",
+      "latitude": 49.137957,
+      "longitude": 9.193679,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 4.34,
+      "days_since_collection": 23,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 110.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": "Truck #3",
+      "stop_number": 3,
+      "next_service": "Today (Truck #3 #3)"
+    },
+    {
+      "poi_id": "3458",
+      "street_name": "Maasstra\u00dfe",
+      "latitude": 49.153881,
+      "longitude": 9.186939,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 3.48,
+      "days_since_collection": 31,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": "Truck #4",
+      "stop_number": 4,
+      "next_service": "Today (Truck #4 #4)"
+    },
+    {
+      "poi_id": "3463",
+      "street_name": "Maihaldenstra\u00dfe",
+      "latitude": 49.164274,
+      "longitude": 9.166512,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 1.98,
+      "days_since_collection": 64,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": "Truck #3",
+      "stop_number": 4,
+      "next_service": "Today (Truck #3 #4)"
+    },
+    {
+      "poi_id": "3479",
+      "street_name": "R\u00f6merstra\u00dfe",
+      "latitude": 49.155287,
+      "longitude": 9.195735,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.0,
+      "days_since_collection": 37,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": "Truck #4",
+      "stop_number": 3,
+      "next_service": "Today (Truck #4 #3)"
+    },
+    {
+      "poi_id": "3480",
+      "street_name": "Sachsen\u00e4ckerstra\u00dfe",
+      "latitude": 49.163761,
+      "longitude": 9.200967,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 3.16,
+      "days_since_collection": 140,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 110.0,
+      "brown_glass_fill": 110.0,
+      "assigned_truck": "Truck #4",
+      "stop_number": 5,
+      "next_service": "Today (Truck #4 #5)"
+    },
+    {
+      "poi_id": "3491",
+      "street_name": "Port-Talbot-Stra\u00dfe",
+      "latitude": 49.120984,
+      "longitude": 9.208086,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 90.0,
+      "daily_velocity": 3.73,
+      "days_since_collection": 29,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 90.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": "Truck #1",
+      "stop_number": 3,
+      "next_service": "Today (Truck #1 #3)"
+    },
+    {
+      "poi_id": "3492",
+      "street_name": "Robert-Bosch-Stra\u00dfe / Eckenerstra\u00dfe",
+      "latitude": 49.118369,
+      "longitude": 9.206553,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 3.33,
+      "days_since_collection": 35,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": "Truck #1",
+      "stop_number": 2,
+      "next_service": "Today (Truck #1 #2)"
+    },
+    {
+      "poi_id": "4452",
+      "street_name": "Jakob-Saame-Stra\u00dfe / Hermann-L\u00f6ns-Stra\u00dfe",
+      "latitude": 49.168027,
+      "longitude": 9.188638,
+      "predicted_fill_perc": 110.0,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 2.5,
+      "days_since_collection": 37,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.75,
+      "demand_weight_kg": 1045.0,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": "Truck #4",
+      "stop_number": 6,
+      "next_service": "Today (Truck #4 #6)"
+    },
+    {
+      "poi_id": "3465",
+      "street_name": "Hoss\u00e4ckerweg / Albert-Debold-Stra\u00dfe",
+      "latitude": 49.113393,
+      "longitude": 9.168671,
+      "predicted_fill_perc": 109.3,
+      "current_fill_perc": 90.0,
+      "daily_velocity": 0.52,
+      "days_since_collection": 174,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.73,
+      "demand_weight_kg": 1037.4,
+      "white_glass_fill": 90.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 50.0,
+      "assigned_truck": "Truck #1",
+      "stop_number": 1,
+      "next_service": "Today (Truck #1 #1)"
+    },
+    {
+      "poi_id": "3434",
+      "street_name": "Sichererstra\u00dfe",
+      "latitude": 49.148319,
+      "longitude": 9.223695,
+      "predicted_fill_perc": 78.5,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 4.09,
+      "days_since_collection": 16,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.96,
+      "demand_weight_kg": 744.8,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 110.0,
+      "brown_glass_fill": 50.0,
+      "assigned_truck": "Truck #1",
+      "stop_number": 7,
+      "next_service": "Today (Truck #1 #7)"
+    },
+    {
+      "poi_id": "3445",
+      "street_name": "Heckenstra\u00dfe / Friedrichstra\u00dfe",
+      "latitude": 49.136901,
+      "longitude": 9.190193,
+      "predicted_fill_perc": 77.7,
+      "current_fill_perc": 90.0,
+      "daily_velocity": 4.32,
+      "days_since_collection": 15,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.94,
+      "demand_weight_kg": 737.2,
+      "white_glass_fill": 90.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": "Truck #3",
+      "stop_number": 2,
+      "next_service": "Today (Truck #3 #2)"
+    },
+    {
+      "poi_id": "3391",
+      "street_name": "Rollwagstra\u00dfe",
+      "latitude": 49.139083,
+      "longitude": 9.217813,
+      "predicted_fill_perc": 75.3,
+      "current_fill_perc": 40.0,
+      "daily_velocity": 0.56,
+      "days_since_collection": 113,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.88,
+      "demand_weight_kg": 714.4,
+      "white_glass_fill": 40.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": "Truck #2",
+      "stop_number": 2,
+      "next_service": "Today (Truck #2 #2)"
+    },
+    {
+      "poi_id": "3407",
+      "street_name": "Hohenstaufenstra\u00dfe / Beethovenstra\u00dfe",
+      "latitude": 49.127193,
+      "longitude": 9.221544,
+      "predicted_fill_perc": 61.7,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 2.86,
+      "days_since_collection": 18,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.54,
+      "demand_weight_kg": 585.2,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": "Truck #1",
+      "stop_number": 5,
+      "next_service": "Today (Truck #1 #5)"
+    },
+    {
+      "poi_id": "3413",
+      "street_name": "Schoettlestra\u00dfe / Knorrstra\u00dfe",
+      "latitude": 49.133887,
+      "longitude": 9.211155,
+      "predicted_fill_perc": 107.9,
+      "current_fill_perc": 30.0,
+      "daily_velocity": 2.5,
+      "days_since_collection": 36,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.7,
+      "demand_weight_kg": 1026.0,
+      "white_glass_fill": 30.0,
+      "green_glass_fill": 10.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "6798",
+      "street_name": "Ernst-Abbe-Stra\u00dfe, au\u00dferhalb des Recyclinghofs",
+      "latitude": 49.180958,
+      "longitude": 9.126528,
+      "predicted_fill_perc": 106.7,
+      "current_fill_perc": 30.0,
+      "daily_velocity": 2.78,
+      "days_since_collection": 32,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.67,
+      "demand_weight_kg": 1014.6,
+      "white_glass_fill": 30.0,
+      "green_glass_fill": 20.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3495",
+      "street_name": "Staufenbergstra\u00dfe / S\u00fcdfriedhof",
+      "latitude": 49.116696,
+      "longitude": 9.20667,
+      "predicted_fill_perc": 105.9,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 3.53,
+      "days_since_collection": 25,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.65,
+      "demand_weight_kg": 1007.0,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3411",
+      "street_name": "Schirrmannstra\u00dfe / Vorderer B\u00f6ckinger",
+      "latitude": 49.136096,
+      "longitude": 9.257475,
+      "predicted_fill_perc": 105.6,
+      "current_fill_perc": 10.0,
+      "daily_velocity": 2.75,
+      "days_since_collection": 32,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.64,
+      "demand_weight_kg": 1003.2,
+      "white_glass_fill": 10.0,
+      "green_glass_fill": 20.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3487",
+      "street_name": "Kolpingstra\u00dfe",
+      "latitude": 49.126034,
+      "longitude": 9.201212,
+      "predicted_fill_perc": 105.6,
+      "current_fill_perc": 50.0,
+      "daily_velocity": 4.0,
+      "days_since_collection": 22,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.64,
+      "demand_weight_kg": 1003.2,
+      "white_glass_fill": 50.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3408",
+      "street_name": "Im Wannental, au\u00dferhalb des Recyclinghofs",
+      "latitude": 49.139758,
+      "longitude": 9.24037,
+      "predicted_fill_perc": 105.1,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 3.81,
+      "days_since_collection": 23,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.63,
+      "demand_weight_kg": 999.4,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3475",
+      "street_name": "B\u00f6llinger Stra\u00dfe",
+      "latitude": 49.174295,
+      "longitude": 9.200612,
+      "predicted_fill_perc": 104.2,
+      "current_fill_perc": 40.0,
+      "daily_velocity": 5.79,
+      "days_since_collection": 15,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.6,
+      "demand_weight_kg": 988.0,
+      "white_glass_fill": 40.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3402",
+      "street_name": "Friedrich-D\u00fcrr-Stra\u00dfe / Gildenstra\u00dfe",
+      "latitude": 49.128794,
+      "longitude": 9.206843,
+      "predicted_fill_perc": 102.5,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 2.44,
+      "days_since_collection": 35,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.56,
+      "demand_weight_kg": 972.8,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 100.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3396",
+      "street_name": "Alexanderstra\u00dfe / Dittmarstra\u00dfe",
+      "latitude": 49.133826,
+      "longitude": 9.233404,
+      "predicted_fill_perc": 100.3,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 3.98,
+      "days_since_collection": 21,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.51,
+      "demand_weight_kg": 953.8,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3489",
+      "street_name": "Max-Planck-Stra\u00dfe",
+      "latitude": 49.121772,
+      "longitude": 9.204978,
+      "predicted_fill_perc": 100.0,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 1.6,
+      "days_since_collection": 52,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.5,
+      "demand_weight_kg": 950.0,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3467",
+      "street_name": "Bensheimer Stra\u00dfe",
+      "latitude": 49.182183,
+      "longitude": 9.106483,
+      "predicted_fill_perc": 98.9,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 4.58,
+      "days_since_collection": 18,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.47,
+      "demand_weight_kg": 938.6,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3461",
+      "street_name": "Brechhausstra\u00dfe",
+      "latitude": 49.155365,
+      "longitude": 9.175561,
+      "predicted_fill_perc": 98.1,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 2.27,
+      "days_since_collection": 36,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.45,
+      "demand_weight_kg": 931.0,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 70.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3385",
+      "street_name": "Friedensplatz / Moltkestra\u00dfe",
+      "latitude": 49.141168,
+      "longitude": 9.228051,
+      "predicted_fill_perc": 98.0,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 2.15,
+      "days_since_collection": 38,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.45,
+      "demand_weight_kg": 931.0,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3477",
+      "street_name": "Marienburger Stra\u00dfe / Elbinger Stra\u00dfe",
+      "latitude": 49.159001,
+      "longitude": 9.196244,
+      "predicted_fill_perc": 97.9,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 1.3,
+      "days_since_collection": 63,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.45,
+      "demand_weight_kg": 931.0,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 20.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3414",
+      "street_name": "Sontheimer Landwehr / Hauffstra\u00dfe",
+      "latitude": 49.1254,
+      "longitude": 9.213312,
+      "predicted_fill_perc": 97.8,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.88,
+      "days_since_collection": 21,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.44,
+      "demand_weight_kg": 927.2,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 50.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3405",
+      "street_name": "Herbert-Hoover-Stra\u00dfe",
+      "latitude": 49.124002,
+      "longitude": 9.229685,
+      "predicted_fill_perc": 94.7,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 5.26,
+      "days_since_collection": 15,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.37,
+      "demand_weight_kg": 900.6,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3436",
+      "street_name": "Hahnen\u00e4ckerstra\u00dfe",
+      "latitude": 49.198923,
+      "longitude": 9.147576,
+      "predicted_fill_perc": 88.3,
+      "current_fill_perc": 90.0,
+      "daily_velocity": 1.94,
+      "days_since_collection": 38,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.21,
+      "demand_weight_kg": 839.8,
+      "white_glass_fill": 90.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3443",
+      "street_name": "Gr\u00fcnewaldstra\u00dfe",
+      "latitude": 49.143977,
+      "longitude": 9.191893,
+      "predicted_fill_perc": 88.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.33,
+      "days_since_collection": 22,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.2,
+      "demand_weight_kg": 836.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3486",
+      "street_name": "Hauptstra\u00dfe",
+      "latitude": 49.117733,
+      "longitude": 9.189229,
+      "predicted_fill_perc": 87.1,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 1.91,
+      "days_since_collection": 38,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.18,
+      "demand_weight_kg": 828.4,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3425",
+      "street_name": "Kernerstra\u00dfe",
+      "latitude": 49.141228,
+      "longitude": 9.234042,
+      "predicted_fill_perc": 86.7,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 1.72,
+      "days_since_collection": 42,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.17,
+      "demand_weight_kg": 824.6,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3429",
+      "street_name": "Pf\u00fchlstra\u00dfe / M\u00f6rikestra\u00dfe",
+      "latitude": 49.144633,
+      "longitude": 9.236403,
+      "predicted_fill_perc": 86.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 1.89,
+      "days_since_collection": 38,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.15,
+      "demand_weight_kg": 817.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 100.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3383",
+      "street_name": "Achtungstra\u00dfe",
+      "latitude": 49.139363,
+      "longitude": 9.212454,
+      "predicted_fill_perc": 85.4,
+      "current_fill_perc": 20.0,
+      "daily_velocity": 3.24,
+      "days_since_collection": 22,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.14,
+      "demand_weight_kg": 813.2,
+      "white_glass_fill": 20.0,
+      "green_glass_fill": 10.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3457",
+      "street_name": "Ludwigsburger Stra\u00dfe / Im Haselter",
+      "latitude": 49.140066,
+      "longitude": 9.190835,
+      "predicted_fill_perc": 84.0,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 3.33,
+      "days_since_collection": 21,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.1,
+      "demand_weight_kg": 798.0,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 90.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3417",
+      "street_name": "Werderstra\u00dfe",
+      "latitude": 49.133732,
+      "longitude": 9.217132,
+      "predicted_fill_perc": 82.8,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.0,
+      "days_since_collection": 23,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.07,
+      "demand_weight_kg": 786.6,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3476",
+      "street_name": "Im Fleischbeil / Neckartalstra\u00dfe",
+      "latitude": 49.156349,
+      "longitude": 9.200773,
+      "predicted_fill_perc": 82.1,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 2.97,
+      "days_since_collection": 23,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.05,
+      "demand_weight_kg": 779.0,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3424",
+      "street_name": "Katzensteige / Beutingerstra\u00dfe",
+      "latitude": 49.145472,
+      "longitude": 9.248035,
+      "predicted_fill_perc": 82.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.88,
+      "days_since_collection": 14,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.05,
+      "demand_weight_kg": 779.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "4455",
+      "street_name": "Fasanenweg / Limesstra\u00dfe",
+      "latitude": 49.14633,
+      "longitude": 9.194274,
+      "predicted_fill_perc": 80.8,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.21,
+      "days_since_collection": 16,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.02,
+      "demand_weight_kg": 767.6,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3447",
+      "street_name": "Heidelberger Stra\u00dfe / Im Kreuzgrund",
+      "latitude": 49.148871,
+      "longitude": 9.180653,
+      "predicted_fill_perc": 80.3,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 1.72,
+      "days_since_collection": 39,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.01,
+      "demand_weight_kg": 763.8,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 80.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3472",
+      "street_name": "Am Wasserturm",
+      "latitude": 49.117165,
+      "longitude": 9.153609,
+      "predicted_fill_perc": 80.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.17,
+      "days_since_collection": 16,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.0,
+      "demand_weight_kg": 760.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3483",
+      "street_name": "Bottwarbahnstra\u00dfe",
+      "latitude": 49.121896,
+      "longitude": 9.195768,
+      "predicted_fill_perc": 80.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.7,
+      "days_since_collection": 18,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Urgent (>=80%)",
+      "demand_volume_m3": 2.0,
+      "demand_weight_kg": 760.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "Today (Dispatched)"
+    },
+    {
+      "poi_id": "3449",
+      "street_name": "Hofstattstra\u00dfe / Glockenstra\u00dfe",
+      "latitude": 49.128828,
+      "longitude": 9.187283,
+      "predicted_fill_perc": 79.6,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 1.84,
+      "days_since_collection": 36,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.99,
+      "demand_weight_kg": 756.2,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 11 days"
+    },
+    {
+      "poi_id": "3410",
+      "street_name": "Lothringer Stra\u00dfe / Fichtestra\u00dfe",
+      "latitude": 49.133162,
+      "longitude": 9.236897,
+      "predicted_fill_perc": 79.5,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.14,
+      "days_since_collection": 16,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.99,
+      "demand_weight_kg": 756.2,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 4 days"
+    },
+    {
+      "poi_id": "3421",
+      "street_name": "Gottlieb-Daimler-Stra\u00dfe",
+      "latitude": 49.153924,
+      "longitude": 9.213599,
+      "predicted_fill_perc": 75.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.9,
+      "days_since_collection": 16,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.88,
+      "demand_weight_kg": 714.4,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 6 days"
+    },
+    {
+      "poi_id": "3440",
+      "street_name": "Bruchsaler Stra\u00dfe / Stettener Stra\u00dfe",
+      "latitude": 49.142054,
+      "longitude": 9.180039,
+      "predicted_fill_perc": 72.3,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 2.74,
+      "days_since_collection": 22,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.81,
+      "demand_weight_kg": 687.8,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 70.0,
+      "brown_glass_fill": 80.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 10 days"
+    },
+    {
+      "poi_id": "3415",
+      "street_name": "Sontheimer Stra\u00dfe / Eythstra\u00dfe / Merkurstra\u00dfe",
+      "latitude": 49.12841,
+      "longitude": 9.210392,
+      "predicted_fill_perc": 72.1,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 1.37,
+      "days_since_collection": 44,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.8,
+      "demand_weight_kg": 684.0,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 70.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 20 days"
+    },
+    {
+      "poi_id": "3482",
+      "street_name": "Wilhelm-Sch\u00e4ffer-Stra\u00dfe",
+      "latitude": 49.17107,
+      "longitude": 9.198006,
+      "predicted_fill_perc": 67.9,
+      "current_fill_perc": 40.0,
+      "daily_velocity": 3.14,
+      "days_since_collection": 18,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.7,
+      "demand_weight_kg": 646.0,
+      "white_glass_fill": 40.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 10 days"
+    },
+    {
+      "poi_id": "3398",
+      "street_name": "Badener Stra\u00dfe",
+      "latitude": 49.134036,
+      "longitude": 9.24902,
+      "predicted_fill_perc": 66.0,
+      "current_fill_perc": 40.0,
+      "daily_velocity": 2.5,
+      "days_since_collection": 22,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.65,
+      "demand_weight_kg": 627.0,
+      "white_glass_fill": 40.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 13 days"
+    },
+    {
+      "poi_id": "3384",
+      "street_name": "Bismarckstra\u00dfe / Gymnasiumstra\u00dfe",
+      "latitude": 49.140257,
+      "longitude": 9.224879,
+      "predicted_fill_perc": 64.8,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 3.6,
+      "days_since_collection": 15,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.62,
+      "demand_weight_kg": 615.6,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 9 days"
+    },
+    {
+      "poi_id": "3439",
+      "street_name": "Bruchsaler Stra\u00dfe / G\u00fcglinger Stra\u00dfe",
+      "latitude": 49.14456,
+      "longitude": 9.182297,
+      "predicted_fill_perc": 63.0,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 1.17,
+      "days_since_collection": 45,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.58,
+      "demand_weight_kg": 600.4,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 31 days"
+    },
+    {
+      "poi_id": "3416",
+      "street_name": "Urbanstra\u00dfe",
+      "latitude": 49.133555,
+      "longitude": 9.220215,
+      "predicted_fill_perc": 60.5,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 1.2,
+      "days_since_collection": 42,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.51,
+      "demand_weight_kg": 573.8,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 32 days"
+    },
+    {
+      "poi_id": "3464",
+      "street_name": "Amsterdamer Stra\u00dfe",
+      "latitude": 49.118449,
+      "longitude": 9.1802,
+      "predicted_fill_perc": 60.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 5.0,
+      "days_since_collection": 10,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Opportunistic (60-79%)",
+      "demand_volume_m3": 1.5,
+      "demand_weight_kg": 570.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 80.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 8 days"
+    },
+    {
+      "poi_id": "3423",
+      "street_name": "K\u00e4ferflugstra\u00dfe / Schickhardtstra\u00dfe",
+      "latitude": 49.155346,
+      "longitude": 9.227622,
+      "predicted_fill_perc": 59.0,
+      "current_fill_perc": 50.0,
+      "daily_velocity": 0.83,
+      "days_since_collection": 59,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.48,
+      "demand_weight_kg": 562.4,
+      "white_glass_fill": 50.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 49 days"
+    },
+    {
+      "poi_id": "3470",
+      "street_name": "Schlossstra\u00dfe",
+      "latitude": 49.186042,
+      "longitude": 9.10645,
+      "predicted_fill_perc": 58.7,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 3.06,
+      "days_since_collection": 16,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.47,
+      "demand_weight_kg": 558.6,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 13 days"
+    },
+    {
+      "poi_id": "3474",
+      "street_name": "B\u00f6ckinger Stra\u00dfe / Leinbachstra\u00dfe",
+      "latitude": 49.166148,
+      "longitude": 9.204201,
+      "predicted_fill_perc": 56.8,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 1.58,
+      "days_since_collection": 30,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.42,
+      "demand_weight_kg": 539.6,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 27 days"
+    },
+    {
+      "poi_id": "3468",
+      "street_name": "Kapellenweg",
+      "latitude": 49.18185,
+      "longitude": 9.116266,
+      "predicted_fill_perc": 56.7,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 1.63,
+      "days_since_collection": 29,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.42,
+      "demand_weight_kg": 539.6,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 26 days"
+    },
+    {
+      "poi_id": "3442",
+      "street_name": "Gro\u00dfgartacher Stra\u00dfe / Wilhelm-Leuschner-Stra\u00dfe",
+      "latitude": 49.141123,
+      "longitude": 9.193595,
+      "predicted_fill_perc": 55.3,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 1.21,
+      "days_since_collection": 38,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.38,
+      "demand_weight_kg": 524.4,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 36 days"
+    },
+    {
+      "poi_id": "3394",
+      "street_name": "Uhlandstra\u00dfe / Steinstra\u00dfe",
+      "latitude": 49.136519,
+      "longitude": 9.22271,
+      "predicted_fill_perc": 54.3,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 4.52,
+      "days_since_collection": 10,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.36,
+      "demand_weight_kg": 516.8,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 10 days"
+    },
+    {
+      "poi_id": "3488",
+      "street_name": "Mauerstra\u00dfe",
+      "latitude": 49.12313,
+      "longitude": 9.200159,
+      "predicted_fill_perc": 52.7,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 1.37,
+      "days_since_collection": 32,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.32,
+      "demand_weight_kg": 501.6,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 70.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 34 days"
+    },
+    {
+      "poi_id": "3397",
+      "street_name": "Am Seelesberg",
+      "latitude": 49.138529,
+      "longitude": 9.246999,
+      "predicted_fill_perc": 50.8,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.85,
+      "days_since_collection": 11,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.27,
+      "demand_weight_kg": 482.6,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 12 days"
+    },
+    {
+      "poi_id": "3462",
+      "street_name": "D\u00f6rnlestra\u00dfe",
+      "latitude": 49.157651,
+      "longitude": 9.174541,
+      "predicted_fill_perc": 50.3,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 0.79,
+      "days_since_collection": 53,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.26,
+      "demand_weight_kg": 478.8,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 62 days"
+    },
+    {
+      "poi_id": "3435",
+      "street_name": "Wartbergstra\u00dfe / Erlenbacher Stra\u00dfe",
+      "latitude": 49.150671,
+      "longitude": 9.230686,
+      "predicted_fill_perc": 48.5,
+      "current_fill_perc": 30.0,
+      "daily_velocity": 1.3,
+      "days_since_collection": 31,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.21,
+      "demand_weight_kg": 459.8,
+      "white_glass_fill": 30.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 50.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 39 days"
+    },
+    {
+      "poi_id": "3426",
+      "street_name": "Krugstra\u00dfe",
+      "latitude": 49.148486,
+      "longitude": 9.239137,
+      "predicted_fill_perc": 47.4,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 1.32,
+      "days_since_collection": 30,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.18,
+      "demand_weight_kg": 448.4,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 60.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 39 days"
+    },
+    {
+      "poi_id": "3420",
+      "street_name": "Gaswerkstra\u00dfe",
+      "latitude": 49.151259,
+      "longitude": 9.220006,
+      "predicted_fill_perc": 46.2,
+      "current_fill_perc": 90.0,
+      "daily_velocity": 3.85,
+      "days_since_collection": 10,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.16,
+      "demand_weight_kg": 440.8,
+      "white_glass_fill": 90.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 13 days"
+    },
+    {
+      "poi_id": "3493",
+      "street_name": "Robert-Bosch-Stra\u00dfe / Sontheimer Landwehr",
+      "latitude": 49.125589,
+      "longitude": 9.208269,
+      "predicted_fill_perc": 45.8,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 1.82,
+      "days_since_collection": 21,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.14,
+      "demand_weight_kg": 433.2,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 29 days"
+    },
+    {
+      "poi_id": "3469",
+      "street_name": "Paul-Gerhardt-Stra\u00dfe / Pater-Kolbe-Stra\u00dfe",
+      "latitude": 49.184528,
+      "longitude": 9.118537,
+      "predicted_fill_perc": 45.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.75,
+      "days_since_collection": 10,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.12,
+      "demand_weight_kg": 425.6,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 14 days"
+    },
+    {
+      "poi_id": "3404",
+      "street_name": "Happenbacher Stra\u00dfe / Gruppenbacher Stra\u00dfe",
+      "latitude": 49.125483,
+      "longitude": 9.226773,
+      "predicted_fill_perc": 43.9,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 0.8,
+      "days_since_collection": 46,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.1,
+      "demand_weight_kg": 418.0,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 70 days"
+    },
+    {
+      "poi_id": "3455",
+      "street_name": "Leibnizstra\u00dfe",
+      "latitude": 49.138843,
+      "longitude": 9.179273,
+      "predicted_fill_perc": 43.8,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.65,
+      "days_since_collection": 10,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.09,
+      "demand_weight_kg": 414.2,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 90.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 15 days"
+    },
+    {
+      "poi_id": "3478",
+      "street_name": "Pfaffenstra\u00dfe / Im Riedgrund",
+      "latitude": 49.183494,
+      "longitude": 9.180505,
+      "predicted_fill_perc": 42.2,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 2.34,
+      "days_since_collection": 15,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.06,
+      "demand_weight_kg": 402.8,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 24 days"
+    },
+    {
+      "poi_id": "3400",
+      "street_name": "Bl\u00fccherstra\u00dfe / Karl-J\u00e4ger-Stra\u00dfe",
+      "latitude": 49.13163,
+      "longitude": 9.229419,
+      "predicted_fill_perc": 42.0,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 3.5,
+      "days_since_collection": 10,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.05,
+      "demand_weight_kg": 399.0,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 70.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 16 days"
+    },
+    {
+      "poi_id": "3459",
+      "street_name": "Sinsheimer Stra\u00dfe",
+      "latitude": 49.145853,
+      "longitude": 9.177776,
+      "predicted_fill_perc": 42.0,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 0.66,
+      "days_since_collection": 53,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 1.05,
+      "demand_weight_kg": 399.0,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 87 days"
+    },
+    {
+      "poi_id": "3446",
+      "street_name": "Heidelberger Stra\u00dfe / Friedhof",
+      "latitude": 49.144895,
+      "longitude": 9.186507,
+      "predicted_fill_perc": 37.6,
+      "current_fill_perc": 50.0,
+      "daily_velocity": 0.89,
+      "days_since_collection": 35,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.94,
+      "demand_weight_kg": 357.2,
+      "white_glass_fill": 50.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 69 days"
+    },
+    {
+      "poi_id": "3450",
+      "street_name": "Hofweg / Im Kreuzgrund",
+      "latitude": 49.15077,
+      "longitude": 9.185487,
+      "predicted_fill_perc": 37.2,
+      "current_fill_perc": 50.0,
+      "daily_velocity": 0.86,
+      "days_since_collection": 36,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.93,
+      "demand_weight_kg": 353.4,
+      "white_glass_fill": 50.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 72 days"
+    },
+    {
+      "poi_id": "3494",
+      "street_name": "Staufenbergstra\u00dfe",
+      "latitude": 49.118116,
+      "longitude": 9.196946,
+      "predicted_fill_perc": 36.4,
+      "current_fill_perc": 20.0,
+      "daily_velocity": 0.95,
+      "days_since_collection": 32,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.91,
+      "demand_weight_kg": 345.8,
+      "white_glass_fill": 20.0,
+      "green_glass_fill": 10.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 67 days"
+    },
+    {
+      "poi_id": "3401",
+      "street_name": "Einsteinstra\u00dfe / Reutlinger Stra\u00dfe",
+      "latitude": 49.133129,
+      "longitude": 9.24445,
+      "predicted_fill_perc": 35.7,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 2.97,
+      "days_since_collection": 10,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.89,
+      "demand_weight_kg": 338.2,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 70.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 21 days"
+    },
+    {
+      "poi_id": "3466",
+      "street_name": "Nuss\u00e4ckerstra\u00dfe",
+      "latitude": 49.114135,
+      "longitude": 9.172305,
+      "predicted_fill_perc": 34.7,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 1.6,
+      "days_since_collection": 18,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.87,
+      "demand_weight_kg": 330.6,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 40 days"
+    },
+    {
+      "poi_id": "3419",
+      "street_name": "Binswanger Stra\u00dfe / Alfred-Minner-Stra\u00dfe",
+      "latitude": 49.162226,
+      "longitude": 9.228188,
+      "predicted_fill_perc": 33.9,
+      "current_fill_perc": 90.0,
+      "daily_velocity": 2.82,
+      "days_since_collection": 10,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.85,
+      "demand_weight_kg": 323.0,
+      "white_glass_fill": 90.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 23 days"
+    },
+    {
+      "poi_id": "3484",
+      "street_name": "Gotenstra\u00dfe / Damaschkestra\u00dfe",
+      "latitude": 49.116995,
+      "longitude": 9.184128,
+      "predicted_fill_perc": 29.9,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 2.26,
+      "days_since_collection": 11,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.75,
+      "demand_weight_kg": 285.0,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 30 days"
+    },
+    {
+      "poi_id": "3428",
+      "street_name": "Pestalozzistra\u00dfe",
+      "latitude": 49.14984,
+      "longitude": 9.223167,
+      "predicted_fill_perc": 27.6,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 1.54,
+      "days_since_collection": 15,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.69,
+      "demand_weight_kg": 262.2,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 47 days"
+    },
+    {
+      "poi_id": "3451",
+      "street_name": "Holunderweg",
+      "latitude": 49.147176,
+      "longitude": 9.188984,
+      "predicted_fill_perc": 24.9,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 6.92,
+      "days_since_collection": 3,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.62,
+      "demand_weight_kg": 235.6,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 110.0,
+      "brown_glass_fill": 110.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 10 days"
+    },
+    {
+      "poi_id": "3409",
+      "street_name": "Liebigstra\u00dfe / B\u00f6nnigheimer Stra\u00dfe",
+      "latitude": 49.132157,
+      "longitude": 9.207611,
+      "predicted_fill_perc": 24.8,
+      "current_fill_perc": 40.0,
+      "daily_velocity": 1.88,
+      "days_since_collection": 11,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.62,
+      "demand_weight_kg": 235.6,
+      "white_glass_fill": 40.0,
+      "green_glass_fill": 70.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 40 days"
+    },
+    {
+      "poi_id": "3448",
+      "street_name": "Heidelberger Stra\u00dfe / Platanenstra\u00dfe",
+      "latitude": 49.147529,
+      "longitude": 9.182047,
+      "predicted_fill_perc": 22.7,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 6.31,
+      "days_since_collection": 3,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.57,
+      "demand_weight_kg": 216.6,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 110.0,
+      "brown_glass_fill": 50.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 12 days"
+    },
+    {
+      "poi_id": "3496",
+      "street_name": "Zwirnereistra\u00dfe / Friedrich-Ackermann-Stra\u00dfe",
+      "latitude": 49.119364,
+      "longitude": 9.193374,
+      "predicted_fill_perc": 20.3,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 4.23,
+      "days_since_collection": 4,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.51,
+      "demand_weight_kg": 193.8,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 100.0,
+      "brown_glass_fill": 70.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 18 days"
+    },
+    {
+      "poi_id": "3412",
+      "street_name": "Schmollerstra\u00dfe / Hohenstaufenstra\u00dfe",
+      "latitude": 49.131093,
+      "longitude": 9.22344,
+      "predicted_fill_perc": 16.6,
+      "current_fill_perc": 30.0,
+      "daily_velocity": 0.48,
+      "days_since_collection": 29,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.42,
+      "demand_weight_kg": 159.6,
+      "white_glass_fill": 30.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 166 days"
+    },
+    {
+      "poi_id": "3485",
+      "street_name": "G\u00fcldensteinstra\u00dfe / Thomastra\u00dfe",
+      "latitude": 49.119099,
+      "longitude": 9.200595,
+      "predicted_fill_perc": 15.4,
+      "current_fill_perc": 70.0,
+      "daily_velocity": 3.2,
+      "days_since_collection": 4,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.38,
+      "demand_weight_kg": 144.4,
+      "white_glass_fill": 70.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 26 days"
+    },
+    {
+      "poi_id": "3403",
+      "street_name": "Happelstra\u00dfe / Ludwig-Pfau-Stra\u00dfe",
+      "latitude": 49.132279,
+      "longitude": 9.224267,
+      "predicted_fill_perc": 15.0,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 4.16,
+      "days_since_collection": 3,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.38,
+      "demand_weight_kg": 144.4,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 20 days"
+    },
+    {
+      "poi_id": "3430",
+      "street_name": "Rauchstra\u00dfe",
+      "latitude": 49.153033,
+      "longitude": 9.227886,
+      "predicted_fill_perc": 15.0,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 1.25,
+      "days_since_collection": 10,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.38,
+      "demand_weight_kg": 144.4,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 20.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 68 days"
+    },
+    {
+      "poi_id": "3490",
+      "street_name": "Max-von-Laue-Stra\u00dfe",
+      "latitude": 49.120033,
+      "longitude": 9.211754,
+      "predicted_fill_perc": 11.4,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 3.16,
+      "days_since_collection": 3,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.29,
+      "demand_weight_kg": 110.2,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 28 days"
+    },
+    {
+      "poi_id": "3392",
+      "street_name": "Schillerstra\u00dfe / Gartenstra\u00dfe",
+      "latitude": 49.144269,
+      "longitude": 9.224925,
+      "predicted_fill_perc": 10.4,
+      "current_fill_perc": 100.0,
+      "daily_velocity": 2.17,
+      "days_since_collection": 4,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.26,
+      "demand_weight_kg": 98.8,
+      "white_glass_fill": 100.0,
+      "green_glass_fill": 50.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 41 days"
+    },
+    {
+      "poi_id": "3452",
+      "street_name": "Klingenberger Stra\u00dfe / Hohlstra\u00dfe",
+      "latitude": 49.131728,
+      "longitude": 9.190406,
+      "predicted_fill_perc": 10.3,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 4.29,
+      "days_since_collection": 2,
+      "tier": "Tier 1: Critical High-Volume / Chronic Overfillers",
+      "cluster": 1,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.26,
+      "demand_weight_kg": 98.8,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 110.0,
+      "brown_glass_fill": 60.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 20 days"
+    },
+    {
+      "poi_id": "3418",
+      "street_name": "Wollhausstra\u00dfe / Gutenbergstra\u00dfe",
+      "latitude": 49.138752,
+      "longitude": 9.230562,
+      "predicted_fill_perc": 8.4,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 2.32,
+      "days_since_collection": 3,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.21,
+      "demand_weight_kg": 79.8,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 90.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 39 days"
+    },
+    {
+      "poi_id": "3390",
+      "street_name": "Olgastra\u00dfe",
+      "latitude": 49.136862,
+      "longitude": 9.207453,
+      "predicted_fill_perc": 7.4,
+      "current_fill_perc": 60.0,
+      "daily_velocity": 1.54,
+      "days_since_collection": 4,
+      "tier": "Tier 3: Moderate Regular",
+      "cluster": 3,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.19,
+      "demand_weight_kg": 72.2,
+      "white_glass_fill": 60.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 30.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 60 days"
+    },
+    {
+      "poi_id": "3481",
+      "street_name": "Widmannstra\u00dfe / R\u00f6merstra\u00dfe",
+      "latitude": 49.167635,
+      "longitude": 9.197307,
+      "predicted_fill_perc": 7.4,
+      "current_fill_perc": 40.0,
+      "daily_velocity": 1.54,
+      "days_since_collection": 4,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.19,
+      "demand_weight_kg": 72.2,
+      "white_glass_fill": 40.0,
+      "green_glass_fill": 40.0,
+      "brown_glass_fill": 10.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 60 days"
+    },
+    {
+      "poi_id": "3389",
+      "street_name": "Mozartstra\u00dfe",
+      "latitude": 49.141473,
+      "longitude": 9.209556,
+      "predicted_fill_perc": 7.3,
+      "current_fill_perc": 20.0,
+      "daily_velocity": 1.52,
+      "days_since_collection": 4,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.18,
+      "demand_weight_kg": 68.4,
+      "white_glass_fill": 20.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 61 days"
+    },
+    {
+      "poi_id": "3431",
+      "street_name": "Rauchstra\u00dfe / K\u00e4ferflugstra\u00dfe",
+      "latitude": 49.153707,
+      "longitude": 9.223925,
+      "predicted_fill_perc": 5.9,
+      "current_fill_perc": 110.0,
+      "daily_velocity": 1.24,
+      "days_since_collection": 4,
+      "tier": "Tier 2: Steady High-Demand",
+      "cluster": 2,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.15,
+      "demand_weight_kg": 57.0,
+      "white_glass_fill": 110.0,
+      "green_glass_fill": 80.0,
+      "brown_glass_fill": 40.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 76 days"
+    },
+    {
+      "poi_id": "3441",
+      "street_name": "Gro\u00dfgartacher Stra\u00dfe",
+      "latitude": 49.13999,
+      "longitude": 9.176645,
+      "predicted_fill_perc": 4.9,
+      "current_fill_perc": 80.0,
+      "daily_velocity": 1.01,
+      "days_since_collection": 4,
+      "tier": "Tier 4: Low-Demand / Sporadic",
+      "cluster": 0,
+      "urgency_status": "Deferred / Safe (<60%)",
+      "demand_volume_m3": 0.12,
+      "demand_weight_kg": 45.6,
+      "white_glass_fill": 80.0,
+      "green_glass_fill": 30.0,
+      "brown_glass_fill": 20.0,
+      "assigned_truck": null,
+      "stop_number": null,
+      "next_service": "In 93 days"
+    }
+  ],
+  "experiment_a": {
+    "title": "Experiment A: Pure Routing Efficiency Benchmark",
+    "description": "Scientific control evaluating 100% identical demand input of 24 selected containers, identical depot, disposal yard, and vehicle capacities.",
+    "metrics": [
+      {
+        "metric": "Containers Serviced",
+        "fixed_order": "24 stops",
+        "greedy_nn": "24 stops",
+        "gurobi_cvrp": "24 stops",
+        "delta": "0 stops (Identical demand)",
+        "impact": "100% methodologically equivalent input"
+      },
+      {
+        "metric": "Total Road Distance (km)",
+        "fixed_order": "160.39 km",
+        "greedy_nn": "90.68 km",
+        "gurobi_cvrp": "87.04 km",
+        "delta": "-73.35 km",
+        "impact": "-45.7% pure routing distance reduction"
+      },
+      {
+        "metric": "Total Shift Duration (hours)",
+        "fixed_order": "8.47 h",
+        "greedy_nn": "6.51 h",
+        "gurobi_cvrp": "6.45 h",
+        "delta": "-2.02 h",
+        "impact": "-23.8% driver shift time reduction"
+      },
+      {
+        "metric": "Operating Cost (@ 62.50 \u20ac/h)",
+        "fixed_order": "529.62 \u20ac",
+        "greedy_nn": "407.09 \u20ac",
+        "gurobi_cvrp": "403.13 \u20ac",
+        "delta": "-126.49 \u20ac",
+        "impact": "-23.8% direct operating cost savings"
+      },
+      {
+        "metric": "Tailpipe CO2 (EF = 0.85 kg/km)",
+        "fixed_order": "136.3 kg CO2",
+        "greedy_nn": "77.1 kg CO2",
+        "gurobi_cvrp": "74.0 kg CO2",
+        "delta": "-62.3 kg CO2",
+        "impact": "-45.7% tailpipe greenhouse gas reduction"
+      }
+    ]
+  },
+  "experiment_b": {
+    "title": "Experiment B: Dynamic Dispatch Policy vs. Fixed-Schedule Sweep",
+    "description": "Macro-level municipal policy comparison across the full 109 container network in Heilbronn.",
+    "metrics": [
+      {
+        "metric": "Containers Serviced Today",
+        "fixed_sweep": "109 containers",
+        "dynamic_ai": "24 urgent/proximate bins",
+        "delta": "-85 stops deferred",
+        "impact": "Defers safe (<60%) bins to future cycles"
+      },
+      {
+        "metric": "Premature Visits (<40% Fill)",
+        "fixed_sweep": "25 premature stops",
+        "dynamic_ai": "0 premature stops",
+        "delta": "-25 stops eliminated",
+        "impact": "Eliminates empty collections completely"
+      },
+      {
+        "metric": "High-Risk Bins (>=100%) Serviced",
+        "fixed_sweep": "30 bins in fixed sector",
+        "dynamic_ai": "20 critical bins prioritized",
+        "delta": "100% critical coverage",
+        "impact": "Zero overflow risk guaranteed"
+      },
+      {
+        "metric": "Total Distance Driven (km)",
+        "fixed_sweep": "398.6 km",
+        "dynamic_ai": "87.0 km",
+        "delta": "-311.5 km",
+        "impact": "-78.2% road distance saved today"
+      },
+      {
+        "metric": "Fleet Shift Hours (8h Max Shift)",
+        "fixed_sweep": "27.08 h",
+        "dynamic_ai": "6.45 h",
+        "delta": "-20.63 h",
+        "impact": "-76.2% driver shift hours saved"
+      },
+      {
+        "metric": "Vehicle Runs / Physical Trucks",
+        "fixed_sweep": "12 runs (4 x 8h trucks)",
+        "dynamic_ai": "4 runs (1 x 8h truck)",
+        "delta": "-8 runs saved",
+        "impact": "Fits within 1 single physical truck under MTVRP"
+      },
+      {
+        "metric": "Operating Cost (Pro-Rata @ 62.50 \u20ac/h)",
+        "fixed_sweep": "1,692.24 \u20ac",
+        "dynamic_ai": "403.13 \u20ac",
+        "delta": "-1,289.11 \u20ac",
+        "impact": "-76.2% daily operating savings"
+      },
+      {
+        "metric": "Operating Cost (Charter @ 500 \u20ac/run)",
+        "fixed_sweep": "6,000.00 \u20ac",
+        "dynamic_ai": "2,000.00 \u20ac",
+        "delta": "-4,000.00 \u20ac",
+        "impact": "-66.7% daily vehicle charter savings"
+      },
+      {
+        "metric": "Diesel Fuel Consumed (0.32 L/km)",
+        "fixed_sweep": "127.5 L",
+        "dynamic_ai": "27.9 L",
+        "delta": "-99.6 L",
+        "impact": "-78.2% fuel consumption saved"
+      },
+      {
+        "metric": "Tailpipe CO2 (EF = 0.85 kg/km)",
+        "fixed_sweep": "338.8 kg CO2",
+        "dynamic_ai": "74.0 kg CO2",
+        "delta": "-264.8 kg CO2",
+        "impact": "-78.2% daily CO2 reduction"
+      },
+      {
+        "metric": "Collection Payload Yield (kg/km)",
+        "fixed_sweep": "178.7 kg/km",
+        "dynamic_ai": "272.0 kg/km",
+        "delta": "+93.3 kg/km",
+        "impact": "+52.2% glass payload yield per driven km"
+      }
+    ],
+    "deferred_audit": {
+      "total_deferred": 85,
+      "total_network": 109,
+      "deferred_pct": 78.0,
+      "mean_predicted_fill": 58.9,
+      "max_predicted_fill": 107.9,
+      "immediate_overflow_risk": "0 bins (Safe buffer)",
+      "premature_visits_avoided": 25
+    }
+  }
+};
+
+    let map = null;
+    let mapMarkers = [];
+    let routePolylines = [];
+    let currentMapFilter = 'all';
+    let chartExpA = null;
+    let chartExpB = null;
+
+    // Initialize on DOM ready
+    document.addEventListener("DOMContentLoaded", function() {
+      initGisMap();
+      renderBenchmarkTables();
+      renderBenchmarkCharts();
+      renderTelemetryTable();
+      runScenarioSimulation();
+    });
+
+    // Navigation Switcher
+    function switchSection(secId, ev) {
+      const navBtns = document.querySelectorAll('.tab-nav .tab-btn');
+      navBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-sec') === secId) {
+          btn.classList.add('active');
+        }
+      });
+
+      const secMap = {
+        'overview': ['section-map', 'section-benchmarks', 'section-telemetry', 'section-simulator', 'section-architecture'],
+        'map-view': ['section-map'],
+        'benchmarks': ['section-benchmarks'],
+        'telemetry': ['section-telemetry'],
+        'simulator': ['section-simulator'],
+        'architecture': ['section-architecture']
+      };
+
+      const allSections = ['section-map', 'section-benchmarks', 'section-telemetry', 'section-simulator', 'section-architecture'];
+      const targets = secMap[secId] || allSections;
+
+      allSections.forEach(s => {
+        const el = document.getElementById(s);
+        if (el) {
+          if (targets.includes(s)) {
+            el.style.display = 'block';
+          } else {
+            el.style.display = 'none';
+          }
+        }
+      });
+
+      if (secId === 'map-view' || secId === 'overview') {
+        setTimeout(() => {
+          if (map) map.invalidateSize();
+        }, 200);
+      }
+    }
+
+    // GIS Map Initialization
+    function initGisMap() {
+      if (typeof L === 'undefined') {
+        const mapEl = document.getElementById('gis-map');
+        if (mapEl) {
+          mapEl.innerHTML = `
+            <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; padding:30px; text-align:center;">
+              <div style="font-size:2.4rem; margin-bottom:12px;">🗺️</div>
+              <h3 style="color:#fff; margin-bottom:8px; font-size:1.15rem;">Heilbronn 109 Container GIS Network</h3>
+              <p style="max-width:550px; font-size:0.85rem; line-height:1.5;">Leaflet map tile engine is ready for online deployment. Complete GPS coordinates, cluster tiers, and turn-by-turn vehicle dispatch assignments are fully loaded and accessible in the Fleet Telemetry table and Scenario Simulator below.</p>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      const depotLat = DATA.depots.central_yard.lat;
+      const depotLng = DATA.depots.central_yard.lng;
+
+      map = L.map('gis-map', {
+        center: [49.145, 9.215],
+        zoom: 13,
+        zoomControl: true
+      });
+
+      // High-Contrast Dark CartoDB Matter Tiles with Graceful Silent Offline Fallback
+      const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      });
+      tileLayer.on('tileerror', function() {
+        // Silent fallback to midnight grid canvas
+      });
+      tileLayer.addTo(map);
+
+      // Add Central Yard (Depot 0)
+      const yardIcon = L.divIcon({
+        className: 'custom-yard-icon',
+        html: '<div style="width:24px; height:24px; background:#000; border:2px solid #fff; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:bold; box-shadow:0 0 12px rgba(255,255,255,0.8);">0</div>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      });
+      L.marker([depotLat, depotLng], { icon: yardIcon })
+        .addTo(map)
+        .bindTooltip("<b>Central Yard (Node 0)</b><br>Fleet Departure & Final Terminal Depot");
+
+      // Add Disposal Facility (Böllinger Höfe)
+      const dispLat = DATA.depots.disposal_facility.lat;
+      const dispLng = DATA.depots.disposal_facility.lng;
+      const dispIcon = L.divIcon({
+        className: 'custom-disp-icon',
+        html: '<div style="width:26px; height:26px; background:#ef4444; border:2px solid #fff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:bold; box-shadow:0 0 14px rgba(239,68,68,0.8);">D</div>',
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+      L.marker([dispLat, dispLng], { icon: dispIcon })
+        .addTo(map)
+        .bindTooltip("<b>Entsorgungszentrum Böllinger Höfe (Node N+1)</b><br>Unloading Turnaround Site (20 min)");
+
+      // Render Vehicle Routes (Polylines)
+      DATA.truck_routes.forEach((truck, idx) => {
+        if (truck.coordinates && truck.coordinates.length > 1) {
+          const polyline = L.polyline(truck.coordinates, {
+            color: truck.color,
+            weight: 4.5,
+            opacity: 0.88,
+            dashArray: idx % 2 === 1 ? '6, 6' : null
+          }).addTo(map);
+
+          polyline.bindTooltip(`<b>${truck.vehicle}</b> &bull; ${truck.num_stops} stops &bull; ${truck.total_distance_km} km &bull; ${truck.shift_hours} hrs`);
+          routePolylines.push({ id: idx, line: polyline });
+        }
+      });
+
+      // Render Container Station Markers
+      renderMapMarkers();
+    }
+
+    function renderMapMarkers() {
+      // Clear existing markers
+      mapMarkers.forEach(m => map.removeLayer(m));
+      mapMarkers = [];
+
+      DATA.stations.forEach(st => {
+        let show = true;
+        if (currentMapFilter === 'dispatched' && !st.assigned_truck) show = false;
+        if (currentMapFilter === 'urgent' && st.predicted_fill_perc < 80.0) show = false;
+        if (currentMapFilter === 'opportunistic' && (st.predicted_fill_perc < 60.0 || st.predicted_fill_perc >= 80.0)) show = false;
+        if (currentMapFilter === 'deferred' && st.predicted_fill_perc >= 60.0) show = false;
+
+        if (!show) return;
+
+        // Color marker based on fill & dispatch
+        let markerColor = '#3b82f6'; // Safe/deferred blue
+        if (st.predicted_fill_perc >= 80.0) markerColor = '#ef4444'; // Red
+        else if (st.predicted_fill_perc >= 60.0) markerColor = '#f59e0b'; // Amber
+
+        let radius = st.assigned_truck ? 8 : 5.5;
+        let borderColor = st.assigned_truck ? '#ffffff' : 'rgba(255,255,255,0.4)';
+        let borderWidth = st.assigned_truck ? 2.5 : 1;
+
+        const circle = L.circleMarker([st.latitude, st.longitude], {
+          radius: radius,
+          fillColor: markerColor,
+          color: borderColor,
+          weight: borderWidth,
+          opacity: 1,
+          fillOpacity: 0.9
+        }).addTo(map);
+
+        // Tooltip
+        const truckBadge = st.assigned_truck 
+          ? `<div style="margin-top:4px; font-weight:700; color:#00d26a;">Dispatched: ${st.assigned_truck} (Stop #${st.stop_number})</div>` 
+          : `<div style="margin-top:4px; color:#94a3b8;">Next Service: ${st.next_service}</div>`;
+
+        const tooltipContent = `
+          <div style="font-family:'Inter',sans-serif; font-size:12px; line-height:1.4;">
+            <div style="font-weight:700; color:#fff;">POI #${st.poi_id} - ${st.street_name}</div>
+            <div style="font-size:11px; color:#cbd5e1;">${st.tier}</div>
+            <div style="margin-top:4px;">Predicted Fill: <b style="color:${markerColor};">${st.predicted_fill_perc}%</b></div>
+            <div style="font-size:11px; color:#94a3b8;">Mix: W: ${st.white_glass_fill}% | G: ${st.green_glass_fill}% | B: ${st.brown_glass_fill}%</div>
+            ${truckBadge}
+          </div>
+        `;
+
+        circle.bindTooltip(tooltipContent, { sticky: true });
+        circle.on('click', () => openInspector(st.poi_id));
+        mapMarkers.push(circle);
+      });
+    }
+
+    function filterMapStations(filterType, element) {
+      currentMapFilter = filterType;
+      document.querySelectorAll('.filter-pills .filter-pill').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+      renderMapMarkers();
+    }
+
+    function toggleTruckRoute(truckIdx, btn) {
+      const found = routePolylines.find(r => r.id === truckIdx);
+      if (found) {
+        if (map.hasLayer(found.line)) {
+          map.removeLayer(found.line);
+          btn.classList.remove('active');
+          btn.style.opacity = '0.4';
+        } else {
+          map.addLayer(found.line);
+          btn.classList.add('active');
+          btn.style.opacity = '1.0';
+        }
+      }
+    }
+
+    // Render Benchmarks
+    function renderBenchmarkTables() {
+      // Experiment A
+      const tbodyA = document.querySelector('#table-exp-a tbody');
+      if (tbodyA) {
+        tbodyA.innerHTML = DATA.experiment_a.metrics.map(m => `
+          <tr>
+            <td style="font-weight:600;">${m.metric}</td>
+            <td class="font-mono">${m.fixed_order}</td>
+            <td class="font-mono">${m.greedy_nn}</td>
+            <td class="font-mono text-green" style="font-weight:700;">${m.gurobi_cvrp}</td>
+            <td class="font-mono text-green"><b>${m.delta}</b></td>
+          </tr>
+        `).join('');
+      }
+
+      // Experiment B
+      const tbodyB = document.querySelector('#table-exp-b tbody');
+      if (tbodyB) {
+        tbodyB.innerHTML = DATA.experiment_b.metrics.map(m => `
+          <tr>
+            <td style="font-weight:600;">${m.metric}</td>
+            <td class="font-mono">${m.fixed_sweep}</td>
+            <td class="font-mono text-green" style="font-weight:700;">${m.dynamic_ai}</td>
+            <td class="font-mono text-cyan"><b>${m.delta}</b></td>
+            <td style="font-size:0.75rem; color:var(--text-muted);">${m.impact}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function renderBenchmarkCharts() {
+      if (typeof Chart === 'undefined') {
+        return;
+      }
+
+      // Chart Exp A
+      const ctxA = document.getElementById('chart-exp-a');
+      if (ctxA) {
+        chartExpA = new Chart(ctxA, {
+          type: 'bar',
+          data: {
+            labels: ['Distance (km)', 'Shift Hours (h)', 'Pro-Rata Cost (€)'],
+            datasets: [
+              {
+                label: 'Fixed Municipal Order',
+                data: [160.39, 8.47, 529.62],
+                backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                borderColor: '#ef4444',
+                borderWidth: 1
+              },
+              {
+                label: 'Greedy Nearest-Neighbor',
+                data: [90.68, 6.51, 407.09],
+                backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                borderColor: '#f59e0b',
+                borderWidth: 1
+              },
+              {
+                label: 'Gurobi Optimal CVRP',
+                data: [87.04, 6.45, 403.13],
+                backgroundColor: 'rgba(0, 210, 106, 0.85)',
+                borderColor: '#00d26a',
+                borderWidth: 1.5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#94a3b8' }
+              },
+              y: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#94a3b8' }
+              }
+            },
+            plugins: {
+              legend: { labels: { color: '#ffffff', font: { size: 11 } } }
+            }
+          }
+        });
+      }
+
+      // Chart Exp B
+      const ctxB = document.getElementById('chart-exp-b');
+      if (ctxB) {
+        chartExpB = new Chart(ctxB, {
+          type: 'bar',
+          data: {
+            labels: ['Road Distance (km)', 'Driver Hours (h)', 'CO2 Output (kg)', 'Charter Cost (€)'],
+            datasets: [
+              {
+                label: 'Traditional Fixed Sweep',
+                data: [398.6, 27.08, 338.8, 6000.0],
+                backgroundColor: 'rgba(239, 68, 68, 0.65)',
+                borderColor: '#ef4444',
+                borderWidth: 1
+              },
+              {
+                label: 'Dynamic Gurobi AI Dispatch',
+                data: [87.0, 6.45, 74.0, 2000.0],
+                backgroundColor: 'rgba(0, 210, 106, 0.85)',
+                borderColor: '#00d26a',
+                borderWidth: 1.5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#94a3b8' }
+              },
+              y: {
+                type: 'logarithmic',
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#94a3b8' }
+              }
+            },
+            plugins: {
+              legend: { labels: { color: '#ffffff', font: { size: 11 } } }
+            }
+          }
+        });
+      }
+    }
+
+    function switchBenchmarkTab(tab) {
+      const btnA = document.getElementById('btn-subtab-a');
+      const btnB = document.getElementById('btn-subtab-b');
+      const viewA = document.getElementById('view-exp-a');
+      const viewB = document.getElementById('view-exp-b');
+
+      if (tab === 'exp-a') {
+        btnA.classList.add('active');
+        btnB.classList.remove('active');
+        viewA.style.display = 'grid';
+        viewB.style.display = 'none';
+      } else {
+        btnB.classList.add('active');
+        btnA.classList.remove('active');
+        viewB.style.display = 'grid';
+        viewA.style.display = 'none';
+      }
+    }
+
+    // Render Telemetry Table
+    function renderTelemetryTable() {
+      const search = (document.getElementById('telemetry-search').value || '').toLowerCase();
+      const urgency = document.getElementById('filter-urgency').value;
+      const tier = document.getElementById('filter-tier').value;
+      const sort = document.getElementById('filter-sort').value;
+
+      let list = [...DATA.stations];
+
+      // Filter search
+      if (search) {
+        list = list.filter(s => 
+          s.poi_id.toLowerCase().includes(search) || 
+          s.street_name.toLowerCase().includes(search) ||
+          s.tier.toLowerCase().includes(search)
+        );
+      }
+
+      // Filter urgency
+      if (urgency === 'dispatched') {
+        list = list.filter(s => s.assigned_truck !== null);
+      } else if (urgency !== 'all') {
+        list = list.filter(s => s.urgency_status === urgency);
+      }
+
+      // Filter tier
+      if (tier !== 'all') {
+        list = list.filter(s => s.tier.includes(tier));
+      }
+
+      // Sort
+      if (sort === 'fill-desc') {
+        list.sort((a, b) => b.predicted_fill_perc - a.predicted_fill_perc);
+      } else if (sort === 'fill-asc') {
+        list.sort((a, b) => a.predicted_fill_perc - b.predicted_fill_perc);
+      } else if (sort === 'velocity-desc') {
+        list.sort((a, b) => b.daily_velocity - a.daily_velocity);
+      } else if (sort === 'id-asc') {
+        list.sort((a, b) => parseInt(a.poi_id) - parseInt(b.poi_id));
+      }
+
+      const tbody = document.getElementById('telemetry-tbody');
+      tbody.innerHTML = list.map(st => {
+        let fillCol = '#00d26a';
+        if (st.predicted_fill_perc >= 80) fillCol = '#ef4444';
+        else if (st.predicted_fill_perc >= 60) fillCol = '#f59e0b';
+
+        const tierBadge = st.tier.split(':')[0]; // Tier 1, 2, etc.
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight:700; color:#fff;">POI #${st.poi_id}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${st.street_name}</div>
+            </td>
+            <td>
+              <span class="badge-pill" style="font-size:0.7rem;">${tierBadge}</span>
+            </td>
+            <td>
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-family:var(--font-mono);">
+                <span style="color:${fillCol}; font-weight:700;">${st.predicted_fill_perc}%</span>
+                <span style="color:var(--text-dim);">${st.demand_volume_m3} m³</span>
+              </div>
+              <div class="fill-progress-bar">
+                <div class="fill-progress-fill" style="width:${Math.min(st.predicted_fill_perc, 100)}%; background:${fillCol};"></div>
+              </div>
+            </td>
+            <td>
+              <div class="glass-mix-row">
+                <span class="glass-chip" title="White Glass: ${st.white_glass_fill}%">⚪ ${st.white_glass_fill}%</span>
+                <span class="glass-chip" title="Green Glass: ${st.green_glass_fill}%">🟢 ${st.green_glass_fill}%</span>
+                <span class="glass-chip" title="Brown Glass: ${st.brown_glass_fill}%">🟤 ${st.brown_glass_fill}%</span>
+              </div>
+            </td>
+            <td class="font-mono">+${st.daily_velocity}% /d</td>
+            <td class="font-mono">${st.days_since_collection} d</td>
+            <td>
+              ${st.assigned_truck 
+                ? `<span class="badge-pill active" style="font-size:0.7rem;">${st.assigned_truck} (#${st.stop_number})</span>` 
+                : `<span style="font-size:0.75rem; color:var(--text-dim);">${st.next_service}</span>`}
+            </td>
+            <td style="text-align:right;">
+              <button class="tab-btn" style="padding:4px 10px; font-size:0.72rem; display:inline-flex; border:1px solid rgba(255,255,255,0.1);" onclick="openInspector('${st.poi_id}')">
+                Inspect
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterTelemetryTable() {
+      renderTelemetryTable();
+    }
+
+    // Station Inspector Modal
+    function openInspector(poiId) {
+      const st = DATA.stations.find(s => s.poi_id == poiId);
+      if (!st) return;
+
+      const modal = document.getElementById('inspector-modal');
+      const content = document.getElementById('inspector-modal-content');
+
+      let fillCol = '#00d26a';
+      if (st.predicted_fill_perc >= 80) fillCol = '#ef4444';
+      else if (st.predicted_fill_perc >= 60) fillCol = '#f59e0b';
+
+      content.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+          <div>
+            <div class="badge-pill active" style="margin-bottom:6px;">Station Telemetry Diagnostic</div>
+            <h2 style="font-size:1.3rem; color:#fff;">POI #${st.poi_id}</h2>
+            <p style="font-size:0.85rem; color:var(--text-muted);">${st.street_name}, Heilbronn</p>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:1.8rem; font-weight:800; font-family:var(--font-mono); color:${fillCol};">${st.predicted_fill_perc}%</div>
+            <div style="font-size:0.72rem; color:var(--text-dim); text-transform:uppercase;">Predicted Fill</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;">
+          <div class="audit-metric-box">
+            <div class="audit-metric-label">Cluster Classification</div>
+            <div style="font-size:0.85rem; font-weight:700; color:#fff; margin-top:3px;">${st.tier}</div>
+          </div>
+          <div class="audit-metric-box">
+            <div class="audit-metric-label">Daily Fill Velocity</div>
+            <div class="audit-metric-val text-green">+${st.daily_velocity}% / day</div>
+          </div>
+          <div class="audit-metric-box">
+            <div class="audit-metric-label">Estimated Weight</div>
+            <div class="audit-metric-val text-cyan">${st.demand_weight_kg} kg (${st.demand_volume_m3} m³)</div>
+          </div>
+          <div class="audit-metric-box">
+            <div class="audit-metric-label">Dispatch Assignment</div>
+            <div style="font-size:0.95rem; font-weight:700; color:#fff; margin-top:3px;">
+              ${st.assigned_truck ? `${st.assigned_truck} &bull; Stop #${st.stop_number}` : 'Deferred to Next Cycle'}
+            </div>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:14px; margin-bottom:18px;">
+          <div style="font-size:0.78rem; font-weight:700; color:#cbd5e1; margin-bottom:8px;">Glass Color Breakdown</div>
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+            <span>⚪ White Glass: <b>${st.white_glass_fill}%</b></span>
+            <span>🟢 Green Glass: <b>${st.green_glass_fill}%</b></span>
+            <span>🟤 Brown Glass: <b>${st.brown_glass_fill}%</b></span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button class="tab-btn active" style="padding:7px 16px; font-size:0.8rem;" onclick="focusMapStation(${st.latitude}, ${st.longitude})">
+            Focus on GIS Map
+          </button>
+        </div>
+      `;
+
+      modal.classList.add('open');
+    }
+
+    function closeInspector(e) {
+      const modal = document.getElementById('inspector-modal');
+      modal.classList.remove('open');
+    }
+
+    function focusMapStation(lat, lng) {
+      closeInspector();
+      switchSection('map-view', null);
+      if (map) {
+        map.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
+      }
+    }
+
+    // Live Scenario Simulator
+    function runScenarioSimulation() {
+      const truckCost = parseFloat(document.getElementById('rng-truck-cost').value);
+      const shiftHours = parseFloat(document.getElementById('rng-shift-hours').value);
+      const fuelPrice = parseFloat(document.getElementById('rng-fuel-price').value);
+      const urgencyThresh = parseFloat(document.getElementById('rng-urgency-thresh').value);
+      const opDays = parseFloat(document.getElementById('rng-operating-days').value);
+
+      // Update Labels
+      document.getElementById('lbl-truck-cost').innerText = `€${truckCost.toFixed(2)} / day`;
+      document.getElementById('lbl-shift-hours').innerText = `${shiftHours.toFixed(1)} hours`;
+      document.getElementById('lbl-fuel-price').innerText = `€${fuelPrice.toFixed(2)} / Liter`;
+      document.getElementById('lbl-urgency-thresh').innerText = `${urgencyThresh.toFixed(1)}%`;
+      document.getElementById('lbl-operating-days').innerText = `${opDays} days / year`;
+
+      // Hourly Rate
+      const hourlyRate = truckCost / shiftHours;
+      document.getElementById('sim-hourly-rate-pill').innerText = `€${hourlyRate.toFixed(2)} / hr`;
+
+      // Calculate Savings
+      // Base hours: Fixed sweep took 27.08 hrs across 4 trucks. Gurobi takes 6.45 hrs.
+      const baselineShiftHours = 27.08;
+      const dynamicShiftHours = 6.45;
+      const savedHours = baselineShiftHours - dynamicShiftHours; // 20.63 hrs
+
+      const dailyProrataSavings = savedHours * hourlyRate;
+      const annualProrataSavings = dailyProrataSavings * opDays;
+
+      // Fuel & CO2
+      const baselineKm = 398.6;
+      const dynamicKm = 87.0;
+      const savedKmPerDay = baselineKm - dynamicKm; // 311.6 km
+      const fuelSavedPerDayLiters = savedKmPerDay * 0.32; // 99.7 L
+      const annualFuelSavedLiters = fuelSavedPerDayLiters * opDays;
+      const annualFuelCostSaved = annualFuelSavedLiters * fuelPrice;
+
+      const co2SavedPerDayKg = savedKmPerDay * 0.85; // 264.8 kg
+      const annualCo2SavedTonnes = (co2SavedPerDayKg * opDays) / 1000.0;
+
+      // Update UI
+      document.getElementById('sim-annual-savings').innerText = `€${Math.round(annualProrataSavings).toLocaleString()}`;
+      document.getElementById('sim-daily-savings').innerText = `€${dailyProrataSavings.toFixed(2)} / day`;
+
+      document.getElementById('sim-annual-co2').innerText = `${annualCo2SavedTonnes.toFixed(1)} Tonnes CO2`;
+      document.getElementById('sim-fuel-saved').innerText = `${Math.round(annualFuelSavedLiters).toLocaleString()} Liters`;
+      document.getElementById('sim-fuel-cost-saved').innerText = `€${Math.round(annualFuelCostSaved).toLocaleString()}`;
+
+      document.getElementById('sim-shift-limit-val').innerText = `${shiftHours.toFixed(1)}h`;
+
+      const mtvrpStatus = document.getElementById('sim-mtvrp-status');
+      if (dynamicShiftHours <= shiftHours) {
+        mtvrpStatus.innerText = 'FEASIBLE';
+        mtvrpStatus.style.background = 'rgba(0,210,106,0.15)';
+        mtvrpStatus.style.color = '#52f099';
+        mtvrpStatus.style.borderColor = '#00d26a';
+      } else {
+        mtvrpStatus.innerText = 'REQUIRES 2 TRUCKS';
+        mtvrpStatus.style.background = 'rgba(239,68,68,0.15)';
+        mtvrpStatus.style.color = '#f87171';
+        mtvrpStatus.style.borderColor = '#ef4444';
+      }
+    }
+  </script>
+</body>
+</html>

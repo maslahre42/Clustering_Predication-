@@ -106,3 +106,55 @@ def test_fixed_travel_time_rule_and_weekend_window():
     # Friday looks ahead to Monday, Monday to Tuesday
     assert window_end("2026-08-21", cfg) == pd.Timestamp("2026-08-24")
     assert window_end("2026-08-17", cfg) == pd.Timestamp("2026-08-18")
+
+
+def test_geographic_costs_avoid_alternating_backtracking_and_unneeded_unloads():
+    from fillinq.geo import haversine_km
+    cfg = OpsConfig(fixed_travel_min=0, depot_lat=49.14, depot_lon=9.20,
+                    disposal_lat=49.14, disposal_lon=9.34, max_vehicles=1)
+    longitudes = [9.21, 9.31, 9.22, 9.32, 9.23, 9.33]
+    stops = pd.DataFrame([dict(site=f's{i}', lat=49.14, lon=lon, vol_l=1000, kg=350,
+                              n_bins=1, must=True, value=1.0) for i, lon in enumerate(longitudes)])
+    plan = plan_routes(stops, cfg, time_limit_s=1)
+    assert not plan.dropped_mandatory
+    assert len(plan.routes) == 1 and len(plan.routes[0]['trips']) == 1
+    order = [lon for _, _, lon in plan.routes[0]['stops']]
+    assert order == sorted(longitudes)
+    expected = 2 * haversine_km(49.14, 9.20, 49.14, 9.34) * cfg.detour_factor
+    assert plan.kpis['km'] == pytest.approx(expected, rel=1e-6)
+    assert plan.routes[0]['hours'] <= cfg.shift_hours
+
+
+def test_geographic_multi_loads_group_nearby_sites_and_keep_required_unloading():
+    cfg = OpsConfig(fixed_travel_min=0, depot_lat=49.14, depot_lon=9.20,
+                    disposal_lat=49.14, disposal_lon=9.20, max_vehicles=1, truck_payload_t=4)
+    longitudes = [9.10, 9.27, 9.11, 9.28, 9.12, 9.29, 9.13, 9.30]
+    stops = pd.DataFrame([dict(site=f's{i}', lat=49.14, lon=lon, vol_l=2000, kg=1000,
+                              n_bins=1, must=True, value=1.0) for i, lon in enumerate(longitudes)])
+    plan = plan_routes(stops, cfg, time_limit_s=2)
+    assert not plan.dropped_mandatory
+    assert len(plan.routes) == 1 and len(plan.routes[0]['trips']) == 2
+    positions = dict(zip(stops.site, stops.lon))
+    for trip in plan.routes[0]['trips']:
+        assert trip['weight_t'] <= 4
+        assert len({positions[site] < 9.20 for site in trip['stops']}) == 1
+    assert plan.routes[0]['hours'] <= cfg.shift_hours
+
+
+def test_fractional_geographic_travel_cannot_fit_by_rounding_down_shift_time():
+    from fillinq.geo import haversine_km
+    from fillinq.routing import _solve
+    cfg = OpsConfig(fixed_travel_min=0, depot_lat=49.14, depot_lon=9.20,
+                    disposal_lat=49.14, disposal_lon=9.20, max_vehicles=1)
+    stops = pd.DataFrame([dict(site='A', lat=49.14, lon=9.21, vol_l=1000, kg=350,
+                               n_bins=1, must=True, value=1.0)])
+    travel_s = 2 * haversine_km(49.14, 9.20, 49.14, 9.21) * cfg.detour_factor / cfg.avg_speed_kph * 3600
+    required_s = travel_s + (cfg.service_min_per_bin + cfg.service_min_per_stop + cfg.unload_min) * 60
+    cfg.shift_hours = (required_s - .25) / 3600
+    plan = _solve(stops, cfg, 1, 1)
+    assert plan.dropped_mandatory == ['A']
+    assert plan.kpis['trucks'] == 0
+    cfg.shift_hours = (required_s + 2) / 3600
+    plan = _solve(stops, cfg, 1, 1)
+    assert not plan.dropped_mandatory
+    assert plan.routes[0]['hours'] <= cfg.shift_hours

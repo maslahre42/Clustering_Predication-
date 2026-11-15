@@ -152,7 +152,7 @@ The coordinate import should use a separate administrative/import path. Routine 
 | History | Implemented: query validation, inclusive date/location/material filtering, stable pagination, numeric parsing and overflow flags |
 | Planning snapshot | Implemented: latest eligible observation and collection count per location/material |
 | Historical analytics | Implemented: material/monthly comparisons and charts, exact partial periods, distributions, intervals, cycle rates, review flags and sparse-history indicators |
-| Planning workspace | Implemented: search, material and historical-fill filters, grouped location cards, map inspection, individual/group selection |
+| Planning workspace | Implemented: selected-day estimated fill after emptying, historical-reading toggle, matching search/material/fill filters, grouped location cards, inspection and selection |
 | Location details | Implemented: source metadata, glass-bin cards, actual observation chart and audit history |
 | Collection manifest | Implemented: grouped stops, manual reordering, draft notes, nearest-neighbor reset, CSV export and browser print/PDF |
 | System status | Implemented: actual API health and snapshot availability; unavailable integrations labeled honestly |
@@ -189,6 +189,7 @@ The frontend owns presentation, transient workspace state, and the manual geogra
 | `GET /api/data-range` | Global first/last observation dates and last date + 7 days for planning navigation |
 | `GET /api/locations` | Coordinate metadata and synthetic flags |
 | `GET /api/planning?asOf=yyyy-MM-dd` | Required cutoff; eligible bins, latest readings, overflow flags, counts, and date bounds |
+| `GET /api/fill-state?asOf=yyyy-MM-dd` | Selected-day modeled fill after recorded emptyings, with reset dates, uncertainty and explicit unavailable states |
 | `GET /api/history` | Optional location, material, date bounds and cutoff; page defaults to 1, page size to 50, maximum 200 |
 | `GET /api/analytics?asOf=yyyy-MM-dd` | Required cutoff; historical material/monthly metrics |
 | `GET/POST /api/proposal`, `/api/forecast`, `/api/simulation` | Original-data or uploaded-data routes, per-bin curves and shared-setting evaluation; see the integration contract |
@@ -210,7 +211,7 @@ Implemented metrics:
 - Interactive monthly charts, reset-aware numeric cycle medians with separate censored-cycle counts, and transparent historical review flags linked to location history.
 - Known-bin coverage and the number of bins with fewer than three observations. This is a coverage indicator, not forecast confidence.
 
-The fill slider filters the latest historical pre-emptying reading. Overfull matches even a 100% threshold and sorts above numeric 100%, without becoming a numeric percentage or current urgency claim.
+The planner defaults to selected-day fill estimated after recorded emptyings. A visit resets the model to zero, and later dates estimate new accumulation without executing collections. The fill slider and sorting follow that view. The Last recorded before emptying option retains the latest historical reading; explicit overfull then matches even a 100% threshold and sorts above numeric 100%, without becoming a numeric percentage. See [selected-day fill semantics](docs/architecture/selected-day-fill.md).
 
 Notebook assumptions requiring correction or validation:
 
@@ -347,7 +348,7 @@ There is no implemented `packages/api-client`, deployment infrastructure directo
 - Run relevant tests before considering a logic change complete. Report blocked execution and unverified behavior explicitly.
 - Type-check and build after relevant application changes. Documentation-only edits do not introduce executable application logic.
 
-Most recently verified: **370 passing tests: 209 API, 6 AppHost, 126 frontend/tooling and 29 Python**, plus frontend type checking and .NET/Nuxt builds. See the challenge handover for live API and browser verification.
+Most recently verified: **389 passing tests: 210 API, 6 AppHost, 133 frontend/tooling and 40 Python**, plus frontend type checking and .NET/Nuxt builds. See the challenge handover for live API and browser verification.
 
 Run the full suite:
 

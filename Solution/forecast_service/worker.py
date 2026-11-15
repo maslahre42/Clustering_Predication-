@@ -13,7 +13,7 @@ import sys
 
 here = Path(__file__).resolve().parent
 sys.path.insert(0,str(here))
-sys.path.insert(0, str(here / 'vendor' if (here / 'vendor' / 'fillinq').exists() else here.parents[1] / 'Omar-Work'))
+sys.path.insert(0, str(here / 'vendor'))
 import numpy as np
 import pandas as pd
 from fillinq.config import OpsConfig
@@ -21,9 +21,11 @@ from fillinq.data import load_readings, build_intervals
 from fillinq.forecast import RateModel
 from fillinq.policy import assess_bins, select_stops, window_end
 from fillinq.routing import plan_routes
+from fillinq.roads import RoadNetwork, RoadRoutingError
 from fillinq.simulate import Twin, run_baseline, run_policy
 from integrations.dataset import source, evidence, DatasetValidationError
 from integrations.comparison import profiles, run_median_policy, forecast_comparison, optimization_check
+from integrations.planning_insights import operating_cost, fill_timing
 
 
 def config(settings):
@@ -37,10 +39,61 @@ def config(settings):
         vehicleFixedCostMin='vehicle_fixed_cost_min', optionalValueMin='opt_value_min')
     cfg = OpsConfig(**{dst: settings[src] for src, dst in mapping.items() if src in settings})
     cfg.glass_density_t_m3 = settings.get('glassDensityKgM3', 350) / 1000
+    cfg.opt_value_min = settings.get('optionalValueMin', 0)
+    caps = {material: settings.get(f'{material}CompartmentM3',0) for material in ('brown','green','white')}
+    if any(not isinstance(value,(int,float)) or not math.isfinite(value) or value < 0 for value in caps.values()):
+        raise ValueError('Compartment capacities must be finite and nonnegative.')
+    cfg.compartment_litres = {}
+    if any(caps.values()):
+        if any(value < .001 for value in caps.values()): raise ValueError('Configure all three compartments with at least one litre each, or leave all three zero.')
+        if cfg.truck_volume_m3 > 0 and sum(caps.values()) > cfg.truck_volume_m3 + 1e-9: raise ValueError('Truck volume must cover the configured compartments.')
+        cfg.compartment_litres = {material:value*1000 for material,value in caps.items()}
+        cfg.truck_volume_m3 = min(cfg.truck_volume_m3 or math.inf, sum(caps.values()))
     cfg.working_weekdays = tuple(i for i,key in enumerate(['workMonday','workTuesday','workWednesday','workThursday','workFriday','workSaturday','workSunday']) if settings.get(key, i<5))
     if not cfg.working_weekdays:
         raise ValueError('Choose at least one working collection day.')
     return cfg
+
+
+def make_road_network():
+    return RoadNetwork()
+
+
+def enable_street_routing(cfg):
+    cfg.fixed_travel_min = 0
+    cfg.road_network = make_road_network()
+    return cfg.road_network
+
+
+def street_route_shapes(plan, cfg, stops):
+    """One request per truck, then split the returned road legs at unloading visits."""
+    roads = cfg.road_network
+    positions = {row.site: (row.lat, row.lon) for row in stops.itertuples()}
+    for route in plan.routes:
+        points = [(cfg.depot_lat, cfg.depot_lon)]
+        counts = []
+        for trip in route['trips']:
+            points.extend(positions[site] for site in trip['stops'])
+            points.append((cfg.disposal_lat, cfg.disposal_lon))
+            counts.append(len(trip['stops']) + 1)
+        points.append((cfg.depot_lat, cfg.depot_lon))
+        legs = roads.route(points)
+        shapes, offset = [], 0
+        for load, count in enumerate(counts, 1):
+            group = legs[offset:offset + count]
+            shapes.append(dict(load=load,returning=False,points=[point for leg in group for point in leg['points']],
+                distanceKm=sum(leg['distanceKm'] for leg in group),drivingSeconds=sum(leg['drivingSeconds'] for leg in group)))
+            offset += count
+        shapes.append(dict(load=len(counts),returning=True,**legs[-1]))
+        distance = sum(leg['distanceKm'] for leg in legs)
+        driving = sum(leg['drivingSeconds'] for leg in legs)
+        service = route['bins'] * cfg.service_min_per_bin + len(route['stops']) * cfg.service_min_per_stop + len(route['trips']) * cfg.unload_min
+        hours = driving / 3600 + service / 60
+        if hours > cfg.shift_hours + 1e-6:
+            raise RoadRoutingError('Street-route verification exceeds the shift. Retry with fresh routing data or a longer shift; no infeasible route was accepted.')
+        route.update(roadPaths=shapes, km=distance, hours=hours, drivingHours=driving / 3600)
+    plan.kpis['km'] = sum(route['km'] for route in plan.routes)
+    plan.kpis['hours'] = sum(route['hours'] for route in plan.routes)
 
 
 def readings(payload):
@@ -104,9 +157,11 @@ def proposal(payload):
     selected = set(take.container)
     mandatory_sites = set(stops.loc[stops['must'].astype(bool), 'site'])
     coords = {r['locationId']:r for r in payload['locations']}
-    missing = set(stops.site) - set(coords) if cfg.fixed_travel_min == 0 else set()
+    roads = enable_street_routing(cfg)
+    missing = set(stops.site) - set(coords)
     plan = plan_routes(stops[~stops.site.isin(missing)].copy(), cfg,
                        time_limit_s=payload['settings'].get('solverTimeLimitSeconds',3))
+    street_route_shapes(plan, cfg, stops)
     stop_lookup = stops.set_index('site')
     bins = []
     for r in assessed.itertuples():
@@ -117,16 +172,20 @@ def proposal(payload):
         bins.append(dict(locationId=r.site, material=r.material, lastEmptied=iso(r.last_empty),
             daysSinceEmptied=int(r.days_since_empty), expectedFillPercent=r.fill_now, overflowProbability=r.p_over_window,
             decision=decision, volumeL=volume, weightKg=volume*cfg.glass_density_t_m3))
-    routes = [dict(truck=r['truck'], hours=r['hours'], distanceKm=None if cfg.fixed_travel_min else r['km'], bins=r['bins'],
-        trips=[dict(stops=t['stops'], weightKg=t['weight_t']*1000, volumeL=t['volume_m3']*1000) for t in r['trips']]) for r in plan.routes]
+    routes = [dict(truck=r['truck'], hours=r['hours'], distanceKm=r['km'], bins=r['bins'],
+        territory=r['territory'],roadPaths=r['roadPaths'],drivingHours=r['drivingHours'],
+        trips=[dict(stops=t['stops'], weightKg=t['weight_t']*1000, volumeL=t['volume_m3']*1000,
+                    volumeByMaterialL=t.get('volume_by_material_l')) for t in r['trips']]) for r in plan.routes]
     unserved = []
     for site in [*plan.dropped_mandatory,*plan.dropped_optional,*sorted(missing)]:
         row = stop_lookup.loc[site]
         reason = ('missing_coordinates' if site in missing else plan.reasons[site] if site in plan.reasons else 'exceeds_truck_capacity' if row.kg > cfg.truck_payload_kg or row.vol_l > cfg.truck_volume_l
-                  else 'fleet_limit' if site in mandatory_sites else 'optional_not_scheduled')
+                  else 'sector_limit' if site in mandatory_sites else 'optional_not_scheduled')
         unserved.append(dict(locationId=site, mandatory=site in mandatory_sites, reason=reason))
     k = plan.kpis
-    return dict(dataset=evidence(df,payload),asOf=payload['asOf'], planDate=iso(day), windowEnd=iso(window_end(day,cfg)),settings=payload['settings'],
+    routing = dict(roads.describe(),yard=roads.access(cfg.depot_lat,cfg.depot_lon),disposal=roads.access(cfg.disposal_lat,cfg.disposal_lon))
+    return dict(costs=operating_cost(k['km'],k['trucks'],payload['settings']),fillTiming=fill_timing(df,model,iv,payload['asOf']),
+        routing=routing,dataset=evidence(df,payload),asOf=payload['asOf'], planDate=iso(day), windowEnd=iso(window_end(day,cfg)),settings=payload['settings'],
         model=dict(engine='omar-python', bins=len(state), cycles=len(iv), censoredCycles=int(iv.censored.sum()),
             sigma=model.sigma if model else 0, tau=model.tau if model else 0,
             materialRatePercentPerDay=model.summary()['material_rate_pct_per_day'] if model else {},
@@ -135,18 +194,54 @@ def proposal(payload):
         stops=[dict(locationId=r.site,mandatory=bool(r.must),risk=r.value,bins=int(r.n_bins),volumeL=r.vol_l,weightKg=r.kg,
                     latitude=coords.get(r.site,{}).get('latitude'), longitude=coords.get(r.site,{}).get('longitude'),
                     isSynthetic=coords.get(r.site,{}).get('isSynthetic',True),
+                    **roads.access(coords.get(r.site,{}).get('latitude'),coords.get(r.site,{}).get('longitude')),
                     materials=sorted(take.loc[take.site.eq(r.site),'material'].tolist())) for r in stops.itertuples()],
         plan=dict(routes=routes,unserved=unserved,totals=dict(trucks=k['trucks'],trips=k['trips'],stops=k['stops'],bins=k['bins'],
             hours=k['hours'],distanceKm=None if cfg.fixed_travel_min else k['km'], weightT=k['weight_t'],volumeM3=k['volume_m3'],
             loadsByCapacity=max(math.ceil(k['weight_t']/cfg.truck_payload_t),math.ceil(k['volume_m3']/cfg.truck_volume_m3) if cfg.truck_volume_m3 else 0))),
-        assumptions=['Omar’s Python model and OR-Tools router run on this request’s history prefix only.',
+        assumptions=['The seasonal cycle model and route optimizer run on this request’s history prefix only.',
           'A recorded visit empties the bin. Full/overfull cycles are censored; unknown readings reset but provide no rate.',
           'The model includes month and BW school-vacation effects; sparse histories borrow material rates.',
           'Risk and forecast bands are model estimates, not measured live occupancy or a service guarantee.',
           'Coordinates retain source provenance; anonymous UUID assignments may be synthetic.',
-          'Fixed travel time reports no road distance; coordinate mode uses haversine × detour.',
+          'OSRM supplies car-street distances, driving times and road geometry. No aerial-distance or fixed-time fallback is used.',
+          'Each truck serves a compact angular sector across its loads; kilometers are minimized within fleet, sector, payload and shift constraints.',
+          'Car profiles do not establish truck-specific height, weight or access permissions.',
           'Routing uses conservative integer loads, volume, payload, shifts and intermediate/final unloading.',
           'A time-limited heuristic gives a fleet recommendation, not a proven global optimum.'])
+
+
+
+def selected_day_state(payload):
+    """End-of-selected-day fill after recorded visits, never a stale pre-emptying reading."""
+    df = readings(payload)
+    model, _ = fit(df)
+    last = df.groupby('container', sort=True).tail(1)
+    target = pd.Timestamp(payload['asOf'])
+    if model is not None and not last.empty:
+        targets = [target] * len(last)
+        predictions = model.predict(last.container, last.date, targets, thresholds=(100,))
+        lower = model.fill_quantile(last.container, last.date, targets, .1)
+        upper = model.fill_quantile(last.container, last.date, targets, .9)
+    bins = []
+    for index, row in enumerate(last.itertuples()):
+        days = int((target-row.date).days)
+        value = low = high = None
+        status = 'unknown'
+        if days == 0:
+            # The visit confirms a reset even when its pre-emptying reading was unknown.
+            value = low = high = 0.0
+            status = 'emptied'
+        elif model is not None and row.material in model.midx:
+            candidate = float(predictions.iloc[index].mean_fill)
+            lo, hi = float(lower[index]), float(upper[index])
+            if all(math.isfinite(v) and 0 <= v <= 100 for v in (candidate,lo,hi)) and lo <= hi:
+                value, low, high, status = candidate, lo, hi, 'estimated'
+        bins.append(dict(locationId=row.site,material=row.material,lastEmptied=iso(row.date),daysSinceEmptied=days,
+            expectedFillPercent=value,lower=low,upper=high,status=status))
+    return dict(asOf=payload['asOf'],semantics='after-recorded-emptyings',
+        lastObservationDate=None if df.empty else iso(df.date.max()),bins=bins,
+        note='Selected-day estimates assume recorded visits emptied the container. Subsequent fill uses the seasonal cycle model, with material-rate borrowing where available. Model bands are uncalibrated. Only recorded collections reset a bin; a proposal or date change does not record a collection.')
 
 
 def forecast(payload):
@@ -181,8 +276,9 @@ def simulation(payload):
     known = set(training.container)
     eligible = df[df.container.isin(known) & (df.date <= end)]
     locs = places(payload,eligible.site.unique(),cfg)
-    if cfg.fixed_travel_min == 0 and not set(eligible.site).issubset({r['locationId'] for r in payload['locations']}):
-        raise ValueError('Coordinate-mode simulation needs locations for every known site.')
+    if not set(eligible.site).issubset({r['locationId'] for r in payload['locations']}):
+        raise ValueError('Street-route simulation needs coordinates for every known site. Upload location coordinates with the readings.')
+    roads = enable_street_routing(cfg)
     twin = Twin(model,eligible,start=iso(start),end=iso(end),seed=int(payload.get('seed',7)))
     limit = min(int(payload['settings'].get('solverTimeLimitSeconds',3)),2)
     baseline = run_baseline(twin,locs,cfg,route=True,time_limit=limit)
@@ -198,11 +294,13 @@ def simulation(payload):
     check = optimization_check(check_stops,cfg)
     check['date'] = iso(check_day)
     scenarios = []
-    for name,label,result in [('historical','Historical visit calendar',baseline),('dynamic','Omar forecast-driven policy',dynamic),('zakaria','Zakaria median policy (80% / 60%)',median)]:
+    for name,label,result in [('historical','Historical visit calendar',baseline),('dynamic','Forecast-driven policy',dynamic),('zakaria','Cycle-median policy (80% / 60%)',median)]:
         daily = result.pop('daily')
         if daily.empty:
             daily = pd.DataFrame(columns=['date','stops','bins','hours','trucks','dropped_mandatory'])
         scenarios.append(dict(name=name,label=label,**result,
+            costs=operating_cost(float(daily.get('km',pd.Series(dtype=float)).sum()),int(daily.get('trucks',pd.Series(dtype=float)).sum()),payload['settings']),
+            distanceKm=float(daily.get('km',pd.Series(dtype=float)).sum()),
             hours=float(daily.get('hours',pd.Series(dtype=float)).sum()),truckDays=int(daily.get('trucks',pd.Series(dtype=float)).sum()),
             missedMandatory=int(daily.get('dropped_mandatory',pd.Series(dtype=float)).sum()),
             daily=[{**r,'date':iso(r['date'])} for r in daily.to_dict('records')]))
@@ -211,22 +309,22 @@ def simulation(payload):
         result = run_policy(twin,model,cfg,route=False,must_p=threshold)
         result.pop('daily')
         frontier.append(dict(threshold=threshold,**result))
-    return dict(asOf=payload['asOf'],start=iso(start),end=iso(end),seed=int(payload.get('seed',7)),settings=payload['settings'],
+    return dict(routing=roads.describe(),asOf=payload['asOf'],start=iso(start),end=iso(end),seed=int(payload.get('seed',7)),settings=payload['settings'],
         forecastComparison=comparison,optimizationCheck=check,
         dataset=evidence(training,{**payload,'asOf':iso(start-pd.Timedelta(days=1))}),
         knownBins=len(known),trainingCycles=len(iv),trainingThrough=iso(start-pd.Timedelta(days=1)),scenarios=scenarios,frontier=frontier,
         effectiveSolverTimeSeconds=limit,
         assumptions=['Simulated outcomes, not measured savings or a validation of counterfactual occupancy.',
-          'Omar’s digital twin uses his rate model fitted strictly before simulation start; the planner uses the same vintage.',
+          'The simulation uses a cycle-rate model fitted strictly before simulation start; the planner uses the same vintage.',
           'All three policies start identically and use a common seeded cycle-multiplier table.',
           'All three policies reset only bins at actually served sites; missed mandatory service remains visible.',
           'The historical scenario replays recorded visit dates, subject to the same fleet/load/shift and working-calendar limits.',
           'Historical route loads use the frozen forecast, not future simulated true fill. Capacity feasibility concerns forecast loads; realized filling can differ.',
           'Frontier runs are selection-only mandatory-site scenarios without routing/capacity limits.',
           'The seed controls demand multipliers; wall-clock-limited route searches can still vary between runs.',
-          'Zakaria’s frozen median policy uses his 80% urgent / 60% same-site thresholds, with Omar’s router and the same fleet constraints.',
-          'Kaise’s persistence is scored against real held-out readings, not treated as a dispatch policy.',
-          'The twin shares Omar’s forecast model family and can favor it. The real-reading benchmark is separate. Repeat with other seeds and settings before drawing conclusions.'])
+          'The frozen cycle-median policy uses 80% urgent / 60% same-site thresholds, with the common route optimizer and the same fleet constraints.',
+          'Persistence is scored against real held-out readings, not treated as a dispatch policy.',
+          'The twin shares the seasonal forecast model family and can favor it. The real-reading benchmark is separate. Repeat with other seeds and settings before drawing conclusions.'])
 
 
 def clean(value):
@@ -240,7 +338,7 @@ if __name__ == '__main__':
     try:
         payload = json.load(sys.stdin)
         with contextlib.redirect_stdout(io.StringIO()):
-            result = {'proposal':proposal,'forecast':forecast,'simulation':simulation}[payload['action']](payload)
+            result = {'proposal':proposal,'forecast':forecast,'simulation':simulation,'state':selected_day_state}[payload['action']](payload)
         print(json.dumps(clean(result),allow_nan=False))
     except Exception as exc:
         print(json.dumps({'error':str(exc), **({'validation':{'errors':exc.errors,'warnings':exc.warnings}} if isinstance(exc,DatasetValidationError) else {})}))

@@ -3,7 +3,8 @@ import type { ProposalSettings } from '../../../shared/api/contracts/proposal'
 import { DEFAULT_PROPOSAL_SETTINGS, validateSettings, type FlagSettingKey, type NumericSettingKey } from '../domain/settings.ts'
 
 /** Edits are a draft. Only a valid, applied draft changes the request, so half-typed numbers never reach the API. */
-export function createProposalSettings(initial: ProposalSettings = DEFAULT_PROPOSAL_SETTINGS) {
+export function createProposalSettings(initial: ProposalSettings = DEFAULT_PROPOSAL_SETTINGS, resetDefaults: ProposalSettings = DEFAULT_PROPOSAL_SETTINGS) {
+  const defaults = { ...resetDefaults }
   const draft = ref<ProposalSettings>({ ...initial })
   const applied = ref<ProposalSettings>({ ...initial })
   const errors = computed(() => validateSettings(draft.value))
@@ -24,6 +25,6 @@ export function createProposalSettings(initial: ProposalSettings = DEFAULT_PROPO
     return true
   }
   function discard() { draft.value = { ...applied.value } }
-  function reset() { draft.value = { ...DEFAULT_PROPOSAL_SETTINGS }; applied.value = { ...DEFAULT_PROPOSAL_SETTINGS } }
+  function reset() { draft.value = { ...defaults }; applied.value = { ...defaults } }
   return { draft, applied, errors, valid, dirty, changed, setNumber, setFlag, apply, discard, reset }
 }

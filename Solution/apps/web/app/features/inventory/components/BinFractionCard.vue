@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import { historicalFillLabel } from '~/shared/domain/fill';
+import { computed } from 'vue';
+import { planningFillLabel } from '~/features/planning/domain/fillView';
 import type { PlanningBin } from '~/features/inventory/types';
-defineProps<{
+const props = defineProps<{
     bin?: PlanningBin;
     material: string;
 }>();
+const { viewBins, fillView } = usePlanningFilters();
+const displayed = computed(() => viewBins.value.find(bin => bin.key === props.bin?.key));
 const { selectedKeys, toggleBin } = useCollectionPlan();
 </script>
 <template>
   <UiCard :class="['bin-fraction-card', `fraction-${material}`]">
     <GlassFractionBadge :material="material" />
-    <strong class="fraction-large">{{ historicalFillLabel(bin?.lastFillPercent, bin?.lastIsOverfull) }}</strong>
-    <HistoricalFillMeter :material="material" :value="bin?.lastFillPercent ?? null" :date="bin?.lastCollection" :overfull="bin?.lastIsOverfull" />
+    <strong class="fraction-large">{{ planningFillLabel(displayed) }}</strong>
+    <PlanningFillMeter :material="material" :bin="displayed" />
     <dl>
       <dt>Measurement</dt>
-      <dd>Before emptying</dd>
+      <dd>{{ fillView === 'estimate' ? 'Selected-day estimate after emptying' : 'Before emptying' }}</dd>
+      <dt>Last recorded before emptying</dt><dd>{{ bin?.lastIsOverfull ? 'Overfull' : bin?.lastFillPercent == null ? 'Unknown' : `${bin.lastFillPercent}%` }}</dd>
       <dt>Last collection</dt>
       <dd>{{ bin?.lastCollection ?? 'No record by cutoff' }}</dd>
       <dt>Known collections</dt>

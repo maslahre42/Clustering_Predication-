@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { coordinateSourceLabel } from '~/shared/domain/coordinates';
-const { asOf } = useWorkspaceData();
+const { asOf, clusters } = useWorkspaceData();
 const { view } = useWorkspaceNavigation();
 const { stops, clearPlan, routePoints, depot, collectionDate, acceptedProposal, editManually } = useCollectionPlan();
 const printedAt = useState<string | null>('manifest-print-timestamp', () => null);
@@ -20,6 +20,8 @@ const printedAt = useState<string | null>('manifest-print-timestamp', () => null
       <UiInfoCard headline="Accepted forecast-driven plan">
         <p>Collection date {{ collectionDate }}. Forecasts, operating settings, trucks and unloading loads are preserved. History remains through {{ asOf }}.</p>
       </UiInfoCard>
+      <ProposalRouteMap :proposal="acceptedProposal" :locations="clusters" />
+      <OperatingCosts :costs="acceptedProposal.costs" />
       <ProposalRoutesTable :proposal="acceptedProposal" />
       <ExportActions />
       <UiButton label="Convert to editable manual draft" mode="outline" @click="editManually" />

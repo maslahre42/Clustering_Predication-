@@ -19,8 +19,8 @@ public class WorkspaceResourcesTests
         Assert.False(builder.Resources.OfType<DockerComposeEnvironmentResource>().Single().DashboardEnabled);
         var api = Assert.IsAssignableFrom<ContainerResource>(builder.Resources.Single(resource => resource.Name == "api"));
         var dockerfile = Assert.Single(api.Annotations.OfType<DockerfileBuildAnnotation>());
-        Assert.EndsWith("Solution/apps/api/Dockerfile", dockerfile.DockerfilePath.Replace('\\', '/'));
-        Assert.Equal(Path.GetFullPath("../../..", builder.AppHostDirectory), dockerfile.ContextPath);
+        Assert.EndsWith("apps/api/Dockerfile", dockerfile.DockerfilePath.Replace('\\', '/'));
+        Assert.Equal(Path.GetFullPath("../..", builder.AppHostDirectory), dockerfile.ContextPath);
         var apiEnvironment = await ReadEnvironment(builder, api);
         Assert.Equal("/data/sql.db", apiEnvironment["Database__Path"]);
         Assert.Equal("Production", apiEnvironment["ASPNETCORE_ENVIRONMENT"]);

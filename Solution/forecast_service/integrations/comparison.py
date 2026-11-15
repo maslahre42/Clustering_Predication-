@@ -43,6 +43,9 @@ def run_median_policy(twin,profile,cfg,locs,time_limit):
         stops = sites.rename(columns={'Location_id':'site'}).merge(locs,on='site',how='left')
         stops['vol_l'] = stops.demand_volume_m3*1000
         stops['kg'] = stops.demand_weight_kg
+        for material in ('brown','green','white'):
+            volumes = decisions.loc[decisions.selected & decisions.material_type.eq(material)].groupby('Location_id').demand_volume_m3.sum()*1000
+            stops[f'{material}_l'] = stops.site.map(volumes).fillna(0)
         stops['must'] = True
         # Median fill is an ordering score here, never called an overflow probability.
         stops['value'] = stops.predicted_fill_perc/100
@@ -52,7 +55,7 @@ def run_median_policy(twin,profile,cfg,locs,time_limit):
         idx = np.array([lookup[f'{r.Location_id}|{r.material_type}'] for r in take.itertuples()],dtype=int)
         rec['stops'] += len(visited)
         _collect(twin,idx,twin.day_index[day],le,k,rec)
-        daily.append(dict(date=day,stops=len(visited),bins=len(idx),hours=plan.kpis['hours'],trucks=plan.kpis['trucks'],dropped_mandatory=len(plan.dropped_mandatory)))
+        daily.append(dict(date=day,stops=len(visited),bins=len(idx),km=plan.kpis['km'],hours=plan.kpis['hours'],trucks=plan.kpis['trucks'],dropped_mandatory=len(plan.dropped_mandatory)))
     _close_open_cycles(twin,le,k,rec,twin.day_index[twin.end])
     return dict(**_kpis(rec,len(daily)),daily=pd.DataFrame(daily))
 
@@ -85,7 +88,7 @@ def forecast_comparison(df,training,model,profile,start,end):
     common = [r for r in scored if pd.notna(r['truth']) and not r['censored'] and all(r[x] is not None for x in ('omar','zakaria','kaise'))]
     bounds = [r for r in scored if r['censored'] and all(r[x] is not None for x in ('omar','zakaria','kaise'))]
     models=[]
-    for key,label in [('omar','Omar seasonal cycle model'),('zakaria','Zakaria frozen cycle median'),('kaise','Kaise persistence reference')]:
+    for key,label in [('omar','Seasonal cycle model'),('zakaria','Frozen cycle-median model'),('kaise','Persistence reference')]:
         errors=np.array([r[key]-r['truth'] for r in common],dtype=float)
         models.append(dict(name=key,label=label,available=sum(r[key] is not None for r in scored),
             mae=None if not len(errors) else float(np.abs(errors).mean()),
@@ -93,7 +96,7 @@ def forecast_comparison(df,training,model,profile,start,end):
             lowerBoundShortfall=None if not bounds else float(np.mean([max(0,100-r[key]) for r in bounds]))))
     return dict(targets=len(targets),evaluated=len(scored),commonNumericCases=len(common),commonCensoredCases=len(bounds),
                 unknownTargets=sum(pd.isna(r['truth']) for r in scored),models=models,
-                note='All models use the same known bins and recorded resets strictly before each target. Omar and Zakaria rate fits are frozen before simulation start. Numeric 100 and overfull are lower bounds, excluded from MAE; their shortfall is reported separately. Persistence is a reference for observed readings, not a reset-aware dispatch policy. No overall winner is asserted.')
+                note='All models use the same known bins and recorded resets strictly before each target. Seasonal and cycle-median rate fits are frozen before simulation start. Numeric 100 and overfull are lower bounds, excluded from MAE; their shortfall is reported separately. Persistence is a reference for observed readings, not a reset-aware dispatch policy. No overall winner is asserted.')
 
 
 def optimization_check(stops,cfg,limit=3):
@@ -103,10 +106,22 @@ def optimization_check(stops,cfg,limit=3):
     sample=stops.sort_values(['must','value','site'],ascending=[False,False,True]).head(6).copy()
     candidate=pd.DataFrame(dict(Location_id=sample.site,demand_volume_m3=sample.vol_l/1000,
                                 demand_weight_kg=sample.kg,n_bins=sample.n_bins))
+    for material in getattr(cfg,'compartment_litres',{}):
+        candidate[f'{material}_m3'] = sample[f'{material}_l']/1000
     coords=sample[['site','lat','lon']].rename(columns={'site':'Location_id'})
-    provider=ModularDistanceProvider(candidate.Location_id.tolist(),coords,road_winding_factor=cfg.detour_factor,
-               depot_coord=(cfg.depot_lat,cfg.depot_lon),disposal_coord=(cfg.disposal_lat,cfg.disposal_lon),fixed_travel_min=cfg.fixed_travel_min)
-    if cfg.fixed_travel_min:
+    road = getattr(cfg, 'road_network', None)
+    if road is not None:
+        from types import SimpleNamespace
+        km, seconds, access = road.matrix([cfg.depot_lat,*sample.lat,cfg.disposal_lat], [cfg.depot_lon,*sample.lon,cfg.disposal_lon])
+        if not np.isfinite(km).all() or not np.isfinite(seconds).all() or any(point[2] > road.max_snap_m for point in access):
+            return dict(status='infeasible',message='Sample has no connected driving access.',sites=candidate.Location_id.tolist(),scope='one-load-per-truck',complete=False)
+        provider=SimpleNamespace(location_ids=candidate.Location_id.tolist(),n_bins=len(sample),
+            inter_bin_matrix=km[1:-1,1:-1],depot_dist=km[0,1:-1],disposal_dist=km[1:-1,-1],disposal_to_depot_km=float(km[-1,0]),
+            distance_provenance='osrm_car_street_network',road_duration_minutes=(seconds[0,1:-1]/60,seconds[1:-1,-1]/60,seconds[1:-1,1:-1]/60,float(seconds[-1,0]/60)))
+    else:
+        provider=ModularDistanceProvider(candidate.Location_id.tolist(),coords,road_winding_factor=cfg.detour_factor,
+                   depot_coord=(cfg.depot_lat,cfg.depot_lon),disposal_coord=(cfg.disposal_lat,cfg.disposal_lon),fixed_travel_min=cfg.fixed_travel_min)
+    if road is None and cfg.fixed_travel_min:
         # Identities remain different places even if missing coordinates coincide.
         provider.depot_dist=np.ones(len(sample));provider.disposal_dist=np.ones(len(sample))
         provider.disposal_to_depot_km=1.0
@@ -115,10 +130,11 @@ def optimization_check(stops,cfg,limit=3):
             container_volume_m3=cfg.container_volume_m3,truck_max_volume_m3=cfg.truck_volume_m3 or cfg.truck_payload_t/cfg.glass_density_t_m3,
             truck_max_weight_kg=cfg.truck_payload_kg,max_shift_hours=cfg.shift_hours,max_fleet_vehicles=cfg.max_vehicles,
             avg_speed_kmh=cfg.avg_speed_kph,service_time_min=cfg.service_min_per_bin,service_time_per_stop_min=cfg.service_min_per_stop,
-            unloading_time_min=cfg.unload_min,time_limit_sec=limit,mip_gap=0)
+            unloading_time_min=cfg.unload_min,time_limit_sec=limit,mip_gap=0,
+            compartment_capacities_m3={m:v/1000 for m,v in getattr(cfg,'compartment_litres',{}).items()})
     routes=[dict(truck=r.vehicle,sites=r.ordered_locations,volumeM3=r.total_volume_m3,weightKg=r.total_weight_kg,
                  hours=r.shift_hours,distanceKm=None if cfg.fixed_travel_min else r.total_distance_km) for r in result.routes.itertuples()]
     return dict(status=result.status,message=result.message,scope='one-load-per-truck',sites=candidate.Location_id.tolist(),
                 complete=result.complete,fleetLowerBound=result.fleet_lower_bound,trucks=len(routes),routes=routes,
                 unserved=result.unserved.to_dict('records'),runtimeSeconds=result.runtime_seconds,
-                note='Zakaria Gurobi MILP: at most six highest-priority selected sites, all required, one load per truck. Uses the applied physical assumptions and travel mode. This checks the sample only; its truck count is not comparable with Omar’s city-wide multi-load plan. Missing Gurobi/license is reported explicitly.')
+                note='Independent MILP check: at most six highest-priority selected sites, all required, one load per truck. Uses the applied physical assumptions and travel mode. This checks the sample only; its truck count is not comparable with the city-wide multi-load plan. Missing Gurobi/license is reported explicitly.')

@@ -1,30 +1,31 @@
 # Challenge submission and demo guide
 
-This prototype addresses the five deliverables in the [PreZero challenge brief](../20261113_Readme%20Challenge%20PZ.docx). Use the Nuxt application as the demonstration interface. The original contributor projects remain references; the live application calls their integrated Python implementations.
+Updated 15 November 2026. The live application now uses car-street routing and coordinated truck sectors. Earlier fixed-time and straight-line demonstration results in the historical verification documents do not describe the current engine.
 
-## Deliverables
+## Challenge deliverables
 
-| Challenge deliverable | Where to demonstrate it |
+| Deliverable | Demonstration |
 | --- | --- |
-| Upload and process fill-level data | **Forecast, routes & simulation → Import a different CSV**. Strict row validation, duplicate rejection, 2 MB limit, request-local data isolation. |
-| Visualize patterns, groups and anomalies | **Historical analytics**: material comparisons, monthly charts, exact partial-period labels, cycle rates, distributions and historical review flags. **Forecast → Supporting details**: behavioral groups, sparse-history gates, fitted monthly and school-vacation associations. |
-| Configurable operational variables | **Collection settings**: bin volume, density, truck payload/volume, fleet availability, travel, service and unloading time, depot/disposal positions, shift and working days, risk thresholds. Apply changes to recalculate. |
-| Automatically propose routes and fleet | **Your collection proposal**: forecast-based bin selection, grouped stops, OR-Tools multi-load truck routes, predicted loads, working time, required fleet and explicit unserved-stop reasons. Accept into the manifest or export CSV. |
-| Explain the approach | This guide, [architecture and assumptions](architecture/proposal.md), [integration and evaluation contract](combined-project-integration.md), and [setup](../README.md). |
+| Ingest readings | Forecast module's validated CSV upload; invalid rows and duplicate keys are rejected without silently modifying source data. |
+| Patterns, groups and anomalies | Historical analytics: partial-month charts, numeric/censored cycle evidence, distributions and review flags. Forecast supporting details: quality gates, groups, month/vacation associations and uncertainty. |
+| Configurable operations | Container/density, truck payload/volume, available fleet, shift/calendar, service/unloading time, yard/disposal coordinates, risk rules and search budget. |
+| Route and fleet proposals | OSRM car-street costs, compact truck sectors, OR-Tools multi-load routes, explicit unserved stops, map inspection, manifest and CSV export. |
+| Documentation | This guide, [street routing](architecture/street-routing.md), [forecast method](architecture/proposal.md), [integration contract](combined-project-integration.md) and [setup](../README.md). |
 
-## Five-minute demonstration
+## Demonstration
 
-1. Start from `Solution/`: `make setup` on a fresh checkout, then `make run`. Open `http://localhost:3000`.
-2. Select **2026-09-30** at the top and open **Historical analytics**. The data contains **11,701 readings, 449 locations and 1,338 observed bins**, from **2025-10-17 to 2026-09-30**. A bin is a location/material pair; a collection count is a bin emptying, not a truck trip or unique site visit.
-3. Show September brown glass: **221 collections, 9 overfull, 34.2% numeric mean**. Change the date to **2026-09-08**: **9 collections, 0 overfull, 28.9%**, now explicitly marked as a partial month. Change the chart between collection count and mean fill to see the difference between frequency and fill at visits.
-4. Inspect **Accumulation between emptyings** and **Containers to investigate**. Open a flagged location to inspect its recorded history. Rates assume each visit empties that bin. Full/overfull cycles are lower bounds, not exact rates; unknown visits still reset the interval. Review flags describe history rather than dispatch urgency.
-5. Select **2026-08-14**, open **Forecast, routes & simulation**, review the collection settings and apply changes. The next weekday plan is **2026-08-17**. Show trucks, loads, urgent/optional stops and missed service. Reducing truck payload illustrates feasibility limits rather than silently shrinking demand.
-6. Open **Data quality & behavioral groups** and **How the forecast works & assumptions** under supporting details. Explore an individual container's forecast curve. Groups use reset-aware features and fall back to descriptive tiers when cluster quality gates fail.
-7. Run **2026-08-10–2026-08-12**, seed **7**, with a one-second solver attempt for a short demonstration. Compare historical-calendar, Omar and Zakaria policies. Show the separate three-model comparison against held-out real readings and the bounded Gurobi check.
-8. Choose **Use as collection plan**, then **Download CSV** or **Print / save as PDF**. Truck/load assignments and the historical cutoff remain attached to the accepted plan. Changing the date clears the draft.
-9. Return to the forecast module and upload a CSV. Invalid rows produce specific errors. Valid uploads drive forecasts/routes/simulation without changing SQLite or mixing original bins into the uploaded inventory. Uploaded routes can be exported directly; acceptance into the original inventory's manifest is disabled.
+1. From `Solution/`, run `make setup` on a fresh checkout, then `make run`. Open `http://localhost:3000`.
+2. Select **2026-09-30** and open **Historical analytics**. The source has **11,701 readings, 449 locations and 1,338 observed location/material bins**, from **2025-10-17 to 2026-09-30**.
+3. September brown glass has **221 collections, 9 overfull and 34.2% numeric mean fill**. Selecting **2026-09-08** gives **9, 0 and 28.9%**, explicitly marked as a partial month. Counts are bin emptyings, not trucks or unique site visits.
+4. Compare the monthly count/fill charts, cycle-rate evidence and flagged containers. Open a flagged location to inspect its source history. Full and overfull are lower bounds; unknown visits reset intervals but supply no rate. Low-fill flags are review prompts, not proof of unnecessary visits.
+5. Open **Forecast, routes & simulation**. Review the operating numbers and apply changes. The first street plan may take longer while road data is cached. There is no fixed-time challenge switch or aerial-distance mode.
+6. In **Follow the collection route**, select one truck and load. Streets follow the OSRM road geometry. Direction/sector labels show which part of the region belongs to each truck. Click stops for details; inspect unloading visits, fit/expand the map and optionally show unserved sites. A truck keeps its sector across loads and returns to the yard after final unloading.
+7. Review road kilometers, truck loads, working time and any missed mandatory stops. Payload and shift limits remain hard constraints. Optional collection value defaults to zero to avoid rewarding extra driving for non-urgent sites. Increasing it is an explicit service/cost trade-off.
+8. Accept the proposal into the collection manifest and export CSV or print the collector sheet. The manifest retains truck/load assignments and street geometry. Changing the date clears the draft.
+9. Explore an individual forecast curve, then run a short **Simulation & backtest** window, e.g. **2026-08-10–2026-08-10**, seed **7**, one-second daily attempts. Historical, Omar and Zakaria policies use the same road provider, constraints and demand. Compare street kilometers beside work and missed service. The real-reading forecast comparison and bounded Gurobi check have separate meanings.
+10. Upload readings to demonstrate strict validation and dataset isolation. CSV-only uploads can be forecast and analyzed; road routing needs matching site coordinates. Missing locations are reported, not replaced with original-inventory points or fictional journeys. Uploaded-data proposals are exported directly rather than attached to the unrelated original manifest.
 
-Example upload:
+Reading format:
 
 ```csv
 Location_id,material_type,date,fill_level_perc
@@ -34,47 +35,38 @@ demo-site,white,2026-07-21,70
 demo-site,white,2026-07-31,60
 ```
 
-Keep fixed travel time for uploads without coordinates. Use **Use original dataset** to return to the source inventory.
+## Meaning of returns and apparent overlap
 
-## Evidence and interpretation
+Unloading can be necessary before a truck reaches its nominal payload when the next indivisible site pickup will not fit. Every load has an unloading visit, and the last load also returns to the yard. Nearby yard/unloading points can make these legs look like repeated yard returns. The optimizer now keeps pickup ownership in compact sectors; common access roads and the shared depots can still overlap.
 
-Full-history median rates from **uncensored numeric cycles only** are **0.93 pp/day brown**, **2.22 green**, and **2.86 white**. They use 2,425 / 2,761 / 2,267 cycles respectively; another 233 / 960 / 1,717 full-or-overfull cycles supply lower bounds and are excluded from those medians. Comparisons are affected by collection timing and censoring. They are not network-wide live filling rates.
-
-The transparent historical review rules flag **550 bins** at the full cutoff. At least three visits are required: either two explicit overfull readings, or at least three ≤30% readings comprising at least half the visits. The page shows up to 20, prioritizing repeated overfull. These flags are prompts to inspect scheduling; low fill alone does not prove an unnecessary collection.
-
-The freshly executed three-day comparison has **172 held-out targets**, including **143 shared uncensored numeric cases** and **29 lower-bound cases**. MAE is **15.14 pp** for Omar, **16.48 pp** for Zakaria and **21.82 pp** for Kaise's persistence reference. This short window demonstrates a common evaluation contract rather than a general model ranking.
-
-| Simulated measure | Historical calendar | Omar policy | Zakaria policy |
-| --- | ---: | ---: | ---: |
-| Served site visits | 58 | 44 | 102 |
-| Bins emptied | 172 | 113 | 188 |
-| Truck-days | 5 | 4 | 7 |
-| Total working time | 29h 25m | 21h 10m | 40h 30m |
-| Container-days full | 372 | 305 | 217 |
-| Missed mandatory stop-days | 0 | 0 | 0 |
-
-These are simulated outcomes with shared seeded demand, frozen pre-period fitting and common operating settings. They are not measured operational savings. The Gurobi check served all six sampled sites in two one-load trucks; its optimal status applies only to that bounded sample. The full city plan uses time-limited heuristic search.
+Street kilometers are a genuine road-network measure for the supplied coordinates. They are not proof of measured fuel savings or verified bin locations. Comparing two plans requires the same served bins and constraints: leaving urgent stops unserved cannot count as an efficiency improvement.
 
 ## Verification and reproducibility
-
-On 14 November 2026, **209 API + 6 AppHost + 126 frontend + 29 Python tests passed (370 total)**. Vue/TypeScript checking, the .NET solution build and the Nuxt production build passed. Aspire reports its existing CLI-bundle warning; Python reports dependency deprecations.
 
 ```sh
 make test
 make typecheck
 make build-api
-# Separate build directory permits building while the development server runs:
-NUXT_BUILD_DIR=.nuxt/challenge-build make build-web
+NUXT_BUILD_DIR=.nuxt/street-build make build-web
 API_BASE=http://localhost:5080 python3 scripts/smoke-test.py
-API_BASE=http://localhost:5080 python3 scripts/challenge-smoke.py --report /tmp/challenge-evidence.json
 ```
 
-The challenge smoke check exercises real HTTP endpoints with the bundled dataset: partial/full-month regressions, forecast bounds, route accounting, payload/shift limits, three-policy simulation, held-out comparison, Gurobi availability/status, CSV rejection/isolation and impossible-load reporting. It emits a JSON evidence report when requested. Route search can produce different feasible routes across runs.
+Latest executed unit/build and browser results are described in [street-routing verification](architecture/street-routing.md). Public settings have no fixed-time/speed/detour overrides. Source SQLite is still byte-identical to its Git version. Live OSRM checks returned real road matrices and full street geometry; unit tests use explicit provider doubles and do not depend on the internet.
 
-Live verification used a freshly started API on `127.0.0.1:5081` and the production Nuxt server on `127.0.0.1:3002`. Headless Edge/Playwright verified partial/full-month counts, both chart filters, a 390 px mobile layout without horizontal page overflow, review-flag navigation to history, unapplied-setting guards, a real one-day simulation and held-out comparison, plan acceptance, CSV contents, cutoff-driven draft clearing, and invalid/valid upload isolation. No browser page errors occurred. Local evidence is under `/tmp/challenge-evidence.json`, `/tmp/challenge-browser.log` and `/tmp/greencity-qa/challenge-*.png`; the downloaded route sheet is `/tmp/greencity-qa/challenge-route.csv`. SQLite's Git blob hash remained `928d4a651ab4721c051f901519196da0a1021efe`, identical to `HEAD`.
+The current prototype covers the challenge workflow. Operational use still needs verified coordinate mappings, actual depots, measured loads, an appropriate road service and truck access rules. Durable plans, authentication, electronic dispatch and driver completion remain extensions. Configured glass chambers now constrain every policy; actual capacities must be supplied. Car routing does not verify heavy-truck legal access. The source spans less than a year, so seasonal/holiday associations and short-window evaluation results require cautious interpretation.
 
-## Prototype boundaries
+## New planning controls and presentation
 
-The brief explicitly accepts a hackathon prototype. The implemented workflow covers its deliverables. Operational deployment still requires verified site/depot mappings, calibrated weights, road travel times, and confirmed fleet details. Current routing enforces total truck payload/volume and shifts; separate color compartments and vehicle/bin compatibility remain extensions. Fixed travel mode reports time rather than fabricated kilometers. Coordinates retain their provenance.
+In **Forecast, routes & simulation**, expand **Glass compartments** and enter the actual brown, green and white capacities together. Leave all three zero for unknown layout. Expand **Operating costs** for variable €/road-km and fixed €/scheduled-truck-shift; leave unknown prices unpriced. Apply to recalculate. The route table includes colour volume per load, and accepted manifests retain the cost estimate.
 
-The source covers less than one year; fitted calendar effects are associations with limited seasonal evidence. The digital twin shares Omar's model family, so independent operational validation remains necessary. Uploads and plans are temporary; there is no authentication, durable dispatch or driver completion tracking. The original notebook is exploratory and its earlier drop-based emptying or invented overflow-percentage conclusions are not used by the application.
+Use **Save current plan as baseline**, edit fleet/payload/shift/compartments/thresholds, then apply. The comparison shows road km, truck shifts, loads, completed containers, costs and missed urgent sites together. A reduction is only shown for matched completed service and comparable inputs. Baselines clear when date or dataset changes.
+
+The time-to-full table gives cutoff-relative days, estimated dates and a 10–90% model range, with explicit missing history. **Present this plan** opens six live-data slides. Use arrows or Previous/Next, Escape to close, and the final slide to download the route sheet. See [planning insight rules and tests](architecture/planning-insights.md).
+
+## Collection cadence and filling dynamics
+
+**Historical analytics → Understand past collections** now includes glass-specific inter-visit and filling-speed histograms, median/IQR summaries, a cumulative projected time-to-full curve, and fastest/slowest container rankings. Change the glass fraction or ranking, then click a location to inspect it. Recorded collections and completed intervals are shown separately. Unknown, zero and full/overfull cycles remain distinct; the chart labels which cycles support an estimate. A 28-day guide is a comparison rather than an assumed schedule. See [calculation and cohort rules](architecture/collection-dynamics.md). Public model and simulation labels describe their methods without contributor credits.
+
+## Fill after emptying on the selected date
+
+The planner defaults to **Selected-day estimate**. A recorded 30 September collection resets the modeled bin to zero; selecting 1 October shows estimated new fill, rather than repeating its old full reading. Use **Fill view → Last recorded before emptying** for the historical measurement. Fill filters, ordering and location details follow that selection. Dates and proposals do not execute collections; only recorded visits reset state. Missing estimates remain unknown. See [selected-day behavior and real-data verification](architecture/selected-day-fill.md).
