@@ -22,12 +22,14 @@ public static class WorkspaceResources
 
         if (builder.ExecutionContext.IsPublishMode)
         {
+            var projectRoot = Path.GetFullPath("../..", builder.AppHostDirectory);
             api.WithEnvironment("ASPNETCORE_ENVIRONMENT", "Production")
                 .WithEnvironment("AllowedHosts", "api;localhost;127.0.0.1")
                 .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:8080")
                 .WithEndpoint("http", endpoint => endpoint.TargetPort = 8080);
             foreach (var endpoint in api.Resource.Annotations.OfType<EndpointAnnotation>().Where(endpoint => endpoint.UriScheme == "https").ToArray())
                 api.Resource.Annotations.Remove(endpoint);
+            api.PublishAsDockerFile(container => container.WithDockerfile(projectRoot, "apps/api/Dockerfile"));
         }
 
         // Aspire 13 marks JavaScript production publishing and base-image customization experimental.

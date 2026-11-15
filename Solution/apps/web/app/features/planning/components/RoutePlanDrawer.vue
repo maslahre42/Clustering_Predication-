@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { computed, useId } from 'vue';
+import { createPlanDrawerState } from '../state/createPlanDrawerState';
 import { workspaceIcons } from '~/shared/ui/icons';
 const { asOf } = useWorkspaceData();
 const { view } = useWorkspaceNavigation();
-const { filteredBins } = usePlanningFilters();
+const { fillView, filteredBins } = usePlanningFilters();
 const { selectedBins, stops, distance, routeOrder, addDayCollections, clearPlan, removeStop, exportCsv } = useCollectionPlan();
-const collapsed = ref(false);
+const { collapsed, toggle } = createPlanDrawerState(computed(() => stops.value.length));
 const contentId = useId();
 </script>
 <template>
@@ -12,7 +14,7 @@ const contentId = useId();
     <header>
       <div>
         <strong>Active collection plan</strong>
-        <small>{{ asOf }} · draft</small>
+        <small>{{ asOf }} · {{ stops.length }} {{ stops.length === 1 ? 'stop' : 'stops' }} · draft</small>
       </div>
       <UiIconButton
         class="route-drawer-toggle"
@@ -22,7 +24,7 @@ const contentId = useId();
         :aria-controls="contentId"
         color="neutral"
         density="compact"
-        @click="collapsed = !collapsed"
+        @click="toggle"
       />
     </header>
     <div v-show="!collapsed" :id="contentId">
@@ -61,7 +63,7 @@ const contentId = useId();
           <UiButton label="Export CSV" mode="outline" :disabled="!stops.length" @click="exportCsv" />
           <UiButton label="Clear" mode="plain" :disabled="!stops.length" @click="clearPlan" />
         </div>
-        <UiButton label="Add this day’s collections" mode="plain" density="compact" :disabled="!filteredBins.some(b => b.lastCollection === asOf)" @click="addDayCollections" />
+        <UiButton v-if="fillView === 'recorded'" label="Add this day’s collections" mode="plain" density="compact" :disabled="!filteredBins.some(b => b.lastCollection === asOf)" @click="addDayCollections" />
       </div>
     </div>
   </aside>

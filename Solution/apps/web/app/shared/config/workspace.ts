@@ -4,5 +4,5 @@ export interface WorkspaceConfiguration {
 }
 // A replaceable preview configuration, not a confirmed operational depot.
 export const DEFAULT_WORKSPACE: WorkspaceConfiguration = {
-  depot: { latitude: 49.1427, longitude: 9.2185, isSynthetic: true, name: 'City center' },
+  depot: { latitude: 49.0094, longitude: 8.4044, isSynthetic: true, name: 'City center' },
 }

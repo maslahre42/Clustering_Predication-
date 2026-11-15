@@ -1,0 +1,4506 @@
+{
+  "retrieved_at": "2026-11-15T04:23:28.284970+00:00",
+  "assignment": "Synthetic demonstration: existing UUIDs sorted lexicographically; no verified relationship between Karlsruhe sites and collection history.",
+  "selection": "All 314 official city sites, then nearest 135 eligible sites among 179 retrieved official Landkreis sites from nine nearby municipalities; regional candidates within 75 m of selected sites excluded. Radius uses straight-line distance solely for site selection, not route costs.",
+  "licenses": {
+    "city": "Datenlizenz Deutschland Namensnennung 2.0 — Stadt Karlsruhe",
+    "district_boundaries": "CC0 — Stadt Karlsruhe",
+    "regional": "Official AWB public directory; no open-data reuse license identified; retained with source attribution for this local demonstration."
+  },
+  "center": {
+    "latitude": 49.0094,
+    "longitude": 8.4044
+  },
+  "sites": [
+    {
+      "latitude": 49.00824845822806,
+      "longitude": 8.403190628469194,
+      "name": "Hebelstraße (bei Rathaus)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-124",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00703439759507,
+      "longitude": 8.407793947226308,
+      "name": "Lidellplatz",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-Ost",
+      "source_id": "city-snapshot-191",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00733629520792,
+      "longitude": 8.4097237153062,
+      "name": "Fritz-Erler-Straße (Westseite vor Nr. 14)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-Ost",
+      "source_id": "city-snapshot-99",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00700906922777,
+      "longitude": 8.41038022477705,
+      "name": "Fritz-Erler-Straße (Ostseite vor Nr. 17)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-Ost",
+      "source_id": "city-snapshot-98",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.011045918243944,
+      "longitude": 8.397688386268559,
+      "name": "Passagehof (bei Parkhaus)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-223",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.007816531800394,
+      "longitude": 8.412466942011825,
+      "name": "Waldhornplatz",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-Ost",
+      "source_id": "city-snapshot-294",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00386952414121,
+      "longitude": 8.405647951064305,
+      "name": "Baumeisterstraße/Wilhelmstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südstadt",
+      "source_id": "city-snapshot-35",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00388694508586,
+      "longitude": 8.400997507585723,
+      "name": "Hermann-Billing-Straße/Beiertheimer Allee",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-130",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.008576941764524,
+      "longitude": 8.394300017373654,
+      "name": "Amalienstraße/Stephanplatz (bei Karl-Apotheke)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-24",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00846977953887,
+      "longitude": 8.414613427755647,
+      "name": "Am Künstlerhaus/Zähringerstraße",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-Ost",
+      "source_id": "city-snapshot-1",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.013251458210725,
+      "longitude": 8.395476515748403,
+      "name": "Bismarckstraße/Wörthstraße",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-40",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.004611462878195,
+      "longitude": 8.412765330009869,
+      "name": "Philipp-Reis-Straße (Parkplatz gegenüber Nr. 3)",
+      "municipality": "Karlsruhe",
+      "district": "Südstadt",
+      "source_id": "city-snapshot-227",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.003315636639826,
+      "longitude": 8.396407281773904,
+      "name": "August-Dürr-Straße/Renckstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-31",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00449596656411,
+      "longitude": 8.39420640034464,
+      "name": "Gartenstraße/Karlstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-100",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01117036722938,
+      "longitude": 8.39176422604015,
+      "name": "Stephanienstraße (bei Zollamt)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-265",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.005289011776725,
+      "longitude": 8.416146486331346,
+      "name": "Kriegsstraße (bei Nr. 40)",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-175",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00214313146281,
+      "longitude": 8.396383386587312,
+      "name": "Mathystraße/Alter Brauhof",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-204",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.999969439908334,
+      "longitude": 8.405591705747739,
+      "name": "Wilhelmstraße (beim Grünstreifen)",
+      "municipality": "Karlsruhe",
+      "district": "Südstadt",
+      "source_id": "city-snapshot-306",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00973409974291,
+      "longitude": 8.389578452477407,
+      "name": "Amalienstraße/Leopoldstraße",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-23",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00736913235774,
+      "longitude": 8.389434645675125,
+      "name": "Leopoldstraße/Sophienstraße",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-190",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.999288370900004,
+      "longitude": 8.404539276391809,
+      "name": "Augartenstraße/Ettlinger Straße",
+      "municipality": "Karlsruhe",
+      "district": "Südstadt",
+      "source_id": "city-snapshot-29",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01696578084336,
+      "longitude": 8.393385874672507,
+      "name": "Willy-Andreas-Allee (bei Verkehrsübungsplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-307",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00896190199267,
+      "longitude": 8.420631876054566,
+      "name": "Ludwig-Wilhelm-Straße/Bernhardstraße",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-199",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01591622311661,
+      "longitude": 8.390965605786274,
+      "name": "Willy_Andreas-Allee (bei Universität)",
+      "municipality": "Karlsruhe",
+      "district": "Innenstadt-West",
+      "source_id": "city-snapshot-308",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00356241667361,
+      "longitude": 8.389277293176715,
+      "name": "Jollystraße/Otto-Sachs-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-154",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.9984636059364,
+      "longitude": 8.410841456674898,
+      "name": "Rüppurrer Straße/Augartenstraße/Winterstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südstadt",
+      "source_id": "city-snapshot-244",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00881410696616,
+      "longitude": 8.386199568893586,
+      "name": "Hans-Sachs-Straße (beim REWE Markt)",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-122",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99737750624494,
+      "longitude": 8.408119619754494,
+      "name": "Nebeniusstraße/Marienstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südstadt",
+      "source_id": "city-snapshot-207",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01252626010441,
+      "longitude": 8.386145371735868,
+      "name": "Riefstahlstraße/Hoffstraße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-236",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00751166723417,
+      "longitude": 8.42316011255648,
+      "name": "Gottesauer Platz",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-108",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.013288520669846,
+      "longitude": 8.4225127829695,
+      "name": "Parkstraße/Am Fasanengarten",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-222",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.998043250627234,
+      "longitude": 8.39632525391031,
+      "name": "Südendstraße/Beiertheimer Allee (Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-274",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.998914079932696,
+      "longitude": 8.416448555625362,
+      "name": "Stuttgarter Straße/Sybelstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südstadt",
+      "source_id": "city-snapshot-271",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.005302292497035,
+      "longitude": 8.384853040995086,
+      "name": "Kriegsstraße/Lessingstraße (vor Versorgungsamt)",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-176",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.996289432573946,
+      "longitude": 8.399524660388572,
+      "name": "Bahnhofstraße (gegenüber Nr. 42)",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-33",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.005564320967444,
+      "longitude": 8.424136309979087,
+      "name": "Gottesauer Straße/Wolfartsweierer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-109",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99525981582857,
+      "longitude": 8.401729536625895,
+      "name": "Am Stadtgarten/Bahnhofplatz",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-21",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01100811877167,
+      "longitude": 8.426422379545066,
+      "name": "Rintheimer Straße (bei Nr. 24)",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-239",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01805092019107,
+      "longitude": 8.422523913994167,
+      "name": "Hagsfelder Allee 1 ",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-119",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.012708424384854,
+      "longitude": 8.382399921617194,
+      "name": "Südliche Hildapromenade/Kochstraße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-276",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.0087321690476,
+      "longitude": 8.427438168417183,
+      "name": "Gerwigstraße/Veilchenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-106",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.998769833102585,
+      "longitude": 8.38795567735762,
+      "name": "Südendstraße/Boeckhstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-275",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.007872639485335,
+      "longitude": 8.381323748889951,
+      "name": "Sophienstraße/Scheffelstraße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-261",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.994710173582135,
+      "longitude": 8.396661758324164,
+      "name": "Ebertstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-63",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01751931855893,
+      "longitude": 8.383832491051885,
+      "name": "Knielinger Allee/Erzbergerstraße (gegenüber Penny-Markt)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-169",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.020774141654194,
+      "longitude": 8.386663405007384,
+      "name": "Rhode-Island-Allee (bei Nr. 8)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-235",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00983779103128,
+      "longitude": 8.429705545838727,
+      "name": "Humboldtstraße/Essenweinstraße",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-144",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00016663837728,
+      "longitude": 8.382824954104006,
+      "name": "Römhildtstraße/Lorenzstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-243",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99745888054219,
+      "longitude": 8.386073937704447,
+      "name": "Graf-Rhena-Straße (bei Nr. 23)",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-111",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.0203479869784,
+      "longitude": 8.384626805680641,
+      "name": "Erzbergerstraße/Michiganstraße",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-83",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.025186726481465,
+      "longitude": 8.394756176485025,
+      "name": "Kentuckyallee (vor Nr. 62)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-163",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99300929933223,
+      "longitude": 8.396709160625102,
+      "name": "Victor-Gollancz-Straße/Schwarzwaldstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-290",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.015273961476204,
+      "longitude": 8.379417249870908,
+      "name": "Freydorfstraße/ Moltkestraße",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-94",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99421106951694,
+      "longitude": 8.390169178319978,
+      "name": "Gebhartstraße (Kirche)",
+      "municipality": "Karlsruhe",
+      "district": "Beiertheim-Bulach",
+      "source_id": "city-snapshot-101",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99522368063875,
+      "longitude": 8.387593226005139,
+      "name": "Ebertstraße (vor Nr. 44)",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-64",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.005352599152154,
+      "longitude": 8.377404397508704,
+      "name": "Weinbrennerplatz",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-297",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.025013923130594,
+      "longitude": 8.390129149390948,
+      "name": "Tennesseeallee (vor Nr. 92)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-280",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.992607511186534,
+      "longitude": 8.393203865216165,
+      "name": "Breite Straße/Marie-Alexandra-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Beiertheim-Bulach",
+      "source_id": "city-snapshot-48",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00813875385355,
+      "longitude": 8.375618169431485,
+      "name": "Gutenbergplatz/Sophienstraße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-118",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02336714616876,
+      "longitude": 8.384699595269817,
+      "name": "Erzbergerstraße/Flughafenkasino (vor Nr. 111)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-82",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.026039731563706,
+      "longitude": 8.389991385555577,
+      "name": "Tennesseeallee (vor Nr. 101)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-278",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.004017728086275,
+      "longitude": 8.432489064679796,
+      "name": "Alter Schlachthof (Nähe Messplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-15",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.997833462396954,
+      "longitude": 8.380795161312204,
+      "name": "Ernst-Frey-Straße/Steinhäuserstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-81",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01434669279043,
+      "longitude": 8.432945133959658,
+      "name": "Haid-und-Neu-Straße/Helmertstraße",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-121",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.013281824518295,
+      "longitude": 8.375206297263587,
+      "name": "Blücherstraße/Nördliche Hildapromenade",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-43",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99401624227711,
+      "longitude": 8.38547161550981,
+      "name": "Wartburgstraße/Hohenzollernstraße",
+      "municipality": "Karlsruhe",
+      "district": "Beiertheim-Bulach",
+      "source_id": "city-snapshot-296",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02799731397651,
+      "longitude": 8.391639144620068,
+      "name": "Tennesseeallee (vor Nr. 153)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-279",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.008606410555416,
+      "longitude": 8.373193893160733,
+      "name": "Yorckstraße/Sophienstraße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-311",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99167630254227,
+      "longitude": 8.38874054081125,
+      "name": "Breite Straße/Gebhartstraße",
+      "municipality": "Karlsruhe",
+      "district": "Beiertheim-Bulach",
+      "source_id": "city-snapshot-47",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.004185278847366,
+      "longitude": 8.373787424441975,
+      "name": "Eisenlohrstraße/Bunsenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-70",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99624491756267,
+      "longitude": 8.37932175446463,
+      "name": "Europahalle (bei SVK Beiertheim)",
+      "municipality": "Karlsruhe",
+      "district": "Südweststadt",
+      "source_id": "city-snapshot-86",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01159015333903,
+      "longitude": 8.43670044488517,
+      "name": "Rintheimer Straße/Dunantstraße",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-240",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.008899097615654,
+      "longitude": 8.371590359056112,
+      "name": "Sophienstraße/Grillparzerstraße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-259",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.009274624008974,
+      "longitude": 8.437234796053893,
+      "name": "Theodor-Rehbock-Straße (gegenüber Nr. 9)",
+      "municipality": "Karlsruhe",
+      "district": "Oststadt",
+      "source_id": "city-snapshot-282",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00712849422571,
+      "longitude": 8.371017110835602,
+      "name": "Yorckstraße (vor Nr. 49)",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-310",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.988317949109316,
+      "longitude": 8.39400347810847,
+      "name": "Donaustraße (am Wendehammer)",
+      "municipality": "Karlsruhe",
+      "district": "Weiherfeld-Dammerstock",
+      "source_id": "city-snapshot-55",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00927190467504,
+      "longitude": 8.369797687363283,
+      "name": "Geranienstraße/Sophienstraße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-104",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.014088918467344,
+      "longitude": 8.43830334747423,
+      "name": "Forststraße (bei Nr. 7)",
+      "municipality": "Karlsruhe",
+      "district": "Rintheim",
+      "source_id": "city-snapshot-92",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00264137285114,
+      "longitude": 8.371168524571736,
+      "name": "Gustav-Heller-Platz",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-117",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02976738603325,
+      "longitude": 8.388440979613462,
+      "name": "Kanalweg (vor Nr. 111)",
+      "municipality": "Karlsruhe",
+      "district": "Nordstadt",
+      "source_id": "city-snapshot-157",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.005008369770465,
+      "longitude": 8.36830927954881,
+      "name": "Kriegsstaße/Wilhelm-Baur-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Weststadt",
+      "source_id": "city-snapshot-174",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.023377806001996,
+      "longitude": 8.374480156680086,
+      "name": "Heinrich-Köhler-Platz",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-128",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01177367445672,
+      "longitude": 8.44106843737718,
+      "name": "Rintheimer Hauptstraße/Ernststraße",
+      "municipality": "Karlsruhe",
+      "district": "Rintheim",
+      "source_id": "city-snapshot-238",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99135461057465,
+      "longitude": 8.37925379511678,
+      "name": "Bannwaldallee/Landgrabenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Beiertheim-Bulach",
+      "source_id": "city-snapshot-34",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98476267658183,
+      "longitude": 8.401765425219802,
+      "name": "Nürnberger Straße/Offenburger Straße",
+      "municipality": "Karlsruhe",
+      "district": "Weiherfeld-Dammerstock",
+      "source_id": "city-snapshot-213",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01631115165765,
+      "longitude": 8.440626064710496,
+      "name": "Heilbronner Straße/Staudenplatz",
+      "municipality": "Karlsruhe",
+      "district": "Rintheim",
+      "source_id": "city-snapshot-127",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00965509182927,
+      "longitude": 8.36662037494943,
+      "name": "Sophienstraße (vor Nr. 193)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-258",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03175683655515,
+      "longitude": 8.38677160798167,
+      "name": "Flughafenstraße/Erzbergerstraße",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-90",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98445636802418,
+      "longitude": 8.397958266231015,
+      "name": "Nürnberger Straße/Rechts der Alb",
+      "municipality": "Karlsruhe",
+      "district": "Weiherfeld-Dammerstock",
+      "source_id": "city-snapshot-214",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01421790359956,
+      "longitude": 8.36633615338348,
+      "name": "Seldeneckstraße/Tristanstraße",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-257",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98438836666891,
+      "longitude": 8.396437790357561,
+      "name": "Links der Alb/Nürnberger Straße",
+      "municipality": "Karlsruhe",
+      "district": "Weiherfeld-Dammerstock",
+      "source_id": "city-snapshot-195",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01027914993611,
+      "longitude": 8.443346808381133,
+      "name": "Heinrich-Wittmann-Straße (gegenüber Nr. 17)",
+      "municipality": "Karlsruhe",
+      "district": "Rintheim",
+      "source_id": "city-snapshot-129",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01624314959399,
+      "longitude": 8.366796208488264,
+      "name": "Nibelungenstraße/Isoldestraße",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-211",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.998894415909,
+      "longitude": 8.4401756602068,
+      "name": "Maybachstraße 10 b (Wertstoffstation)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-205",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.010244921184395,
+      "longitude": 8.365104160683707,
+      "name": "Sophienstraße/Peter-und-Paul-Platz",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-260",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.018122267241054,
+      "longitude": 8.36699025986093,
+      "name": "Moltkestraße (bei Erich-Kästner-Schule)",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-206",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01418752843612,
+      "longitude": 8.365059127240148,
+      "name": "Seldeneckstraße/Tannhäuserstraße",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-256",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02943062315781,
+      "longitude": 8.43055887169681,
+      "name": "Theodor-Heuss-Allee/Breslauer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-281",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03439306423785,
+      "longitude": 8.391274529225978,
+      "name": "Lavendelweg/Arnikaweg",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-188",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01707042621509,
+      "longitude": 8.443158564616768,
+      "name": "Hirtenweg Nr. 16",
+      "municipality": "Karlsruhe",
+      "district": "Rintheim",
+      "source_id": "city-snapshot-138",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99609824589789,
+      "longitude": 8.368591995538393,
+      "name": "Akazienstraße/Ahornweg",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-6",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.988662768972766,
+      "longitude": 8.377122020184027,
+      "name": "Grünwinkler Straße/Landgrabenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Beiertheim-Bulach",
+      "source_id": "city-snapshot-116",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.023661713349014,
+      "longitude": 8.367891410228122,
+      "name": "Kesselbergweg/St.-Barbara-Weg",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-165",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02637917747481,
+      "longitude": 8.370427531243294,
+      "name": "Wilhelm-Hausenstein-Allee/August-Bebel-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-305",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98142982112207,
+      "longitude": 8.407830039737823,
+      "name": "Am Rüppurrer Schloß/Erlenweg",
+      "municipality": "Karlsruhe",
+      "district": "Weiherfeld-Dammerstock",
+      "source_id": "city-snapshot-18",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01776867814144,
+      "longitude": 8.363427872024198,
+      "name": "Hertzstraße (bei Kondima)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-134",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.021740987671194,
+      "longitude": 8.365519377279368,
+      "name": "Hertzstraße (gegenüber Universität)",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-135",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03019985059742,
+      "longitude": 8.374980865043081,
+      "name": "Josef-Schofer-Straße (beim Penny-Markt)",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-155",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01388359313548,
+      "longitude": 8.361656265824802,
+      "name": "Seldeneckstraße/Hardtstraße (Fliederplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-255",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.010111777002884,
+      "longitude": 8.36073149695219,
+      "name": "Weinbrennerstraße (Nr. 108)/Am Entenfang ",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-298",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03667164808345,
+      "longitude": 8.390449769793959,
+      "name": "Sanddornweg/Jasminweg",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-247",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.018892195585906,
+      "longitude": 8.44610525075106,
+      "name": "Mannheimer Straße/Drosselsangweg",
+      "municipality": "Karlsruhe",
+      "district": "Rintheim",
+      "source_id": "city-snapshot-203",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.028191266717755,
+      "longitude": 8.370614748233344,
+      "name": "Stresemannstraße/Wilhelm-Hausenstein-Allee",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-269",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.005961966879354,
+      "longitude": 8.36024266431729,
+      "name": "Liststraße/Kohlenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-197",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02029373549213,
+      "longitude": 8.362971991390493,
+      "name": "Bodelschwinghstraße/Siemensallee",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-44",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02094622040703,
+      "longitude": 8.363232910658036,
+      "name": "Berliner Straße/Karlsruher Weg",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-36",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97947536870304,
+      "longitude": 8.403710273318335,
+      "name": "Rastatter Straße (Festplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-228",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02748732497619,
+      "longitude": 8.440775478796757,
+      "name": "Am Sportpark/Hagsfelder Allee",
+      "municipality": "Karlsruhe",
+      "district": "Hagsfeld",
+      "source_id": "city-snapshot-20",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01737326864142,
+      "longitude": 8.360208141162607,
+      "name": "Keplerstraße/Bodelschwinghstraße",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-164",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.992857940405656,
+      "longitude": 8.442673963945161,
+      "name": "Wachhausstraße/Geißenrainweg",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-292",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97920147065295,
+      "longitude": 8.407527790780685,
+      "name": "Wickenweg/Resedenweg",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-302",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03344072786568,
+      "longitude": 8.433797860641379,
+      "name": "Königsberger Straße (beim Einkaufszentrum)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-180",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03589741238967,
+      "longitude": 8.380327359136386,
+      "name": "Alter Postweg/Flughafenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-14",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.027349534154965,
+      "longitude": 8.365748197046827,
+      "name": "Madenburgweg/Hertzstraße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-202",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01518825231866,
+      "longitude": 8.357617039658782,
+      "name": "Steubenstraße/Sonnenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-267",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03133900452343,
+      "longitude": 8.438618701054656,
+      "name": "Königsberger Straße/Tilsiter Straße",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-181",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98402661756558,
+      "longitude": 8.375754469911218,
+      "name": "Litzenhardstraße (Parkplatz Gartenbauamt Bulach)",
+      "municipality": "Karlsruhe",
+      "district": "Beiertheim-Bulach",
+      "source_id": "city-snapshot-198",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98934365433788,
+      "longitude": 8.366464292668816,
+      "name": "Goerdelerstraße (vor Tiefgarage)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-107",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02794787249615,
+      "longitude": 8.444137544121785,
+      "name": "Breslauer Straße/Oppelner Straße",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-49",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02740363540613,
+      "longitude": 8.3640160197019,
+      "name": "Durlacher Weg/Berliner Straße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-59",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01272692046814,
+      "longitude": 8.355776021535696,
+      "name": "Lameystraße/Rheinstraße",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-184",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99733521180886,
+      "longitude": 8.359041236795058,
+      "name": "Herrmann-Leichtlin-Straße (gegenüber Nr. 24)",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-133",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.0113257508177,
+      "longitude": 8.3553650153438,
+      "name": "Sternstraße (auf dem Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-266",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99536730648802,
+      "longitude": 8.359958344834922,
+      "name": "Hornisgrindestraße/Edelbergstraße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-143",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.977675440856935,
+      "longitude": 8.41415164698724,
+      "name": "Kuhlager-Seele-Weg (beim Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-177",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.011944909943885,
+      "longitude": 8.355211256106477,
+      "name": "Lameystraße (auf dem Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-183",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00556388725583,
+      "longitude": 8.35516766086577,
+      "name": "Durmersheimer Straße (bei Friedhof)",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-60",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.032677353567536,
+      "longitude": 8.439396217187591,
+      "name": "Königsberger Straße (bei Wendeschleife)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-179",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98442126375392,
+      "longitude": 8.371626255734862,
+      "name": "Großoberfeld (Wertstoffstation)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-114",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03537388361418,
+      "longitude": 8.373054190761026,
+      "name": "Kaiserslauterner Straße/Trierer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-156",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.04235343543406,
+      "longitude": 8.398532790059173,
+      "name": "An der Trift/Grüner Weg",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-27",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03659927111306,
+      "longitude": 8.433730118685826,
+      "name": "Insterburger Straße (beim Hochhaus)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-153",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.031580109305445,
+      "longitude": 8.442401509411022,
+      "name": "Im Eichbäumle (gegenüber Nr. 2)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-145",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02429367896501,
+      "longitude": 8.449969580321156,
+      "name": "Karlsruher Straße/Gondelsheimer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Hagsfeld",
+      "source_id": "city-snapshot-160",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97601488782937,
+      "longitude": 8.407395954927894,
+      "name": "Im Grün/Ostendorfplatz",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-146",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.989673664333786,
+      "longitude": 8.363193490786774,
+      "name": "Albert-Braun-Straße (bei Nr. 5 a - d)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-7",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.992463127026994,
+      "longitude": 8.448407135157574,
+      "name": "Wachhausstraße (bei Bushaltestelle)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-291",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03579716228681,
+      "longitude": 8.435866885556615,
+      "name": "Schneidemühler Straße (beim Einkaufszentrum)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-252",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.988767076523175,
+      "longitude": 8.364022217179075,
+      "name": "Bonhoefferstraße (vor der Schule)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-45",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.024168244887456,
+      "longitude": 8.357918795440845,
+      "name": "Karlsruher Weg/Binger Straße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-161",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99960509466922,
+      "longitude": 8.453883717880485,
+      "name": "Dornwaldstraße/Lortzingstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-56",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01602779094736,
+      "longitude": 8.353602867506043,
+      "name": "Rheinstraße/An der Rainmühle",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-234",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00034114515506,
+      "longitude": 8.354478551533186,
+      "name": "Hopfenstraße/Altfeldstraße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-141",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99500838372476,
+      "longitude": 8.451335162385158,
+      "name": "Wilferdinger Straße/Ispringer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-304",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03088073771569,
+      "longitude": 8.36384070808435,
+      "name": "Landauer Straße/Berliner Straße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-185",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03689133423761,
+      "longitude": 8.435661625904098,
+      "name": "Insterburger Straße (Parktasche gegenüber Häuserreihe 8)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-150",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.987086110186624,
+      "longitude": 8.364428311383044,
+      "name": "Bernhard-Lichtenberg-Straße (bei Nr. 14)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-38",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.028800414407705,
+      "longitude": 8.448027835003598,
+      "name": "Schweidnitzer Straße (bei Nr. 10 a)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-253",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99583072925353,
+      "longitude": 8.453035961577202,
+      "name": "Lissenstraße 45",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-196",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00403050293669,
+      "longitude": 8.35202422841282,
+      "name": "Zeppelinstraße/Konradin-Kreutzer-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-312",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.020550292995104,
+      "longitude": 8.354085687716735,
+      "name": "Borsigstraße 9 (bei ALDI)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-46",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99717820678732,
+      "longitude": 8.35443521231232,
+      "name": "Edelbergstraße/Bernsteinstraße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-66",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02816424627292,
+      "longitude": 8.35936198835211,
+      "name": "Binger Straße/Durlacher Weg",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-39",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03296352894005,
+      "longitude": 8.364736119115152,
+      "name": "Germersheimer Straße/Hertzstraße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-105",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98326889012769,
+      "longitude": 8.368534470122565,
+      "name": "Bernhard-Lichtenberg-Straße (bei Nr. 102)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-37",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99490133257872,
+      "longitude": 8.45324000311419,
+      "name": "Ellmendinger Straße/Auf den Lohn",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-73",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00384662091125,
+      "longitude": 8.457525076613887,
+      "name": "Alte Karlsruher Straße (Autobahnpolizei)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-11",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99652298794075,
+      "longitude": 8.454484720449983,
+      "name": "Killisfeldstraße/Lissenstraße (Supermarkt Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-166",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.034880767831275,
+      "longitude": 8.441828970859685,
+      "name": "Schneidemühler Straße (bei Wendeschleife)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-251",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.043954627650585,
+      "longitude": 8.39123967459293,
+      "name": "Am Sandfeld/vor Parkplatz Nr. 1 (Getränkemarkt)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-19",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.984286669250906,
+      "longitude": 8.365747137933148,
+      "name": "Hermann-Müller-Würtz-Straße (gegenüber Nr. 2)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-132",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03366591788654,
+      "longitude": 8.444651706552776,
+      "name": "Kösliner Straße/Glogauer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-182",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98604113505933,
+      "longitude": 8.362589184213682,
+      "name": "Otto-Wels-Straße 29",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-216",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98734287301559,
+      "longitude": 8.360822894244142,
+      "name": "Rudolf-Breitscheid-Straße (am Marktplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-242",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.999439026637624,
+      "longitude": 8.457330953375951,
+      "name": "Schinnrainstraße (bei Nr. 11)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-248",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99278979431571,
+      "longitude": 8.453324583091439,
+      "name": "Ellmendinger Straße/Ersinger Straße (Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-74",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03461775288389,
+      "longitude": 8.444287238482476,
+      "name": "Neisser Straße (beim Einkaufszentrum)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-208",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97304046139269,
+      "longitude": 8.403547358451664,
+      "name": "Lange Straße/Rastatter Straße",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-186",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.0378864246249,
+      "longitude": 8.43888790907732,
+      "name": "Insterburger Straße (bei Nr. 16 e)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-151",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02830162547412,
+      "longitude": 8.356711580971544,
+      "name": "Daimlerstraße (gegenüber Nr. 20/an der Straßenecke)",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-52",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03498256396541,
+      "longitude": 8.364388014756047,
+      "name": "Hertzstraße/Frankenthaler Straße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-136",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.999033087039734,
+      "longitude": 8.35053264864713,
+      "name": "Eichelbergstraße/Pulverhausstraße (bei der Kirche)",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-68",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.039089478596274,
+      "longitude": 8.370793578551892,
+      "name": "Hertzstraße/Schweigener Straße",
+      "municipality": "Karlsruhe",
+      "district": "Nordweststadt",
+      "source_id": "city-snapshot-137",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.995076199070056,
+      "longitude": 8.352351713741246,
+      "name": "Heidenstückerweg/Bernsteinstraße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-126",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98451841325518,
+      "longitude": 8.362581888096924,
+      "name": "Otto-Wels-Straße/Wilhelm-Leuschner-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-217",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03918128688884,
+      "longitude": 8.438227284424164,
+      "name": "Kolberger Straße/Braunsberger Straße",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-171",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.972373313815304,
+      "longitude": 8.409215227532874,
+      "name": "Diakonissenstraße (vor dem Krankenhaus)",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-54",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02716072210046,
+      "longitude": 8.454224767769684,
+      "name": "Bruchsaler Straße (unter der Brücke)",
+      "municipality": "Karlsruhe",
+      "district": "Hagsfeld",
+      "source_id": "city-snapshot-50",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.04645987278054,
+      "longitude": 8.399296671562729,
+      "name": "Kirchfeldsiedlung Waldsportplatz (Wertstoffstation)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-167",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.04402384899449,
+      "longitude": 8.383574756312086,
+      "name": "Neureuter Platz (Parkplatz bei Badnerlandhalle)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-210",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.988360366740594,
+      "longitude": 8.45185417482034,
+      "name": "Schlesier Straße/Karpatenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-249",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03577850987732,
+      "longitude": 8.445491183982373,
+      "name": "Lötzener Straße (beim Einkaufszentrum)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-200",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.995238600818624,
+      "longitude": 8.458019170681453,
+      "name": "Eckhartstraße/Dietrichstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-65",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97146280120396,
+      "longitude": 8.404698465944954,
+      "name": "Tulpenstraße/Arndtstraße",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-286",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97202182990455,
+      "longitude": 8.41465177953006,
+      "name": "Steinmannstraße (bei Grünabfallcontainer)",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-264",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.991655228062804,
+      "longitude": 8.455646279841568,
+      "name": "Ellmendinger Straße/Grazer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-75",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98533180143221,
+      "longitude": 8.359162636020905,
+      "name": "Eugen-Geck-Straße (vor Nr. 5 a)",
+      "municipality": "Karlsruhe",
+      "district": "Oberreut",
+      "source_id": "city-snapshot-85",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03718946021906,
+      "longitude": 8.444409381513319,
+      "name": "Insterburger Straße (bei Wendeschleife)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-152",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.001144440819054,
+      "longitude": 8.461440169980726,
+      "name": "Durlach Bahnhof (Parkplatz unter der Brücke)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-57",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.999761190334574,
+      "longitude": 8.461131606765425,
+      "name": "Blotterstraße/Christofstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-41",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03623491298823,
+      "longitude": 8.447225880203362,
+      "name": "Lauenburger Straße (bei Nr. 3)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-187",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99368776053588,
+      "longitude": 8.459084524099355,
+      "name": "Ellmendinger Straße/Reichenbachstraße (Edeka-Markt)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-76",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.015125505285866,
+      "longitude": 8.34466166059875,
+      "name": "Werftstraße (bei Toilettenhaus, schräg gegenüber Anlegestelle MS Karlsruhe)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-300",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.0397193815287,
+      "longitude": 8.443612906436309,
+      "name": "Kolberger Straße (bei Telefonhäuschen/vor Nr. 20)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-170",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99188802296508,
+      "longitude": 8.45915991790455,
+      "name": "Ellmendinger Straße/Stegwiesenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-77",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.04678485401509,
+      "longitude": 8.382529383222657,
+      "name": "Dürerstraße/Holbeinstraße",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-61",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.96919781864239,
+      "longitude": 8.409645137871658,
+      "name": "Graf-Eberstein-Straße/Tulpenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-110",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.04405831065729,
+      "longitude": 8.372793219391184,
+      "name": "Oberfeldstraße (gegenüber Hotel)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-215",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03323131609799,
+      "longitude": 8.454280369892494,
+      "name": "Leipziger Allee/Meißener Straße",
+      "municipality": "Karlsruhe",
+      "district": "Hagsfeld",
+      "source_id": "city-snapshot-189",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.0271223923708,
+      "longitude": 8.46001099258451,
+      "name": "Schäferstraße (Wertstoffstation)",
+      "municipality": "Karlsruhe",
+      "district": "Hagsfeld",
+      "source_id": "city-snapshot-254",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.049345144359634,
+      "longitude": 8.391555774673412,
+      "name": "Liedolsheimer Ring/Leopoldshafener Straße",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-193",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02493160955125,
+      "longitude": 8.462024163848582,
+      "name": "An der Tagweide (zwischen Nr. 14 - 18)",
+      "municipality": "Karlsruhe",
+      "district": "Hagsfeld",
+      "source_id": "city-snapshot-26",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.046179753151854,
+      "longitude": 8.377210583291236,
+      "name": "Unterfeldstraße (gegenüber Gymnasium)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-289",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99425509005744,
+      "longitude": 8.462315912398381,
+      "name": "Auer Straße/Hildebrandstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-28",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.039180570216914,
+      "longitude": 8.447422656166358,
+      "name": "Kolberger Straße/Glogauer Straße/Jägerhaussee)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-172",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.96836975493699,
+      "longitude": 8.402155409037459,
+      "name": "Lützowstraße/Riedschule",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-201",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.998633046614486,
+      "longitude": 8.464866503476198,
+      "name": "Gritznerstraße (bei Nr. 11)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-113",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00218578483857,
+      "longitude": 8.342447726648427,
+      "name": "August-Dosenbach-Straße/Rheinhafenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-30",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.042067070296255,
+      "longitude": 8.443007861448104,
+      "name": "Elbinger Straße (bei Einkaufszentrum/Nr. 16)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-71",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02533123019345,
+      "longitude": 8.345233633211448,
+      "name": "Saarlandstraße (gegenüber Nr. 181)",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-245",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.031140286841556,
+      "longitude": 8.349390508137,
+      "name": "Ferdinand-Keller-Straße/Julius-Bergmann-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-87",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00205790062414,
+      "longitude": 8.467696250520033,
+      "name": "Pfinzstraße/Pforzheimer Straße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-225",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.042198764052124,
+      "longitude": 8.444833246190235,
+      "name": "Elbinger Straße/Osteroder Straße",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-72",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01799545729619,
+      "longitude": 8.341401998724479,
+      "name": "Nordbeckenstraße 1 (Wertstoffstation) ",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-212",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99390809326736,
+      "longitude": 8.344189378524607,
+      "name": "Hohlohstraße/Brandenkopfstraße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwinkel",
+      "source_id": "city-snapshot-140",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99835640956962,
+      "longitude": 8.341654804408371,
+      "name": "Thomas-Mann-Straße (beim Trafo)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-283",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.994517872749,
+      "longitude": 8.465352984321594,
+      "name": "Rommelstraße 5 (Parkplatz Treff-Markt)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-241",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99778455557155,
+      "longitude": 8.467234275715521,
+      "name": "Kanzlerstraße (Festhalle Durlach auf dem Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-158",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00332784298775,
+      "longitude": 8.46910261879285,
+      "name": "Pforzheimer Straße/Töpferweg",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-226",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.96655344285453,
+      "longitude": 8.41051807215572,
+      "name": "Adalbert-Stifter-Straße/Battstraße",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-3",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.05158273183508,
+      "longitude": 8.391155615638565,
+      "name": "Hochstettener Ring/Leopoldshafener Straße",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-139",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.995740069274696,
+      "longitude": 8.342138469035403,
+      "name": "Lindenallee (bei Nr. 2)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-194",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99187957623432,
+      "longitude": 8.464606439404724,
+      "name": "Brühlstraße/Grenzstraße (Parkplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-51",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.007951794005194,
+      "longitude": 8.338545683107721,
+      "name": "Daxlander Straße (bei Friedhof)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-53",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.05242198500582,
+      "longitude": 8.397714311647624,
+      "name": "Forlenweg 42",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-91",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03695986225386,
+      "longitude": 8.353386139062248,
+      "name": "Grünhutstraße (bei Nr. 1)",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-115",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.05102706791767,
+      "longitude": 8.385915067053206,
+      "name": "Unterfeldstraße (bei Haltestelle Hallenbad)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-288",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.96599309195414,
+      "longitude": 8.404372865282035,
+      "name": "Allmendstraße (bei Fußgängerbrücke)",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-10",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00247067288086,
+      "longitude": 8.33827391398817,
+      "name": "Agathenstraße (vor Nr. 24)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-4",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.96540760285559,
+      "longitude": 8.40051383397552,
+      "name": "Frauenalber Straße/Moosalbstraße",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-93",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97747156264442,
+      "longitude": 8.451064312242135,
+      "name": "Wettersteinstraße/Talwiesenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Wolfartsweier",
+      "source_id": "city-snapshot-301",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.033146804584106,
+      "longitude": 8.34739945609019,
+      "name": "Sudetenstraße/Pionierstraße",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-272",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.998031914664054,
+      "longitude": 8.338811849434846,
+      "name": "Parkplatz (vor Rheinstrandhalle)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-221",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.96473038434305,
+      "longitude": 8.411098816817274,
+      "name": "Reinhold-Schneider-Straße (Parkplatz Nähe Einkaufszentrum)",
+      "municipality": "Karlsruhe",
+      "district": "Rüppurr",
+      "source_id": "city-snapshot-231",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.029433228302615,
+      "longitude": 8.342886512342165,
+      "name": "Sudetenstraße/Östliche Rheinbrückenstraße",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-273",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.0036205475217,
+      "longitude": 8.47262397158747,
+      "name": "Waldshuter Straße/Hubstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-295",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.05006788605111,
+      "longitude": 8.374546394855864,
+      "name": "Sanddornweg",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-246",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.054493281754326,
+      "longitude": 8.39278323088101,
+      "name": "Hermann-Höpker-Aschoff-Straße (bei Nr. 1/REWE)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-131",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.009186084423916,
+      "longitude": 8.33413382947363,
+      "name": "Hansastraße/Fettweisstraße (Steuermann)",
+      "municipality": "Karlsruhe",
+      "district": "Mühlburg",
+      "source_id": "city-snapshot-123",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.04615583250745,
+      "longitude": 8.447959345649693,
+      "name": "Albert-Schweitzer-Straße (bei Europaschule)",
+      "municipality": "Karlsruhe",
+      "district": "Waldstadt",
+      "source_id": "city-snapshot-9",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99684387149385,
+      "longitude": 8.336072240244865,
+      "name": "Pappelallee/Falterweg (bei EDEKA)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-220",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.04235689961809,
+      "longitude": 8.454746755425056,
+      "name": "Reitschulschlag/Lachenweg ",
+      "municipality": "Karlsruhe",
+      "district": "Hagsfeld",
+      "source_id": "city-snapshot-232",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.030510988527716,
+      "longitude": 8.34059798947718,
+      "name": "Elsässer Platz/Saarlandstraße",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-79",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97466543040339,
+      "longitude": 8.45236478890593,
+      "name": "Rathausstraße (bei Feuerwehr)",
+      "municipality": "Karlsruhe",
+      "district": "Wolfartsweier",
+      "source_id": "city-snapshot-229",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00080259804686,
+      "longitude": 8.474658253260735,
+      "name": "Blumentorstraße Nr. 25 (gegenüber HL-Markt)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-42",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.05624112371092,
+      "longitude": 8.399812803100788,
+      "name": "Abraham-Lincoln-Allee (gegenüber Fortuna Kirchfeld)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-2",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.002604554104465,
+      "longitude": 8.475209411010056,
+      "name": "Friedrich-Eberle-Straße/Kleinbachstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-97",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97817043002941,
+      "longitude": 8.458014556934094,
+      "name": "Steinkreuzstraße (bei ausgedienter Bushaltestelle)",
+      "municipality": "Karlsruhe",
+      "district": "Wolfartsweier",
+      "source_id": "city-snapshot-263",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99392455929986,
+      "longitude": 8.336580833121051,
+      "name": "Panoramaweg/Am Anger (beim REWE-Markt)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-219",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00060366884488,
+      "longitude": 8.333475811731422,
+      "name": "Agathenstraße/Valentinstraße",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-5",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03854627851833,
+      "longitude": 8.347011789027583,
+      "name": "Egon-Eiermann-Allee (gegenüber Nr. 19)",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-67",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98174998062939,
+      "longitude": 8.46346649707216,
+      "name": "Albert-Einstein-Straße/Tiefentalstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-8",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00520232076713,
+      "longitude": 8.332072411492248,
+      "name": "Kastenwörtstraße/Turnerstraße",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-162",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.997525377651115,
+      "longitude": 8.475126947463636,
+      "name": "Karlsburgstraße/Karl-Weysser-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-159",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.98795811018526,
+      "longitude": 8.469902631435428,
+      "name": "Badener Straße/Max-Liebermann-Straße (bei Bushaltestelle)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-32",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.052662931670554,
+      "longitude": 8.371539546750327,
+      "name": "Am Junkertschritt/Bachenweg (Wertstoffstation)",
+      "municipality": "Karlsruhe",
+      "district": "Neureut",
+      "source_id": "city-snapshot-16",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99551465811607,
+      "longitude": 8.333014254643459,
+      "name": "Kleiner Anger/Rheinstrandallee",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-168",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97278510553375,
+      "longitude": 8.454164802529538,
+      "name": "Schloßbergstraße (beim Freibad)",
+      "municipality": "Karlsruhe",
+      "district": "Wolfartsweier",
+      "source_id": "city-snapshot-250",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00304046234522,
+      "longitude": 8.478742940468365,
+      "name": "Alte Weingartener Straße (gegenüber von Restaurant Obermühle)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-12",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.02903119976939,
+      "longitude": 8.47393077508579,
+      "name": "An der Roßweid/Greschbachstraße 9",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-25",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.033927239345324,
+      "longitude": 8.338313088619392,
+      "name": "Östliche Rheinbrückenstraße/Eggensteiner Straße",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-314",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.031419011086356,
+      "longitude": 8.334340502176119,
+      "name": "Untere Straße/Eggensteiner Straße",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-287",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00599913612066,
+      "longitude": 8.326791756722741,
+      "name": "Hahnenstraße/Inselstraße (Schlaucherplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-120",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00177242384038,
+      "longitude": 8.481530009451433,
+      "name": "Liebensteinstraße/Grötzinger Straße (Parkplatz ASV-Sportplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-192",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99296943671643,
+      "longitude": 8.47864866946583,
+      "name": "Geigersbergstraße/Bergwaldstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-102",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.988393892542064,
+      "longitude": 8.476006107970948,
+      "name": "Ernst-Barlach-Straße/Carl-Hofer-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-80",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99634015560277,
+      "longitude": 8.480841840655009,
+      "name": "Dürrbachstraße/Posseltstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-62",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.03693169642849,
+      "longitude": 8.336938908779839,
+      "name": "Rheinbergstraße/Jakob-Dörr-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Knielingen",
+      "source_id": "city-snapshot-233",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97410424667705,
+      "longitude": 8.464075201796874,
+      "name": "Straße des Roten Kreuzes/Hooverstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-268",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01166091631505,
+      "longitude": 8.484888296462435,
+      "name": "Alte Weingartener Straße 63 (Wertstoffstation bei Tierkörperbeseitigungsanstalt)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-13",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217558385001",
+      "name": "Belchenstraße, Edeka",
+      "longitude": 8.46231,
+      "latitude": 49.04616,
+      "municipality": "Stutensee",
+      "district": "Büchig",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.00515478066201,
+      "longitude": 8.322817784178914,
+      "name": "Waidweg 1b",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-293",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209835534001",
+      "name": "Erlenwiesen/Eiswiesen/Minodrom/P&R",
+      "longitude": 8.38657,
+      "latitude": 48.95684,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.98991707949437,
+      "longitude": 8.480925816066074,
+      "name": "Käthe-Kollwitz-Straße (bei Nr. 27 - 33)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-178",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.97297454780525,
+      "longitude": 8.46686133922695,
+      "name": "Fridjof-Nansen-Straße (bei Nr. 17 - 27)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-95",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.99738988909377,
+      "longitude": 8.486010914784774,
+      "name": "Reichardtstraße (auf Parkplatz bei der Bergbahnstation)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-230",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209841756001",
+      "name": "Schumacherstraße, ggü. Haus 19/21",
+      "longitude": 8.40455,
+      "latitude": 48.95356,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217558645001",
+      "name": "Waldstraße, bei der Schule",
+      "longitude": 8.46687,
+      "latitude": 49.04788,
+      "municipality": "Stutensee",
+      "district": "Büchig",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.970619899460324,
+      "longitude": 8.467201400969376,
+      "name": "Elsa-Brändström-Straße (Parkplatz Nr. 13 a)",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-78",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.010773039254964,
+      "longitude": 8.318043480989003,
+      "name": "Fettweisstraße (Wertstoffstation)",
+      "municipality": "Karlsruhe",
+      "district": "Daxlanden",
+      "source_id": "city-snapshot-88",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.01260619793084,
+      "longitude": 8.491342539065228,
+      "name": "Durlacher Straße (vor Nr. 52)",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-58",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "218857670001",
+      "name": "Akazienweg",
+      "longitude": 8.4667,
+      "latitude": 49.0497,
+      "municipality": "Stutensee",
+      "district": "Büchig",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841754001",
+      "name": "Schumacherstraße, ggü. Haus 1-17",
+      "longitude": 8.40632,
+      "latitude": 48.95197,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835542001",
+      "name": "Hohewiesenstraße/Ahornweg",
+      "longitude": 8.38238,
+      "latitude": 48.95374,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835528001",
+      "name": "Beim Runden Plom",
+      "longitude": 8.37467,
+      "latitude": 48.95511,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914558001",
+      "name": "Großklamm - ggü. Wohlfeil",
+      "longitude": 8.32603,
+      "latitude": 48.98255,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.99124078644267,
+      "longitude": 8.488678073948748,
+      "name": "In der Tasch/Rittnertstraße",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-149",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209835520001",
+      "name": "Adenauerstraße/Breitscheidstraße, Trafostation",
+      "longitude": 8.40144,
+      "latitude": 48.95122,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.007570484672165,
+      "longitude": 8.49373915980157,
+      "name": "Grezzostraße (gegenüber Nr. 10)",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-112",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209835524001",
+      "name": "Am Erlengraben",
+      "longitude": 8.39196,
+      "latitude": 48.95131,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914556001",
+      "name": "Nell-Breuning-Ring - REWE",
+      "longitude": 8.32501,
+      "latitude": 48.98034,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.97186354511029,
+      "longitude": 8.475989775700784,
+      "name": "Tiefentalstraße (Ortseingang linke Seite von Durlach kommend)",
+      "municipality": "Karlsruhe",
+      "district": "Hohenwettersbach",
+      "source_id": "city-snapshot-284",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217558651001",
+      "name": "Waldstraße/Gassentorstraße, am alten Rathaus",
+      "longitude": 8.47325,
+      "latitude": 49.04928,
+      "municipality": "Stutensee",
+      "district": "Büchig",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835532001",
+      "name": "Epernayer Straße",
+      "longitude": 8.40227,
+      "latitude": 48.94879,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835548001",
+      "name": "Odertalweg (Wendehammer DB-Gleis)",
+      "longitude": 8.38813,
+      "latitude": 48.94964,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914780001",
+      "name": "Bahnhofstraße",
+      "longitude": 8.34002,
+      "latitude": 48.96555,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835544001",
+      "name": "Hohewiesenstraße/Trafostation",
+      "longitude": 8.37708,
+      "latitude": 48.9512,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835530001",
+      "name": "Herrmann-Löns-Weg/Dietrich-Bonhoeffer-Straße",
+      "longitude": 8.39697,
+      "latitude": 48.94869,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.01255834083489,
+      "longitude": 8.497346945797918,
+      "name": "Ziegeleistraße/Am Knittelberg",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-313",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209835536001",
+      "name": "Gutleuthausstraße/Hans-Sachs-Straße",
+      "longitude": 8.41103,
+      "latitude": 48.94756,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.0160422141266,
+      "longitude": 8.498687781970775,
+      "name": "Weingartener Straße (bei Grünabfallcontainer)",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-299",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209835526001",
+      "name": "Vogelsangweg, beim Friedhof",
+      "longitude": 8.41503,
+      "latitude": 48.94731,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.96409701273094,
+      "longitude": 8.470756654386195,
+      "name": "Spitalhof (bei Sportplatz)",
+      "municipality": "Karlsruhe",
+      "district": "Hohenwettersbach",
+      "source_id": "city-snapshot-262",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217553492001",
+      "name": "Soufflenheimer Weg / Elsässer Straße",
+      "longitude": 8.46614,
+      "latitude": 49.05771,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914560001",
+      "name": "Herrenalber Straße/Ecke Buchenweg",
+      "longitude": 8.34081,
+      "latitude": 48.96198,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841742001",
+      "name": "Mörscher Straße/ Hohewiesenstraße",
+      "longitude": 8.37569,
+      "latitude": 48.94907,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914562001",
+      "name": "Herrenalber Straße/Ecke Akazienweg",
+      "longitude": 8.33829,
+      "latitude": 48.96337,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914782001",
+      "name": "Rosenstraße/Ecke Kastenwörthstraße",
+      "longitude": 8.31653,
+      "latitude": 48.98301,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.00569246724673,
+      "longitude": 8.500911607270671,
+      "name": "Eisenbahnstraße (gemeinsamer Parkplatz zwischen Edeka und Lidl)",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-69",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "208312707001",
+      "name": "Jahnstraße/Dr.-Herbert-Mrozik-Straße",
+      "longitude": 8.39637,
+      "latitude": 49.07267,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835546001",
+      "name": "Huttenkreuzstraße (REAL-Parkplatz)",
+      "longitude": 8.40955,
+      "latitude": 48.94595,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835538001",
+      "name": "Hertzstraße/Edeka-Parkplatz",
+      "longitude": 8.38204,
+      "latitude": 48.94727,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841762001",
+      "name": "Vogelsang/Saumweg",
+      "longitude": 8.42048,
+      "latitude": 48.94642,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.00109761111406,
+      "longitude": 8.500953706816476,
+      "name": "Am Kirchberg 19",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-17",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.95960763881448,
+      "longitude": 8.466437392803396,
+      "name": "Am Wetterbach (gegenüber Nr. 18)",
+      "municipality": "Karlsruhe",
+      "district": "Grünwettersbach",
+      "source_id": "city-snapshot-22",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217542213001",
+      "name": "Ringstraße / Hauptstraße (Einkaufsmarkt)",
+      "longitude": 8.46767,
+      "latitude": 49.05876,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209152881001",
+      "name": "Am Hardtwald",
+      "longitude": 8.40886,
+      "latitude": 49.07385,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841766001",
+      "name": "Zehntwiesenstraße/Dieselstraße",
+      "longitude": 8.39268,
+      "latitude": 48.94506,
+      "municipality": "Ettlingen",
+      "district": "Ettlingenweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208311126001",
+      "name": "Buchheimer Weg/Sportplatzweg (Nähe Hallenbad)",
+      "longitude": 8.40105,
+      "latitude": 49.07477,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.00104762900969,
+      "longitude": 8.50346564338759,
+      "name": "Fikentscherstraße (gegenüber Nr. 21)",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-89",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00722552815149,
+      "longitude": 8.504614321836328,
+      "name": "Im Speitel/Froschhöhle",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-148",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209841744001",
+      "name": "Ottostraße (beim Judo-Club)",
+      "longitude": 8.39281,
+      "latitude": 48.94394,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.005452752079705,
+      "longitude": 8.504690596888807,
+      "name": "Tullaweg/Oberaustraße",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-285",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217540832001",
+      "name": "Eggensteiner Straße (Wasserwerk)",
+      "longitude": 8.45523,
+      "latitude": 49.06649,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208453626001",
+      "name": "Ottostraße (Wertstoffhof)",
+      "longitude": 8.37727,
+      "latitude": 49.07324,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841750001",
+      "name": "Buhlstraße",
+      "longitude": 8.40609,
+      "latitude": 48.94283,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.95594385172102,
+      "longitude": 8.465922767740002,
+      "name": "Horfstraße/Wildbader Straße",
+      "municipality": "Karlsruhe",
+      "district": "Grünwettersbach",
+      "source_id": "city-snapshot-142",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "208312709001",
+      "name": "Moltkestraße",
+      "longitude": 8.39098,
+      "latitude": 49.07603,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312616001",
+      "name": "Hirtenberg/Alte Mühlstraße",
+      "longitude": 8.38624,
+      "latitude": 49.0757,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 49.00813372576994,
+      "longitude": 8.50754435859515,
+      "name": "Im Speitel (vor Nr. 45)",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-147",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 48.958230673575166,
+      "longitude": 8.474396624324186,
+      "name": "Heidenheimer Straße 30",
+      "municipality": "Karlsruhe",
+      "district": "Grünwettersbach",
+      "source_id": "city-snapshot-125",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.00338466172125,
+      "longitude": 8.510140731413074,
+      "name": "Georg-Scholz-Straße",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-103",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "latitude": 49.005989791367284,
+      "longitude": 8.512200934872183,
+      "name": "Krappmühlenweg (bei Eisenbahnbrücke)",
+      "municipality": "Karlsruhe",
+      "district": "Grötzingen",
+      "source_id": "city-snapshot-173",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217540809001",
+      "name": "Bahnhofstraße",
+      "longitude": 8.46542,
+      "latitude": 49.06791,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208453229001",
+      "name": "Fisperweg (Turnhalle)",
+      "longitude": 8.38364,
+      "latitude": 49.07934,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312713001",
+      "name": "Hauptstraße / Spöcker Weg",
+      "longitude": 8.39231,
+      "latitude": 49.08034,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.952241119670106,
+      "longitude": 8.470911421533192,
+      "name": "Wiesenstraße 34 (Wertstoffstation)",
+      "municipality": "Karlsruhe",
+      "district": "Grünwettersbach",
+      "source_id": "city-snapshot-303",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209841740001",
+      "name": "Middelkerker Straße/Albgauhalle",
+      "longitude": 8.40002,
+      "latitude": 48.93695,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.95426971174525,
+      "longitude": 8.476879166222506,
+      "name": "Esslinger Straße (bei Trafo-Station)",
+      "municipality": "Karlsruhe",
+      "district": "Grünwettersbach",
+      "source_id": "city-snapshot-84",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209841758001",
+      "name": "Siemensstraße/Wendeplatz",
+      "longitude": 8.37372,
+      "latitude": 48.9394,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841752001",
+      "name": "Schöllbronner Straße/Wattkopfweg (Parkplatz Freibad)",
+      "longitude": 8.41747,
+      "latitude": 48.93606,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841764001",
+      "name": "Wilhelmstraße, Richtung Wald",
+      "longitude": 8.40718,
+      "latitude": 48.93553,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209152849001",
+      "name": "Lenaustraße",
+      "longitude": 8.3952,
+      "latitude": 49.0834,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914778001",
+      "name": "Mörscher Straße, Haltestelle Oberfeldstraße",
+      "longitude": 8.30778,
+      "latitude": 48.97039,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914554001",
+      "name": "Dammfeld - Ufgauhalle",
+      "longitude": 8.30249,
+      "latitude": 48.9761,
+      "municipality": "Rheinstetten",
+      "district": "Forchheim",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217540838001",
+      "name": "Erich-Kästner-Str. (Festplatz)",
+      "longitude": 8.47656,
+      "latitude": 49.06725,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312711001",
+      "name": "Ostring/Obhauserner Weg",
+      "longitude": 8.40303,
+      "latitude": 49.0842,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217531131001",
+      "name": " Klammweg (Ende) / Veilchenstraße",
+      "longitude": 8.51822,
+      "latitude": 49.00082,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217531656001",
+      "name": "Weiherstraße (Vogelpark)",
+      "longitude": 8.51939,
+      "latitude": 49.0078,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217530708001",
+      "name": "Tannenstraße / Rappenbergstraße",
+      "longitude": 8.51921,
+      "latitude": 49.00308,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217542211001",
+      "name": "Lorenzstraße (Gewerbegebiet Süd)",
+      "longitude": 8.45934,
+      "latitude": 49.07626,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312612001",
+      "name": "Eisenbahnstraße",
+      "longitude": 8.39964,
+      "latitude": 49.08545,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312614001",
+      "name": "Ostring/Haydnstraße",
+      "longitude": 8.39934,
+      "latitude": 49.08615,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217542205001",
+      "name": "Linkenheimer Straße, L559 (P&R Parkplatz)",
+      "longitude": 8.46894,
+      "latitude": 49.07376,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.967158048961416,
+      "longitude": 8.504708849757064,
+      "name": "Stupfericher Weg/Thomashof",
+      "municipality": "Karlsruhe",
+      "district": "Durlach",
+      "source_id": "city-snapshot-270",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217542208001",
+      "name": "Linkenheimer Straße (bei ALDI Lieferzufahrt, Gewerbegebiet Nord)",
+      "longitude": 8.46123,
+      "latitude": 49.07914,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.947758486198104,
+      "longitude": 8.480598399009626,
+      "name": "Friedhofweg (gegenüber Friedhof)",
+      "municipality": "Karlsruhe",
+      "district": "Palmbach",
+      "source_id": "city-snapshot-96",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "208453119001",
+      "name": "Schumannstraße",
+      "longitude": 8.40163,
+      "latitude": 49.08904,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217531654001",
+      "name": "Steinwiesenstraße (Kulturhalle)",
+      "longitude": 8.52581,
+      "latitude": 49.006,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849333001",
+      "name": "Ettlinger Straße / Groß-Ott-Straße, Parkplatz Friedhof",
+      "longitude": 8.38981,
+      "latitude": 48.93014,
+      "municipality": "Ettlingen",
+      "district": "Ettlingenweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217530711001",
+      "name": "Erlenstraße / Kiefernstraße",
+      "longitude": 8.52595,
+      "latitude": 49.00269,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209823343001",
+      "name": "Blütenstraße, Parkplatz Friedhof",
+      "longitude": 8.36958,
+      "latitude": 48.93269,
+      "municipality": "Ettlingen",
+      "district": "Bruchhausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217540800001",
+      "name": "Stichweg am See (hinter REWE, Richtung Baggersee)",
+      "longitude": 8.46389,
+      "latitude": 49.08026,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217541977001",
+      "name": "Bauhof, Hasenäckerweg",
+      "longitude": 8.48163,
+      "latitude": 49.07266,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312757001",
+      "name": "Rheinstraße/Donauring",
+      "longitude": 8.39988,
+      "latitude": 49.09042,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "212056405001",
+      "name": "Hellenstraße",
+      "longitude": 8.45239,
+      "latitude": 48.93428,
+      "municipality": "Waldbronn",
+      "district": "Busenbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849327001",
+      "name": "Dorfwiesenstraße, bei der Bürgerhalle",
+      "longitude": 8.38452,
+      "latitude": 48.92821,
+      "municipality": "Ettlingen",
+      "district": "Ettlingenweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312908001",
+      "name": "Neckarstraße",
+      "longitude": 8.40382,
+      "latitude": 49.09285,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.945689044546434,
+      "longitude": 8.486883259774041,
+      "name": "Talstraße (Ortsausgang Richtung Stupferich)",
+      "municipality": "Karlsruhe",
+      "district": "Palmbach",
+      "source_id": "city-snapshot-277",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209914791001",
+      "name": "Industriestraße/Ecke Pfeiferäcker",
+      "longitude": 8.30191,
+      "latitude": 48.95957,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209841748001",
+      "name": "Pforzheimer Straße/ Spinnerei (vorne)",
+      "longitude": 8.44845,
+      "latitude": 48.93063,
+      "municipality": "Ettlingen",
+      "district": "Ettlingen Kernstadt",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849323001",
+      "name": "Dorfwiesenstraße, beim Sportplatz",
+      "longitude": 8.38097,
+      "latitude": 48.92673,
+      "municipality": "Ettlingen",
+      "district": "Ettlingenweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.95645168799023,
+      "longitude": 8.504184619008374,
+      "name": "Windelbachstraße (an der Wendeschleife)",
+      "municipality": "Karlsruhe",
+      "district": "Stupferich",
+      "source_id": "city-snapshot-309",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "208312946001",
+      "name": "Brüsseler Ring (Viermorgen)",
+      "longitude": 8.40946,
+      "latitude": 49.09364,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "218315739001",
+      "name": "Dörnigstraße, Festplatz/Bauhof",
+      "longitude": 8.51859,
+      "latitude": 49.04902,
+      "municipality": "Weingarten",
+      "district": "Weingarten",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217529720001",
+      "name": "Am Stadion",
+      "longitude": 8.53441,
+      "latitude": 49.00357,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217530699001",
+      "name": "Breitenfeldstraße / Brucknerstraße",
+      "longitude": 8.53474,
+      "latitude": 49.00752,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914797001",
+      "name": "Hinter Gierle Weg, Wertstoffhof",
+      "longitude": 8.28574,
+      "latitude": 48.97394,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312944001",
+      "name": "Rheinstraße/Mainstraße",
+      "longitude": 8.40257,
+      "latitude": 49.09554,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914785001",
+      "name": "Kopernikusstraße",
+      "longitude": 8.29236,
+      "latitude": 48.96428,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "218315771001",
+      "name": "Dresdner Ring",
+      "longitude": 8.52366,
+      "latitude": 49.04604,
+      "municipality": "Weingarten",
+      "district": "Weingarten",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.95224930116961,
+      "longitude": 8.503528976411754,
+      "name": "Pfefferäckerstraße (gegenüber Nr. 15)",
+      "municipality": "Karlsruhe",
+      "district": "Stupferich",
+      "source_id": "city-snapshot-224",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "217534016001",
+      "name": "B10 Parkplatz (beim Getränkemarkt Salzwiesen)",
+      "longitude": 8.53437,
+      "latitude": 48.99416,
+      "municipality": "Pfinztal",
+      "district": "Söllingen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217530619001",
+      "name": "Lehmgrubenstraße (Bauhof)",
+      "longitude": 8.53575,
+      "latitude": 49.00033,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209823378001",
+      "name": "Karlstraße, Rathaus",
+      "longitude": 8.36444,
+      "latitude": 48.92666,
+      "municipality": "Ettlingen",
+      "district": "Bruchhausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.9515477384639,
+      "longitude": 8.503526185346173,
+      "name": "Palmbacher Straße/Rieslingstraße",
+      "municipality": "Karlsruhe",
+      "district": "Stupferich",
+      "source_id": "city-snapshot-218",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209823357001",
+      "name": "Fere-Champenoise-Straße",
+      "longitude": 8.36203,
+      "latitude": 48.92609,
+      "municipality": "Ettlingen",
+      "district": "Bruchhausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217530703001",
+      "name": "Brunnenstraße (Sportplatz)",
+      "longitude": 8.53786,
+      "latitude": 49.0016,
+      "municipality": "Pfinztal",
+      "district": "Berghausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312715001",
+      "name": "Blumenstraße (Bauhof)",
+      "longitude": 8.39467,
+      "latitude": 49.09707,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312906001",
+      "name": "Mannheimer Straße Süd",
+      "longitude": 8.40125,
+      "latitude": 49.09729,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209823351001",
+      "name": "Badstraße, Parkplatz Felchenweg",
+      "longitude": 8.37091,
+      "latitude": 48.92416,
+      "municipality": "Ettlingen",
+      "district": "Bruchhausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209823383001",
+      "name": "Nibelungenstraße/R.-Wagner-Straße, Parkplatz Cap-Markt",
+      "longitude": 8.36611,
+      "latitude": 48.92446,
+      "municipality": "Ettlingen",
+      "district": "Bruchhausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217534021001",
+      "name": "Salzwiesenstraße / Untere Dorfstraße",
+      "longitude": 8.53684,
+      "latitude": 48.99024,
+      "municipality": "Pfinztal",
+      "district": "Söllingen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "218315742001",
+      "name": "Lärchenweg, Waldstadion (FVgg)",
+      "longitude": 8.51029,
+      "latitude": 49.06516,
+      "municipality": "Weingarten",
+      "district": "Weingarten",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312759001",
+      "name": "Mainzer Straße",
+      "longitude": 8.4043,
+      "latitude": 49.09874,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914799001",
+      "name": "Rheinaustraße, Einfahrt Penny Markt",
+      "longitude": 8.28625,
+      "latitude": 48.96365,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.9489766839747,
+      "longitude": 8.507715613420975,
+      "name": "Rieslingstraße (bei Nr. 45/Trafostation)",
+      "municipality": "Karlsruhe",
+      "district": "Stupferich",
+      "source_id": "city-snapshot-237",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "208312910001",
+      "name": "Nordring, Höhe Grundschule",
+      "longitude": 8.39922,
+      "latitude": 49.1003,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208312761001",
+      "name": "Mannheimer Straße Nord / Frankfurter Straße",
+      "longitude": 8.40369,
+      "latitude": 49.10061,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Leopoldshafen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849330001",
+      "name": "Eisenstockstraße, südl. Ortsausgang",
+      "longitude": 8.37447,
+      "latitude": 48.92016,
+      "municipality": "Ettlingen",
+      "district": "Ettlingenweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "212057546001",
+      "name": "Talstraße, Aldi / Parkplatz Festhalle",
+      "longitude": 8.4754,
+      "latitude": 48.92999,
+      "municipality": "Waldbronn",
+      "district": "Reichenbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "latitude": 48.95117892323199,
+      "longitude": 8.514093726498382,
+      "name": "Neubergstraße/Sonnenbergstraße",
+      "municipality": "Karlsruhe",
+      "district": "Stupferich",
+      "source_id": "city-snapshot-209",
+      "source_kind": "official_city_karlsruhe",
+      "source_url": "https://transparenz.karlsruhe.de/dataset/points-of-interest-entsorgungseinrichtungen"
+    },
+    {
+      "source_id": "209823363001",
+      "name": "Hornisgrindestr./Kaiserstuhlstr",
+      "longitude": 8.36039,
+      "latitude": 48.92129,
+      "municipality": "Ettlingen",
+      "district": "Bruchhausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "233421117001",
+      "name": "Hertzstraße (REWE)",
+      "longitude": 8.28107,
+      "latitude": 48.96284,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208344631001",
+      "name": "Im Wörth/Leopoldstraße",
+      "longitude": 8.3891,
+      "latitude": 49.10256,
+      "municipality": "Eggenstein-Leopoldshafen",
+      "district": "Eggenstein",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914795001",
+      "name": "Merkurstraße, P+R Parkplatz",
+      "longitude": 8.29043,
+      "latitude": 48.95288,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217532924001",
+      "name": "Gebrüder-Räuchle-Straße (Feuerwehrhaus)",
+      "longitude": 8.54235,
+      "latitude": 48.98356,
+      "municipality": "Pfinztal",
+      "district": "Söllingen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209835516001",
+      "name": "Seestraße/am Badesee Buchtzig, Parkplatz",
+      "longitude": 8.37066,
+      "latitude": 48.91765,
+      "municipality": "Ettlingen",
+      "district": "Bruchhausen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "218315741001",
+      "name": "Kirchbergstraße, Parkplatz Schützenhaus",
+      "longitude": 8.53502,
+      "latitude": 49.0492,
+      "municipality": "Weingarten",
+      "district": "Weingarten",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217532917001",
+      "name": "Frommelstraße / Goethestraße",
+      "longitude": 8.54611,
+      "latitude": 48.99036,
+      "municipality": "Pfinztal",
+      "district": "Söllingen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849362001",
+      "name": "Talstraße, Parkplatz Friedhof",
+      "longitude": 8.43855,
+      "latitude": 48.91715,
+      "municipality": "Ettlingen",
+      "district": "Spessart",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914793001",
+      "name": "Marie-Curie-Straße",
+      "longitude": 8.28471,
+      "latitude": 48.95556,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217533998001",
+      "name": "Pfinzstraße neben Leerdamplatz",
+      "longitude": 8.54499,
+      "latitude": 48.98527,
+      "municipality": "Pfinztal",
+      "district": "Söllingen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849356001",
+      "name": "Im Stecken, Festplatz",
+      "longitude": 8.42744,
+      "latitude": 48.91499,
+      "municipality": "Ettlingen",
+      "district": "Spessart",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217542223001",
+      "name": "Schloss Stutensee",
+      "longitude": 8.4911,
+      "latitude": 49.08825,
+      "municipality": "Stutensee",
+      "district": "Blankenloch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "218315770001",
+      "name": "Katzenbergweg / Liverdunplatz",
+      "longitude": 8.53665,
+      "latitude": 49.05373,
+      "municipality": "Weingarten",
+      "district": "Weingarten",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849339001",
+      "name": "Zum Scheffelhof, Parkplatz Waldsaumhalle",
+      "longitude": 8.38666,
+      "latitude": 48.91214,
+      "municipality": "Ettlingen",
+      "district": "Oberweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914789001",
+      "name": "Keplerstraße, Einfahrt Motoball",
+      "longitude": 8.27573,
+      "latitude": 48.95872,
+      "municipality": "Rheinstetten",
+      "district": "Mörsch",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217534007001",
+      "name": "Kapellenstraße (Stadtbahnhaltestelle)",
+      "longitude": 8.54958,
+      "latitude": 48.98409,
+      "municipality": "Pfinztal",
+      "district": "Söllingen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "212058273001",
+      "name": "Friedhof / Daimlerstraße",
+      "longitude": 8.48514,
+      "latitude": 48.92587,
+      "municipality": "Waldbronn",
+      "district": "Reichenbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849337001",
+      "name": "Sachsenstraße, Parkplatz Bolzplatz",
+      "longitude": 8.38042,
+      "latitude": 48.91154,
+      "municipality": "Ettlingen",
+      "district": "Oberweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914804001",
+      "name": "Otto-Wörner-Straße,  Am Festplatz",
+      "longitude": 8.26518,
+      "latitude": 48.97045,
+      "municipality": "Rheinstetten",
+      "district": "Neuburgweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217557836001",
+      "name": "Heidelberger Ring",
+      "longitude": 8.47147,
+      "latitude": 49.09993,
+      "municipality": "Stutensee",
+      "district": "Friedrichstal",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217533866001",
+      "name": "Hammerwerkstraße (beim EDEKA)",
+      "longitude": 8.54808,
+      "latitude": 48.97245,
+      "municipality": "Pfinztal",
+      "district": "Söllingen",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914806001",
+      "name": "Pappelweg",
+      "longitude": 8.26085,
+      "latitude": 48.97201,
+      "municipality": "Rheinstetten",
+      "district": "Neuburgweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "212056876001",
+      "name": "Pforzheimer Straße/bei Bäckerei Nußbaumer",
+      "longitude": 8.4838,
+      "latitude": 48.921,
+      "municipality": "Waldbronn",
+      "district": "Reichenbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209914802001",
+      "name": "Breslauer Straße, Kleintierzuchtverein",
+      "longitude": 8.26074,
+      "latitude": 48.96735,
+      "municipality": "Rheinstetten",
+      "district": "Neuburgweier",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217532854001",
+      "name": "Durlacher Weg / Schwarzwaldstraße",
+      "longitude": 8.54756,
+      "latitude": 48.96553,
+      "municipality": "Pfinztal",
+      "district": "Kleinsteinbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849359001",
+      "name": "Steinäcker, Allmendstraße,Parkplatz Sportplatz",
+      "longitude": 8.43333,
+      "latitude": 48.90548,
+      "municipality": "Ettlingen",
+      "district": "Spessart",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217558381001",
+      "name": "Parkstraße Ost",
+      "longitude": 8.47563,
+      "latitude": 49.10464,
+      "municipality": "Stutensee",
+      "district": "Friedrichstal",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "208166196001",
+      "name": "Veilchenstraße/ Krokusweg",
+      "longitude": 8.41447,
+      "latitude": 49.11557,
+      "municipality": "Linkenheim-Hochstetten",
+      "district": "Linkenheim-Hochstetten",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217534550001",
+      "name": "Saldinger Straße (Gasthaus Krone)",
+      "longitude": 8.56648,
+      "latitude": 49.00039,
+      "municipality": "Pfinztal",
+      "district": "Wöschbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217532847001",
+      "name": "Industriestraße, Hagwaldhalle",
+      "longitude": 8.55661,
+      "latitude": 48.96836,
+      "municipality": "Pfinztal",
+      "district": "Kleinsteinbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "217534034001",
+      "name": "Am Hohberg (Kindergarten)",
+      "longitude": 8.56898,
+      "latitude": 49.00565,
+      "municipality": "Pfinztal",
+      "district": "Wöschbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "212056629001",
+      "name": "Grüngutplatz / Wiesenfesthalle, Esternaystraße",
+      "longitude": 8.47148,
+      "latitude": 48.9102,
+      "municipality": "Waldbronn",
+      "district": "Etzenrot",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "212056855001",
+      "name": "Hohbergstraße",
+      "longitude": 8.46279,
+      "latitude": 48.90781,
+      "municipality": "Waldbronn",
+      "district": "Etzenrot",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "209849345001",
+      "name": "Moosbronner Straße, Ortseingang",
+      "longitude": 8.42125,
+      "latitude": 48.9008,
+      "municipality": "Ettlingen",
+      "district": "Schöllbronn",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "216934349001",
+      "name": "Häckselplatz",
+      "longitude": 8.52777,
+      "latitude": 48.93599,
+      "municipality": "Karlsbad",
+      "district": "Mutschelbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    },
+    {
+      "source_id": "216933648001",
+      "name": "Hertzstraße",
+      "longitude": 8.50476,
+      "latitude": 48.92116,
+      "municipality": "Karlsbad",
+      "district": "Langensteinbach",
+      "source_url": "https://waste.awb-landkreis-karlsruhe.de/WasteManagementKarlsruheHaushalteBlank/WasteManagementServlet?SubmitAction=Entsein&InFrameMode=TRUE",
+      "source_kind": "official_landkreis_karlsruhe"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ public sealed record MaterialAnalytics(string Material, int Collections, int Num
     int UnknownCount, double? MeanNumericFill, double? MedianIntervalDays, int IntervalCount, FillDistribution Distribution);
 public sealed record MonthlyAnalytics(string Month, string Material, int Collections, int OverfullCount, int NumericReadings, double? MeanNumericFill);
 public sealed record CollectionAnalytics(string AsOf, int TotalCollections, int KnownBins, int BinsWithFewerThan3Readings,
-    int OverfullCount, MaterialAnalytics[] Materials, MonthlyAnalytics[] Months)
+    int OverfullCount, MaterialAnalytics[] Materials, MonthlyAnalytics[] Months, CollectionPatterns Patterns)
 {
     public static CollectionAnalytics Create(IReadOnlyCollection<Observation> source, string asOf)
     {
@@ -39,6 +39,6 @@ public sealed record CollectionAnalytics(string AsOf, int TotalCollections, int 
                     numbers.Length == 0 ? null : numbers.Average());
             }).ToArray();
         return new(asOf, rows.Length, bins.Length, bins.Count(b => b.Count() < 3),
-            rows.Count(x => RecordedFill.IsOverfull(x.FillLevel)), materials, months);
+            rows.Count(x => RecordedFill.IsOverfull(x.FillLevel)), materials, months, CollectionPatterns.Create(rows, asOf));
     }
 }

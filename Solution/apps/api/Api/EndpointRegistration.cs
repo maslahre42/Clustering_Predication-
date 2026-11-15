@@ -3,6 +3,7 @@ using GarbageCollector.Api.Features.Dataset;
 using GarbageCollector.Api.Features.Locations;
 using GarbageCollector.Api.Features.History;
 using GarbageCollector.Api.Features.Planning;
+using GarbageCollector.Api.Features.Proposal;
 using GarbageCollector.Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 namespace GarbageCollector.Api.Api;
@@ -22,5 +23,6 @@ public static class EndpointRegistration
         app.MapHistoryEndpoints();
         app.MapPlanningEndpoints();
         app.MapAnalyticsEndpoints();
+        app.MapProposalEndpoints();
     }
 }

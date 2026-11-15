@@ -1,0 +1,10 @@
+Location_id,material_type,date,fill_level_perc
+SYNTHETIC-f-a,brown,2026-01-10,40
+SYNTHETIC-f-a,brown,2026-02-05,overfull
+SYNTHETIC-f-a,brown,2026-03-01,60
+SYNTHETIC-f-a,brown,2026-04-20,80
+SYNTHETIC-f-b,green,2026-01-15,30
+SYNTHETIC-f-b,green,2026-03-15,90
+SYNTHETIC-f-c,white,2026-02-01,overfull
+SYNTHETIC-f-c,white,2026-03-01,overfull
+SYNTHETIC-f-d,brown,2026-05-02,50

@@ -1,0 +1,1092 @@
+[
+  {
+    "poi_id": 3383,
+    "street_name": "Achtungstraße",
+    "utm_x": 515496.0,
+    "utm_y": 5442970.0,
+    "latitude": 49.139363,
+    "longitude": 9.212454,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3396,
+    "street_name": "Alexanderstraße / Dittmarstraße",
+    "utm_x": 517026.0,
+    "utm_y": 5442359.0,
+    "latitude": 49.133826,
+    "longitude": 9.233404,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3397,
+    "street_name": "Am Seelesberg",
+    "utm_x": 518016.0,
+    "utm_y": 5442885.0,
+    "latitude": 49.138529,
+    "longitude": 9.246999,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3464,
+    "street_name": "Amsterdamer Straße",
+    "utm_x": 513149.0,
+    "utm_y": 5440639.0,
+    "latitude": 49.118449,
+    "longitude": 9.1802,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3472,
+    "street_name": "Am Wasserturm",
+    "utm_x": 511209.0,
+    "utm_y": 5440492.0,
+    "latitude": 49.117165,
+    "longitude": 9.153609,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3398,
+    "street_name": "Badener Straße",
+    "utm_x": 518165.0,
+    "utm_y": 5442386.0,
+    "latitude": 49.134036,
+    "longitude": 9.24902,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3467,
+    "street_name": "Bensheimer Straße",
+    "utm_x": 507760.0,
+    "utm_y": 5447714.0,
+    "latitude": 49.182183,
+    "longitude": 9.106483,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3419,
+    "street_name": "Binswanger Straße / Alfred-Minner-Straße",
+    "utm_x": 516636.0,
+    "utm_y": 5445515.0,
+    "latitude": 49.162226,
+    "longitude": 9.228188,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3384,
+    "street_name": "Bismarckstraße / Gymnasiumstraße",
+    "utm_x": 516402.0,
+    "utm_y": 5443072.0,
+    "latitude": 49.140257,
+    "longitude": 9.224879,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3399,
+    "street_name": "Bismarckstraße / Kernerstraße",
+    "utm_x": 517087.0,
+    "utm_y": 5443060.0,
+    "latitude": 49.14013,
+    "longitude": 9.23427,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3400,
+    "street_name": "Blücherstraße / Karl-Jäger-Straße",
+    "utm_x": 516736.0,
+    "utm_y": 5442114.0,
+    "latitude": 49.13163,
+    "longitude": 9.229419,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3474,
+    "street_name": "Böckinger Straße / Leinbachstraße",
+    "utm_x": 514886.0,
+    "utm_y": 5445946.0,
+    "latitude": 49.166148,
+    "longitude": 9.204201,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3475,
+    "street_name": "Böllinger Straße",
+    "utm_x": 514622.0,
+    "utm_y": 5446851.0,
+    "latitude": 49.174295,
+    "longitude": 9.200612,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3483,
+    "street_name": "Bottwarbahnstraße",
+    "utm_x": 514284.0,
+    "utm_y": 5441025.0,
+    "latitude": 49.121896,
+    "longitude": 9.195768,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3461,
+    "street_name": "Brechhausstraße",
+    "utm_x": 512801.0,
+    "utm_y": 5444742.0,
+    "latitude": 49.155365,
+    "longitude": 9.175561,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3439,
+    "street_name": "Bruchsaler Straße / Güglinger Straße",
+    "utm_x": 513295.0,
+    "utm_y": 5443542.0,
+    "latitude": 49.14456,
+    "longitude": 9.182297,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3440,
+    "street_name": "Bruchsaler Straße / Stettener Straße",
+    "utm_x": 513131.0,
+    "utm_y": 5443263.0,
+    "latitude": 49.142054,
+    "longitude": 9.180039,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3462,
+    "street_name": "Dörnlestraße",
+    "utm_x": 512726.0,
+    "utm_y": 5444996.0,
+    "latitude": 49.157651,
+    "longitude": 9.174541,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3401,
+    "street_name": "Einsteinstraße / Reutlinger Straße",
+    "utm_x": 517832.0,
+    "utm_y": 5442284.0,
+    "latitude": 49.133129,
+    "longitude": 9.24445,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 6798,
+    "street_name": "Ernst-Abbe-Straße, außerhalb des Recyclinghofs",
+    "utm_x": 509221.0,
+    "utm_y": 5447580.0,
+    "latitude": 49.180958,
+    "longitude": 9.126528,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 4455,
+    "street_name": "Fasanenweg / Limesstraße",
+    "utm_x": 514168.0,
+    "utm_y": 5443741.0,
+    "latitude": 49.14633,
+    "longitude": 9.194274,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3385,
+    "street_name": "Friedensplatz / Moltkestraße",
+    "utm_x": 516633.0,
+    "utm_y": 5443174.0,
+    "latitude": 49.141168,
+    "longitude": 9.228051,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3402,
+    "street_name": "Friedrich-Dürr-Straße / Gildenstraße",
+    "utm_x": 515090.0,
+    "utm_y": 5441794.0,
+    "latitude": 49.128794,
+    "longitude": 9.206843,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3420,
+    "street_name": "Gaswerkstraße",
+    "utm_x": 516043.0,
+    "utm_y": 5444294.0,
+    "latitude": 49.151259,
+    "longitude": 9.220006,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3484,
+    "street_name": "Gotenstraße / Damaschkestraße",
+    "utm_x": 513436.0,
+    "utm_y": 5440478.0,
+    "latitude": 49.116995,
+    "longitude": 9.184128,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3421,
+    "street_name": "Gottlieb-Daimler-Straße",
+    "utm_x": 515575.0,
+    "utm_y": 5444589.0,
+    "latitude": 49.153924,
+    "longitude": 9.213599,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3441,
+    "street_name": "Großgartacher Straße",
+    "utm_x": 512884.0,
+    "utm_y": 5443033.0,
+    "latitude": 49.13999,
+    "longitude": 9.176645,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3442,
+    "street_name": "Großgartacher Straße / Wilhelm-Leuschner-Straße",
+    "utm_x": 514120.0,
+    "utm_y": 5443162.0,
+    "latitude": 49.141123,
+    "longitude": 9.193595,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3443,
+    "street_name": "Grünewaldstraße",
+    "utm_x": 513995.0,
+    "utm_y": 5443479.0,
+    "latitude": 49.143977,
+    "longitude": 9.191893,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3485,
+    "street_name": "Güldensteinstraße / Thomastraße",
+    "utm_x": 514637.0,
+    "utm_y": 5440715.0,
+    "latitude": 49.119099,
+    "longitude": 9.200595,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3436,
+    "street_name": "Hahnenäckerstraße",
+    "utm_x": 510751.0,
+    "utm_y": 5449580.0,
+    "latitude": 49.198923,
+    "longitude": 9.147576,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3403,
+    "street_name": "Happelstraße / Ludwig-Pfau-Straße",
+    "utm_x": 516360.0,
+    "utm_y": 5442185.0,
+    "latitude": 49.132279,
+    "longitude": 9.224267,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3404,
+    "street_name": "Happenbacher Straße / Gruppenbacher Straße",
+    "utm_x": 516545.0,
+    "utm_y": 5441430.0,
+    "latitude": 49.125483,
+    "longitude": 9.226773,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3486,
+    "street_name": "Hauptstraße",
+    "utm_x": 513808.0,
+    "utm_y": 5440561.0,
+    "latitude": 49.117733,
+    "longitude": 9.189229,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3445,
+    "street_name": "Heckenstraße / Friedrichstraße",
+    "utm_x": 513873.0,
+    "utm_y": 5442692.0,
+    "latitude": 49.136901,
+    "longitude": 9.190193,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3446,
+    "street_name": "Heidelberger Straße / Friedhof",
+    "utm_x": 513602.0,
+    "utm_y": 5443580.0,
+    "latitude": 49.144895,
+    "longitude": 9.186507,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3447,
+    "street_name": "Heidelberger Straße / Im Kreuzgrund",
+    "utm_x": 513174.0,
+    "utm_y": 5444021.0,
+    "latitude": 49.148871,
+    "longitude": 9.180653,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3448,
+    "street_name": "Heidelberger Straße / Platanenstraße",
+    "utm_x": 513276.0,
+    "utm_y": 5443872.0,
+    "latitude": 49.147529,
+    "longitude": 9.182047,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3405,
+    "street_name": "Herbert-Hoover-Straße",
+    "utm_x": 516758.0,
+    "utm_y": 5441266.0,
+    "latitude": 49.124002,
+    "longitude": 9.229685,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3406,
+    "street_name": "Herbert-Hoover-Straße / Ludwig-Pfau-Schule",
+    "utm_x": 516364.0,
+    "utm_y": 5441274.0,
+    "latitude": 49.124084,
+    "longitude": 9.224285,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3449,
+    "street_name": "Hofstattstraße / Glockenstraße",
+    "utm_x": 513663.0,
+    "utm_y": 5441794.0,
+    "latitude": 49.128828,
+    "longitude": 9.187283,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3450,
+    "street_name": "Hofweg / Im Kreuzgrund",
+    "utm_x": 513526.0,
+    "utm_y": 5444233.0,
+    "latitude": 49.15077,
+    "longitude": 9.185487,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3407,
+    "street_name": "Hohenstaufenstraße / Beethovenstraße",
+    "utm_x": 516163.0,
+    "utm_y": 5441619.0,
+    "latitude": 49.127193,
+    "longitude": 9.221544,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3451,
+    "street_name": "Holunderweg",
+    "utm_x": 513782.0,
+    "utm_y": 5443834.0,
+    "latitude": 49.147176,
+    "longitude": 9.188984,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3465,
+    "street_name": "Hossäckerweg / Albert-Debold-Straße",
+    "utm_x": 512309.0,
+    "utm_y": 5440075.0,
+    "latitude": 49.113393,
+    "longitude": 9.168671,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3476,
+    "street_name": "Im Fleischbeil / Neckartalstraße",
+    "utm_x": 514639.0,
+    "utm_y": 5444856.0,
+    "latitude": 49.156349,
+    "longitude": 9.200773,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3408,
+    "street_name": "Im Wannental, außerhalb des Recyclinghofs",
+    "utm_x": 517532.0,
+    "utm_y": 5443020.0,
+    "latitude": 49.139758,
+    "longitude": 9.24037,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 4452,
+    "street_name": "Jakob-Saame-Straße / Hermann-Löns-Straße",
+    "utm_x": 513751.0,
+    "utm_y": 5446152.0,
+    "latitude": 49.168027,
+    "longitude": 9.188638,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3423,
+    "street_name": "Käferflugstraße / Schickhardtstraße",
+    "utm_x": 516597.0,
+    "utm_y": 5444750.0,
+    "latitude": 49.155346,
+    "longitude": 9.227622,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3468,
+    "street_name": "Kapellenweg",
+    "utm_x": 508473.0,
+    "utm_y": 5447678.0,
+    "latitude": 49.18185,
+    "longitude": 9.116266,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3424,
+    "street_name": "Katzensteige / Beutingerstraße",
+    "utm_x": 518089.0,
+    "utm_y": 5443657.0,
+    "latitude": 49.145472,
+    "longitude": 9.248035,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3425,
+    "street_name": "Kernerstraße",
+    "utm_x": 517070.0,
+    "utm_y": 5443182.0,
+    "latitude": 49.141228,
+    "longitude": 9.234042,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3452,
+    "street_name": "Klingenberger Straße / Hohlstraße",
+    "utm_x": 513890.0,
+    "utm_y": 5442117.0,
+    "latitude": 49.131728,
+    "longitude": 9.190406,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3487,
+    "street_name": "Kolpingstraße",
+    "utm_x": 514680.0,
+    "utm_y": 5441486.0,
+    "latitude": 49.126034,
+    "longitude": 9.201212,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3426,
+    "street_name": "Krugstraße",
+    "utm_x": 517439.0,
+    "utm_y": 5443990.0,
+    "latitude": 49.148486,
+    "longitude": 9.239137,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3454,
+    "street_name": "Längelterstraße / Beschützende Werkstätte",
+    "utm_x": 512435.0,
+    "utm_y": 5442743.0,
+    "latitude": 49.13739,
+    "longitude": 9.17048,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3455,
+    "street_name": "Leibnizstraße",
+    "utm_x": 513076.0,
+    "utm_y": 5442906.0,
+    "latitude": 49.138843,
+    "longitude": 9.179273,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3456,
+    "street_name": "Leonhardstraße / Teichstraße",
+    "utm_x": 514127.0,
+    "utm_y": 5442810.0,
+    "latitude": 49.137957,
+    "longitude": 9.193679,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3427,
+    "street_name": "Lessingstraße / Nordstraße",
+    "utm_x": 516516.0,
+    "utm_y": 5444246.0,
+    "latitude": 49.150814,
+    "longitude": 9.22649,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3409,
+    "street_name": "Liebigstraße / Bönnigheimer Straße",
+    "utm_x": 515145.0,
+    "utm_y": 5442168.0,
+    "latitude": 49.132157,
+    "longitude": 9.207611,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3388,
+    "street_name": "Lohtorstraße / Gerberstraße",
+    "utm_x": 515872.0,
+    "utm_y": 5443417.0,
+    "latitude": 49.143374,
+    "longitude": 9.217626,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3410,
+    "street_name": "Lothringer Straße / Fichtestraße",
+    "utm_x": 517281.0,
+    "utm_y": 5442286.0,
+    "latitude": 49.133162,
+    "longitude": 9.236897,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3457,
+    "street_name": "Ludwigsburger Straße / Im Haselter",
+    "utm_x": 513919.0,
+    "utm_y": 5443044.0,
+    "latitude": 49.140066,
+    "longitude": 9.190835,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3458,
+    "street_name": "Maasstraße",
+    "utm_x": 513631.0,
+    "utm_y": 5444579.0,
+    "latitude": 49.153881,
+    "longitude": 9.186939,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3463,
+    "street_name": "Maihaldenstraße",
+    "utm_x": 512139.0,
+    "utm_y": 5445731.0,
+    "latitude": 49.164274,
+    "longitude": 9.166512,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3477,
+    "street_name": "Marienburger Straße / Elbinger Straße",
+    "utm_x": 514308.0,
+    "utm_y": 5445150.0,
+    "latitude": 49.159001,
+    "longitude": 9.196244,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3488,
+    "street_name": "Mauerstraße",
+    "utm_x": 514604.0,
+    "utm_y": 5441163.0,
+    "latitude": 49.12313,
+    "longitude": 9.200159,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3489,
+    "street_name": "Max-Planck-Straße",
+    "utm_x": 514956.0,
+    "utm_y": 5441013.0,
+    "latitude": 49.121772,
+    "longitude": 9.204978,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3490,
+    "street_name": "Max-von-Laue-Straße",
+    "utm_x": 515451.0,
+    "utm_y": 5440821.0,
+    "latitude": 49.120033,
+    "longitude": 9.211754,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3437,
+    "street_name": "Michael-Vehe-Straße",
+    "utm_x": 510414.0,
+    "utm_y": 5448643.0,
+    "latitude": 49.1905,
+    "longitude": 9.142925,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3389,
+    "street_name": "Mozartstraße",
+    "utm_x": 515284.0,
+    "utm_y": 5443204.0,
+    "latitude": 49.141473,
+    "longitude": 9.209556,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3466,
+    "street_name": "Nussäckerstraße",
+    "utm_x": 512574.0,
+    "utm_y": 5440158.0,
+    "latitude": 49.114135,
+    "longitude": 9.172305,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3390,
+    "street_name": "Olgastraße",
+    "utm_x": 515132.0,
+    "utm_y": 5442691.0,
+    "latitude": 49.136862,
+    "longitude": 9.207453,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3469,
+    "street_name": "Paul-Gerhardt-Straße / Pater-Kolbe-Straße",
+    "utm_x": 508638.0,
+    "utm_y": 5447976.0,
+    "latitude": 49.184528,
+    "longitude": 9.118537,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3428,
+    "street_name": "Pestalozzistraße",
+    "utm_x": 516274.0,
+    "utm_y": 5444137.0,
+    "latitude": 49.14984,
+    "longitude": 9.223167,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3478,
+    "street_name": "Pfaffenstraße / Im Riedgrund",
+    "utm_x": 513154.0,
+    "utm_y": 5447870.0,
+    "latitude": 49.183494,
+    "longitude": 9.180505,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3429,
+    "street_name": "Pfühlstraße / Mörikestraße",
+    "utm_x": 517241.0,
+    "utm_y": 5443561.0,
+    "latitude": 49.144633,
+    "longitude": 9.236403,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3491,
+    "street_name": "Port-Talbot-Straße",
+    "utm_x": 515183.0,
+    "utm_y": 5440926.0,
+    "latitude": 49.120984,
+    "longitude": 9.208086,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3430,
+    "street_name": "Rauchstraße",
+    "utm_x": 516617.0,
+    "utm_y": 5444493.0,
+    "latitude": 49.153033,
+    "longitude": 9.227886,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3431,
+    "street_name": "Rauchstraße / Käferflugstraße",
+    "utm_x": 516328.0,
+    "utm_y": 5444567.0,
+    "latitude": 49.153707,
+    "longitude": 9.223925,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3492,
+    "street_name": "Robert-Bosch-Straße / Eckenerstraße",
+    "utm_x": 515072.0,
+    "utm_y": 5440635.0,
+    "latitude": 49.118369,
+    "longitude": 9.206553,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3493,
+    "street_name": "Robert-Bosch-Straße / Sontheimer Landwehr",
+    "utm_x": 515195.0,
+    "utm_y": 5441438.0,
+    "latitude": 49.125589,
+    "longitude": 9.208269,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3391,
+    "street_name": "Rollwagstraße",
+    "utm_x": 515887.0,
+    "utm_y": 5442940.0,
+    "latitude": 49.139083,
+    "longitude": 9.217813,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3479,
+    "street_name": "Römerstraße",
+    "utm_x": 514272.0,
+    "utm_y": 5444737.0,
+    "latitude": 49.155287,
+    "longitude": 9.195735,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3480,
+    "street_name": "Sachsenäckerstraße",
+    "utm_x": 514651.0,
+    "utm_y": 5445680.0,
+    "latitude": 49.163761,
+    "longitude": 9.200967,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3432,
+    "street_name": "Schickhardtstraße / Wartbergsteige",
+    "utm_x": 516907.0,
+    "utm_y": 5444530.0,
+    "latitude": 49.153358,
+    "longitude": 9.231864,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3392,
+    "street_name": "Schillerstraße / Gartenstraße",
+    "utm_x": 516404.0,
+    "utm_y": 5443518.0,
+    "latitude": 49.144269,
+    "longitude": 9.224925,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3433,
+    "street_name": "Schillerstraße / Oststraße",
+    "utm_x": 516807.0,
+    "utm_y": 5443473.0,
+    "latitude": 49.143853,
+    "longitude": 9.230449,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3411,
+    "street_name": "Schirrmannstraße / Vorderer Böckinger",
+    "utm_x": 518781.0,
+    "utm_y": 5442617.0,
+    "latitude": 49.136096,
+    "longitude": 9.257475,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3470,
+    "street_name": "Schlossstraße",
+    "utm_x": 507757.0,
+    "utm_y": 5448143.0,
+    "latitude": 49.186042,
+    "longitude": 9.10645,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3412,
+    "street_name": "Schmollerstraße / Hohenstaufenstraße",
+    "utm_x": 516300.0,
+    "utm_y": 5442053.0,
+    "latitude": 49.131093,
+    "longitude": 9.22344,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3413,
+    "street_name": "Schoettlestraße / Knorrstraße",
+    "utm_x": 515403.0,
+    "utm_y": 5442361.0,
+    "latitude": 49.133887,
+    "longitude": 9.211155,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3434,
+    "street_name": "Sichererstraße",
+    "utm_x": 516313.0,
+    "utm_y": 5443968.0,
+    "latitude": 49.148319,
+    "longitude": 9.223695,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3459,
+    "street_name": "Sinsheimer Straße",
+    "utm_x": 512965.0,
+    "utm_y": 5443685.0,
+    "latitude": 49.145853,
+    "longitude": 9.177776,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3414,
+    "street_name": "Sontheimer Landwehr / Hauffstraße",
+    "utm_x": 515563.0,
+    "utm_y": 5441418.0,
+    "latitude": 49.1254,
+    "longitude": 9.213312,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3415,
+    "street_name": "Sontheimer Straße / Eythstraße / Merkurstraße",
+    "utm_x": 515349.0,
+    "utm_y": 5441752.0,
+    "latitude": 49.12841,
+    "longitude": 9.210392,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3494,
+    "street_name": "Staufenbergstraße",
+    "utm_x": 514371.0,
+    "utm_y": 5440605.0,
+    "latitude": 49.118116,
+    "longitude": 9.196946,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3495,
+    "street_name": "Staufenbergstraße / Südfriedhof",
+    "utm_x": 515081.0,
+    "utm_y": 5440449.0,
+    "latitude": 49.116696,
+    "longitude": 9.20667,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3393,
+    "street_name": "Turmstraße",
+    "utm_x": 515982.0,
+    "utm_y": 5443697.0,
+    "latitude": 49.14589,
+    "longitude": 9.219146,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3394,
+    "street_name": "Uhlandstraße / Steinstraße",
+    "utm_x": 516245.0,
+    "utm_y": 5442656.0,
+    "latitude": 49.136519,
+    "longitude": 9.22271,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3416,
+    "street_name": "Urbanstraße",
+    "utm_x": 516064.0,
+    "utm_y": 5442326.0,
+    "latitude": 49.133555,
+    "longitude": 9.220215,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3435,
+    "street_name": "Wartbergstraße / Erlenbacher Straße",
+    "utm_x": 516822.0,
+    "utm_y": 5444231.0,
+    "latitude": 49.150671,
+    "longitude": 9.230686,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3417,
+    "street_name": "Werderstraße",
+    "utm_x": 515839.0,
+    "utm_y": 5442345.0,
+    "latitude": 49.133732,
+    "longitude": 9.217132,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3395,
+    "street_name": "Weststraße",
+    "utm_x": 515173.0,
+    "utm_y": 5443025.0,
+    "latitude": 49.139866,
+    "longitude": 9.208027,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3481,
+    "street_name": "Widmannstraße / Römerstraße",
+    "utm_x": 514383.0,
+    "utm_y": 5446110.0,
+    "latitude": 49.167635,
+    "longitude": 9.197307,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3438,
+    "street_name": "Wilhelm-Flinsbach-Straße",
+    "utm_x": 509997.0,
+    "utm_y": 5449285.0,
+    "latitude": 49.196282,
+    "longitude": 9.137218,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3482,
+    "street_name": "Wilhelm-Schäffer-Straße",
+    "utm_x": 514433.0,
+    "utm_y": 5446492.0,
+    "latitude": 49.17107,
+    "longitude": 9.198006,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3418,
+    "street_name": "Wollhausstraße / Gutenbergstraße",
+    "utm_x": 516817.0,
+    "utm_y": 5442906.0,
+    "latitude": 49.138752,
+    "longitude": 9.230562,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  },
+  {
+    "poi_id": 3496,
+    "street_name": "Zwirnereistraße / Friedrich-Ackermann-Straße",
+    "utm_x": 514110.0,
+    "utm_y": 5440743.0,
+    "latitude": 49.119364,
+    "longitude": 9.193374,
+    "city": "Heilbronn",
+    "layer": "altglascontainerstandorte"
+  }
+]

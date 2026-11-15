@@ -6,6 +6,7 @@ defineProps<{
   max: number;
   step: number;
   label: string;
+  valueText?: string;
   density?: string;
 }>();
 defineEmits<{
@@ -23,7 +24,7 @@ const id = useId();
       :min="min"
       :max="max"
       :step="step"
-      :aria-valuetext="`${modelValue}% recorded fill`"
+      :aria-valuetext="valueText ?? `${modelValue}%`"
       @input="$emit('update:modelValue', Number(($event.target as HTMLInputElement).value))"
     />
   </div>

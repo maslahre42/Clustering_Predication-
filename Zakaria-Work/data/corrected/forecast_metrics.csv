@@ -1,0 +1,3 @@
+method,target_cases,available_forecasts,common_numeric_cases,overfull_truths,mae_pp,rmse_pp,true_positive,false_positive,false_negative,true_negative
+cycle_median_lower_bound,6731,6657,5306,693,19.523030836864898,26.968505891532565,1577,671,1173,3236
+last_pre_emptying_reading,6731,5819,5306,693,25.584244251790427,33.1761907187498,1100,1014,1171,2534

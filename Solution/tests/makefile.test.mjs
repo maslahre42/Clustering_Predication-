@@ -24,6 +24,7 @@ appendFileSync(process.env.GC_MAKE_TEST_LOG, JSON.stringify({ tool: ${JSON.strin
 if (process.env.GC_MAKE_FAIL_TOOL === ${JSON.stringify(tool)} && process.env.GC_MAKE_FAIL_COMMAND === args[0]) process.exit(17);
 `, { mode: 0o755 })
     overrides[tool === 'python' ? 'PYTHON' : tool.toUpperCase()] = executable
+    if (tool === 'python') overrides.PYTHON_ENGINE = executable
   }
   function run(target, options = {}) {
     const result = spawnSync('make', ['--no-print-directory', '-f', makefile, ...Object.entries(overrides).map(([key, value]) => `${key}=${value}`), ...(target ? [target] : []), ...(options.args ?? [])], {
@@ -52,6 +53,8 @@ test('setup restores the solution and uses pnpm frozen dependencies', t => {
   const f = fixture(t), result = f.run('setup')
   assert.equal(result.status, 0, result.stderr)
   assert.deepEqual(f.commands(), [
+    { tool: 'python', args: ['-m', 'venv', '.venv'] },
+    { tool: 'python', args: ['-m', 'pip', 'install', '-r', 'forecast_service/requirements.txt', 'pytest'] },
     { tool: 'dotnet', args: ['restore', 'GarbageCollector.slnx', '--disable-parallel'] },
     { tool: 'pnpm', args: ['--dir', 'apps/web', 'install', '--frozen-lockfile'] },
   ])
@@ -71,12 +74,13 @@ test('combined tests honor configuration and run the in-process backend runner b
   const f = fixture(t), result = f.run('test', { args: ['CONFIGURATION=Release', '-j4'] })
   assert.equal(result.status, 0, result.stderr)
   const commands = f.commands()
-  assert.equal(commands.length, 3)
+  assert.equal(commands.length, 4)
   assert.equal(commands[0].tool, 'dotnet')
   assert.equal(commands[0].args[0], 'build')
   assert.equal(commands[0].args[commands[0].args.indexOf('--configuration') + 1], 'Release')
   assert.deepEqual(commands[1], { tool: 'dotnet', args: ['tests/GarbageCollector.TestRunner/bin/Release/net10.0/GarbageCollector.TestRunner.dll'] })
   assert.deepEqual(commands[2], { tool: 'pnpm', args: ['--dir', 'apps/web', 'test'] })
+  assert.deepEqual(commands[3], { tool: 'python', args: ['-m', 'pytest', '-q', 'forecast_service/tests'] })
 })
 
 test('backend build failure stops the test workflow before any runner or frontend command', t => {
@@ -90,7 +94,7 @@ test('check runs tests, type checking and builds in order without publishing', t
   assert.equal(result.status, 0, result.stderr)
   assert.deepEqual(f.commands().map(({ tool, args }) => [tool, args[0]]), [
     ['dotnet', 'build'], ['dotnet', 'tests/GarbageCollector.TestRunner/bin/Debug/net10.0/GarbageCollector.TestRunner.dll'],
-    ['pnpm', '--dir'], ['pnpm', '--dir'], ['dotnet', 'build'], ['pnpm', '--dir'],
+    ['pnpm', '--dir'], ['python', '-m'], ['pnpm', '--dir'], ['dotnet', 'build'], ['pnpm', '--dir'],
   ])
   assert.deepEqual(f.commands().filter(command => command.tool === 'pnpm').map(command => command.args.at(-1)), ['test', 'typecheck', 'build'])
 })
