@@ -1,4 +1,5 @@
 import { computed, ref, watch, type Ref } from 'vue'
+import type { ProposalDataset } from '../../shared/api/contracts/comparison'
 import type { Location } from '../../shared/api/contracts/locations'
 import type { SelectedDayFill, PlanningSnapshot } from '../../shared/api/contracts/planning'
 import { DEFAULT_WORKSPACE, type WorkspaceConfiguration } from '../../shared/config/workspace.ts'
@@ -10,6 +11,7 @@ export type WorkspaceView = 'planning' | 'history' | 'forecasts' | 'manifest' | 
 export interface WorkspaceSources {
   snapshot: Ref<PlanningSnapshot | null | undefined>
   locations: Ref<Location[] | null | undefined>
+  analysisDataset?: Readonly<Ref<ProposalDataset | null | undefined>>
   fillState?: Readonly<Ref<SelectedDayFill | null | undefined>>
   fillStatePending?: Readonly<Ref<boolean>>
   fillStateError?: Readonly<Ref<unknown>>
@@ -32,6 +34,7 @@ export function createWorkspaceModel(asOf: Ref<string>, sources: WorkspaceSource
       view.value = 'details'
     }
   }
+  if (sources.analysisDataset) watch(sources.analysisDataset, () => plan.clearPlan(), { flush: 'sync' })
   watch(asOf, () => { plan.clearPlan(); inspectedLocation.value = '' }, { flush: 'sync' })
   return { asOf, data: { ready, bins, clusters, mapLocations }, filters, plan, navigation: { view, inspectedLocation, inspect } }
 }

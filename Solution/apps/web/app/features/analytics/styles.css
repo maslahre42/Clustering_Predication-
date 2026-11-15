@@ -3,6 +3,18 @@
   min-width: 0;
 }
 
+.monthly-dashboard-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-block: 20px; }
+.monthly-dashboard-chart { min-width: 0; padding: 16px; border: 1px solid var(--surface-border); border-radius: 8px; }
+.monthly-dashboard-chart h3 { margin: 0 0 8px; }
+.monthly-dashboard-scroll { overflow-x: auto; }
+.monthly-dashboard-chart svg { display: block; width: 100%; min-width: 440px; }
+.monthly-dashboard-chart svg text { fill: var(--text-secondary); font-size: 11px; }
+.monthly-gridline { stroke: var(--surface-border); }
+.monthly-dashboard-legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 0; list-style: none; font-size: 12px; }
+.monthly-dashboard-legend li { display: flex; align-items: center; gap: 5px; }
+.monthly-dashboard-legend span { width: 12px; height: 12px; border-radius: 2px; }
+@media (max-width: 1000px) { .monthly-dashboard-grid { grid-template-columns: 1fr; } }
+
 .analytics-panel>p {
   margin: 12px 0 20px;
 }

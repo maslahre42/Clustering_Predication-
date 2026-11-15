@@ -19,6 +19,7 @@ const { data, error, status, refresh, ready } = useHistoricalAnalytics(asOf);
       <AnalyticsSummaryCards :data="data" />
       <WorkspaceState v-if="!data.totalCollections" state="empty" title="No collections by this date" description="Choose a later planning date to see historical statistics." />
       <template v-else>
+        <MonthlyDashboard :months="data.months" :as-of="data.asOf" :first-date="data.patterns.firstDate" />
         <CollectionPatternTrends :months="data.months" :as-of="data.asOf" :first-date="data.patterns.firstDate" />
         <UiCard class="analytics-panel">
           <h2>Glass-stream comparison</h2>

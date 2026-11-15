@@ -1,6 +1,7 @@
 import { computed, inject, provide, type InjectionKey } from 'vue'
 import { createPlanningDate } from '~/features/workspace/planningDate'
 import type { DatasetDateRange } from '~/shared/api/contracts/dataset'
+import type { ProposalDataset } from '~/shared/api/contracts/comparison'
 import type { Location } from '~/shared/api/contracts/locations'
 import type { SelectedDayFill, PlanningSnapshot } from '~/shared/api/contracts/planning'
 import { API_ROUTES } from '~/shared/api/routes'
@@ -21,7 +22,8 @@ export function createCollectionWorkspace() {
   const healthRequest = useFetch<{ status: string }>(API_ROUTES.health)
   const error = computed(() => snapshotRequest.error.value || locationRequest.error.value)
   const loading = computed(() => snapshotRequest.status.value === 'pending' || locationRequest.status.value === 'pending')
-  const model = createWorkspaceModel(asOf, { snapshot: snapshotRequest.data, locations: locationRequest.data, error,fillState:fillStateRequest.data,fillStatePending,fillStateError:fillStateRequest.error })
+  const selectedDataset = useState<ProposalDataset | null>('proposal-dataset', () => null)
+  const model = createWorkspaceModel(asOf, { snapshot: snapshotRequest.data, locations: locationRequest.data, error,analysisDataset:selectedDataset,fillState:fillStateRequest.data,fillStatePending,fillStateError:fillStateRequest.error })
 
   const planningDate = createPlanningDate(asOf, dateRangeRequest.data)
   async function retry() {

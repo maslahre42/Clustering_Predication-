@@ -1,6 +1,6 @@
 # Garbage Collector
 
-**Challenge handover:** [demo guide, deliverables and current verification](docs/challenge-demo-guide.md). The connected prototype includes CSV upload, historical pattern charts and review flags, forecasts/groups, configurable multi-load routes and fleet recommendations, simulation, configured glass compartments, editable cost estimates, time-to-full ranges, scenario baselines, a guided presentation and collector export. Latest checks: **491 tests passed**, type checking and both builds passed. The guide records live verification and prototype limits.
+**Challenge handover:** [demo guide, deliverables and current verification](docs/challenge-demo-guide.md). The connected prototype includes CSV upload, historical pattern charts and review flags, forecasts/groups, configurable multi-load routes and fleet recommendations, simulation, configured glass compartments, editable cost estimates, time-to-full ranges, scenario baselines, a guided presentation and collector export. Latest checks: **506 tests passed**, type checking and both builds passed. The guide records live verification and prototype limits.
 
 **Street routing:** optimized routes use OSRM car-street distances, driving times and map geometry. Trucks keep compact collection sectors across loads. Fixed-time and aerial-distance controls are removed; optional detour value defaults to zero. See [routing method, provider/cache configuration and limits](docs/architecture/street-routing.md).
 
@@ -173,7 +173,7 @@ See [PROJECT_IDEA.md](PROJECT_IDEA.md) for the product plan and remaining decisi
 
 ## Verification status
 
-Current verification: **491 tests passed** (216 API, 6 AppHost, 175 frontend/tooling, 94 Python), plus Vue/TypeScript checking, .NET solution build and Nuxt production build. The explicitly requested Karlsruhe coordinate replacement preserves all collection records and the original schema; see [provenance and backup](docs/karlsruhe-locations.md).
+Current verification: **506 tests passed** (216 API, 6 AppHost, 184 frontend/tooling, 100 Python), plus Vue/TypeScript checking, .NET solution build and Nuxt production build. The explicitly requested Karlsruhe coordinate replacement preserves all collection records and the original schema; see [provenance and backup](docs/karlsruhe-locations.md).
 
 Live API and browser checks cover the real-data challenge workflow, partial-month statistics, forecast and route feasibility, simulation, uploads, manifest export and draft clearing. See [the challenge handover](docs/challenge-demo-guide.md) for settings, measured results, artifacts and limitations. Physical printing, production hosting and real road operations are separate checks.
 
@@ -205,7 +205,7 @@ Optional backend coverage report:
 dotnet test GarbageCollector.slnx --collect:"XPlat Code Coverage"
 ```
 
-Verified results: **216 API tests, 6 AppHost tests, 175 frontend/tooling tests and 94 Python tests pass (491 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
+Verified results: **216 API tests, 6 AppHost tests, 184 frontend/tooling tests and 100 Python tests pass (506 total)**. Backend tests cover shared domain/validation/snapshot/analytics rules, dataset date bounds, and isolated SQLite readers. The frontend tests include date validation and the actual reactive workspace state model (selection, filtered grouping, navigation, stop ordering, errors, and immediate clearing on cutoff changes).
 
 For environments where the standard `dotnet test` runner cannot start its communication socket, a fallback is included. A small in-process runner calls the real xUnit discovery/execution API, including theories and async fixtures; it does not replace assertions or manually call test methods. Run both suites without a local test socket:
 
@@ -262,3 +262,5 @@ The current demo uses 449 mapped glass-container sites in Karlsruhe and nearby L
 The provider-focused [capacity and frequency comparison](docs/architecture/capacity-planning.md) changes physical containers per site/type and calendar-day collection intervals, then compares average filling time, daily shifts, overflow and financial costs under constant demand. The confirmed €500 truck-day package includes truck, driver and driving kilometres. No additional €/km is charged by default; container rental/ownership remains unpriced until entered.
 
 Automatic [joint inventory and scheduling](docs/architecture/joint-planning.md) chooses physical containers and per-type collection calendars, checks routed costs and shift/capacity feasibility, enforces a configurable 90% fill target, and returns a verified repeating daily route calendar. It reports the best feasible solution found, with explicit space/cost/data assumptions; completed results survive module navigation in the same session.
+
+Import collection CSVs from **Data & imports** using the drag-and-drop box or **Choose CSV file**. Files are validated before activation, with row-level errors and an active-source summary. CSV management is available only on the Data & imports page. [Workflow and source scope](docs/architecture/data-imports.md).

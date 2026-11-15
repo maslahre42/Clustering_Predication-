@@ -5,7 +5,7 @@ const { view } = useWorkspaceNavigation();
 const sections: { id: Exclude<WorkspaceView, 'details'>; label: string }[] = [
   { id: 'planning', label: 'Route planner & map' }, { id: 'history', label: 'Bin inventory & history' },
   { id: 'analytics', label: 'Historical analytics' }, { id: 'forecasts', label: 'Forecast, routes & simulation' },
-  { id: 'manifest', label: 'Collection plan' }, { id: 'status', label: 'System status' },
+  { id: 'manifest', label: 'Collection plan' }, { id: 'status', label: 'Data & imports' },
 ];
 </script>
 <template>

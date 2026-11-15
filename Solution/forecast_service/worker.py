@@ -327,6 +327,20 @@ def simulation(payload):
           'The twin shares the seasonal forecast model family and can favor it. The real-reading benchmark is separate. Repeat with other seeds and settings before drawing conclusions.'])
 
 
+def dataset_validation(payload):
+    """Validate the whole upload and summarize it without fitting or routing."""
+    import hashlib
+    observations, warnings, kind = source(payload)
+    if not observations:
+        raise DatasetValidationError([dict(rule_id='empty',row_number=0,message='The CSV has no collection records. Add at least one data row.')])
+    dates = [r['date'] for r in observations]
+    return dict(source=kind,fingerprint=hashlib.sha256(payload['csv'].encode('utf-8')).hexdigest(),
+        rows=len(observations),locations=len({r['locationId'] for r in observations}),
+        bins=len({(r['locationId'],r['material']) for r in observations}),
+        firstDate=min(dates) if dates else None,lastDate=max(dates) if dates else None,
+        materials={m:sum(r['material']==m for r in observations) for m in ('brown','green','white')},warnings=warnings)
+
+
 def capacity_scenario(payload):
     from integrations.capacity_planning import compare, validate
     df = readings(payload)
@@ -353,7 +367,7 @@ if __name__ == '__main__':
     try:
         payload = json.load(sys.stdin)
         with contextlib.redirect_stdout(io.StringIO()):
-            result = {'proposal':proposal,'forecast':forecast,'simulation':simulation,'state':selected_day_state,'capacity':capacity_scenario}[payload['action']](payload)
+            result = {'proposal':proposal,'forecast':forecast,'simulation':simulation,'state':selected_day_state,'capacity':capacity_scenario,'dataset':dataset_validation}[payload['action']](payload)
         print(json.dumps(clean(result),allow_nan=False))
     except Exception as exc:
         print(json.dumps({'error':str(exc), **({'validation':{'errors':exc.errors,'warnings':exc.warnings}} if isinstance(exc,DatasetValidationError) else {})}))

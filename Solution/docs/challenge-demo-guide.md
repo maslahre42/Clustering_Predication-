@@ -6,7 +6,7 @@ Updated 15 November 2026. The live application now uses car-street routing and c
 
 | Deliverable | Demonstration |
 | --- | --- |
-| Ingest readings | Forecast module's validated CSV upload; invalid rows and duplicate keys are rejected without silently modifying source data. |
+| Ingest readings | Data & imports drag-and-drop/file-picker upload with validation before activation; invalid rows and duplicate keys are rejected without silently modifying source data. |
 | Patterns, groups and anomalies | Historical analytics: partial-month charts, numeric/censored cycle evidence, distributions and review flags. Forecast supporting details: quality gates, groups, month/vacation associations and uncertainty. |
 | Configurable operations | Container/density, truck payload/volume, available fleet, shift/calendar, service/unloading time, yard/disposal coordinates, risk rules and search budget. |
 | Route and fleet proposals | OSRM car-street costs, compact truck sectors, OR-Tools multi-load routes, explicit unserved stops, map inspection, manifest and CSV export. |
@@ -23,7 +23,7 @@ Updated 15 November 2026. The live application now uses car-street routing and c
 7. Review road kilometers, truck loads, working time and any missed mandatory stops. Payload and shift limits remain hard constraints. Optional collection value defaults to zero to avoid rewarding extra driving for non-urgent sites. Increasing it is an explicit service/cost trade-off.
 8. Accept the proposal into the collection manifest and export CSV or print the collector sheet. The manifest retains truck/load assignments and street geometry. Changing the date clears the draft.
 9. Explore an individual forecast curve, then run a short **Simulation & backtest** window, e.g. **2026-08-10–2026-08-10**, seed **7**, one-second daily attempts. Historical, Omar and Zakaria policies use the same road provider, constraints and demand. Compare street kilometers beside work and missed service. The real-reading forecast comparison and bounded Gurobi check have separate meanings.
-10. Upload readings to demonstrate strict validation and dataset isolation. CSV-only uploads can be forecast and analyzed; road routing needs matching site coordinates. Missing locations are reported, not replaced with original-inventory points or fictional journeys. Uploaded-data proposals are exported directly rather than attached to the unrelated original manifest.
+10. Open **Data & imports**, then drop a CSV or press **Choose CSV file** to demonstrate strict validation and dataset isolation. CSV-only uploads can be forecast and analyzed; road routing needs matching site coordinates. Missing locations are reported, not replaced with original-inventory points or fictional journeys. Uploaded-data proposals are exported directly rather than attached to the unrelated original manifest.
 
 Reading format:
 

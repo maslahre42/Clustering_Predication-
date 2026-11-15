@@ -89,14 +89,10 @@
 .proposal-workflow a:hover { text-decoration: underline; }
 .proposal-workflow span { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--brand-subtle); }
 .proposal-setup, .proposal-support, #route-proposal, #simulation { scroll-margin-top: 24px; }
-.proposal-dataset { margin-bottom: 16px; }
-.proposal-dataset-current { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; }
-.proposal-dataset-current > span:last-child { color: var(--text-secondary); }
 .proposal-disclosure { border-top: 1px solid var(--surface-border); }
 .proposal-disclosure > summary { padding: 14px 0; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-primary); }
 .proposal-disclosure > summary span { margin-left: 8px; font-size: 11px; font-weight: 400; color: var(--text-secondary); }
 .proposal-disclosure > summary:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 3px; }
-.proposal-dataset > .proposal-disclosure { margin-top: 12px; }
 .proposal-disclosure-content { padding-bottom: 12px; font-size: 12px; color: var(--text-secondary); }
 .proposal-disclosure-content label { display: grid; gap: 8px; margin: 14px 0; color: var(--text-primary); }
 .proposal-settings .proposal-setting-group fieldset { margin: 0 0 18px; }

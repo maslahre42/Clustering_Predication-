@@ -11,6 +11,7 @@ const appRoot = new URL('../../apps/web/app/', import.meta.url)
 // Node runs test files in separate processes. Shared output names can be read mid-write by another process.
 const output = new URL(`../../apps/web/.nuxt/component-tests/${process.pid}/`, import.meta.url)
 const components = {
+  MonthlyDashboard: 'features/analytics/components/MonthlyDashboard.vue',
   LocationClusterList: 'features/planning/components/LocationClusterList.vue',
   PlanningFillMeter: 'features/planning/components/PlanningFillMeter.vue',
   PlanningFilters: 'features/planning/components/PlanningFilters.vue',
@@ -37,6 +38,7 @@ const components = {
   CapacityPlanning: 'features/proposal/components/CapacityPlanning.vue',
   CapacityResults: 'features/proposal/components/CapacityResults.vue',
   JointPlanningResults: 'features/proposal/components/JointPlanningResults.vue',
+  SystemStatus: 'features/system/components/SystemStatus.vue',
 }
 
 /** Compile actual components. Resolve runtime imports against their original source. */

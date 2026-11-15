@@ -5,7 +5,8 @@ namespace GarbageCollector.Api.Features.Analytics;
 public sealed record FillDistribution(int Low0To30, int MidAbove30Below70, int High70Below100, int Full100, int Overfull, int Unknown);
 public sealed record MaterialAnalytics(string Material, int Collections, int NumericReadings, int OverfullCount,
     int UnknownCount, double? MeanNumericFill, double? MedianIntervalDays, int IntervalCount, FillDistribution Distribution);
-public sealed record MonthlyAnalytics(string Month, string Material, int Collections, int OverfullCount, int NumericReadings, double? MeanNumericFill);
+public sealed record MonthlyAnalytics(string Month, string Material, int Collections, int OverfullCount, int NumericReadings, double? MeanNumericFill,
+    int ActiveDays = 0, int FullOrOverfullCount = 0, int PrematureCount = 0);
 public sealed record CollectionAnalytics(string AsOf, int TotalCollections, int KnownBins, int BinsWithFewerThan3Readings,
     int OverfullCount, MaterialAnalytics[] Materials, MonthlyAnalytics[] Months, CollectionPatterns Patterns)
 {
@@ -36,7 +37,10 @@ public sealed record CollectionAnalytics(string AsOf, int TotalCollections, int 
                 var numbers = g.Select(x => RecordedFill.ParsePercentage(x.FillLevel)).OfType<double>().ToArray();
                 return new MonthlyAnalytics(g.Key.Month, g.Key.Material, g.Count(),
                     g.Count(x => RecordedFill.IsOverfull(x.FillLevel)), numbers.Length,
-                    numbers.Length == 0 ? null : numbers.Average());
+                    numbers.Length == 0 ? null : numbers.Average(),
+                    g.Select(x => x.Date).Distinct().Count(),
+                    numbers.Count(n => n >= 100) + g.Count(x => RecordedFill.IsOverfull(x.FillLevel)),
+                    numbers.Count(n => n < 40));
             }).ToArray();
         return new(asOf, rows.Length, bins.Length, bins.Count(b => b.Count() < 3),
             rows.Count(x => RecordedFill.IsOverfull(x.FillLevel)), materials, months, CollectionPatterns.Create(rows, asOf));

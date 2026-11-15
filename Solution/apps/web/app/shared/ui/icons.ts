@@ -14,7 +14,10 @@ export const workspaceIcons = {
   analytics: svg('<path d="M4 20V4m0 16h17M8 16v-4m5 4V6m5 10V9"/>'),
   forecasts: svg('<path d="M4 20V4m0 16h17M7 15l4-5 4 3 6-8"/>'),
   manifest: svg('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 9h6M9 13h6M9 17h4"/>'),
-  status: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3m6 0h4"/>'),
+  status: svg('<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v7c0 4 16 4 16 0V5M4 12v7c0 4 16 4 16 0v-7"/>'),
+  upload: svg('<path d="M12 16V3m-5 5 5-5 5 5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/>'),
+  file: svg('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8m-8 4h5"/>'),
+  check: svg('<path d="m5 12 4 4L19 6"/>'),
   recycling: svg('<path d="m8 7 3-5 4 7m-3-1 3 1 1-3m3 5 3 5-8 1m2-3-2 3 2 2M10 19H3l4-7m0 3v-3H4"/>'),
   lock: svg('<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/>'),
 }

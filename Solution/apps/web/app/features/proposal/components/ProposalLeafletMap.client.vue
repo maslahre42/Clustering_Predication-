@@ -68,7 +68,7 @@ function draw() {
   fit(); focus();
 }
 onMounted(() => {
-  map = L.map(host.value!, { scrollWheelZoom: false }).setView([49.0094, 8.4044], 12);
+  map = L.map(host.value!, { scrollWheelZoom: false, zoomAnimation: false }).setView([49.0094, 8.4044], 12);
   L.tileLayer(basemap.url, { attribution: basemap.attribution, maxZoom: basemap.maxZoom }).addTo(map)
     .on('tileerror', () => { tilesUnavailable.value = true })
     .on('tileload', () => { tilesUnavailable.value = false });
@@ -79,7 +79,7 @@ onMounted(() => {
 watch(() => [props.trucks, props.yard, props.disposal, props.unserved], draw);
 watch(() => props.fitVersion, fit);
 watch(() => props.activeStop, focus);
-onBeforeUnmount(() => { observer?.disconnect(); markers.clear(); map?.remove(); });
+onBeforeUnmount(() => { observer?.disconnect(); markers.clear(); const previous = map; map = undefined; previous?.stop(); previous?.remove(); });
 </script>
 <template>
   <div class="proposal-leaflet-wrapper">

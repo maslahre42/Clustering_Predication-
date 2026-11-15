@@ -2,6 +2,7 @@ using System.Text.Json;
 using GarbageCollector.Api.Domain.Collections;
 using GarbageCollector.Api.Domain.Locations;
 using GarbageCollector.Api.Features.Proposal;
+using GarbageCollector.Api.Features.Dataset;
 using GarbageCollector.Api.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -28,6 +29,7 @@ public class ProposalEndpointTests
         builder.Services.AddSingleton<IForecastEngine>(engine);
         await using var app = builder.Build();
         app.MapProposalEndpoints();
+        app.MapDatasetEndpoints();
         await using var scope = app.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<HistoryDbContext>();
         await db.Database.ExecuteSqlRawAsync("""
@@ -89,6 +91,16 @@ public class ProposalEndpointTests
         Assert.Equal(400, await Request("/api/forecast", "?asOf=2026-08-14&locationId=A&material=white&horizonDays=151"));
         Assert.Equal(count, engine.Calls);
         const string upload = "Location_id,material_type,date,fill_level_perc\nUPLOAD,white,2026-08-01,60";
+        Assert.Equal(200, await Request("/api/dataset-validation", "?asOf=2026-08-14", "POST", upload));
+        Assert.Equal("dataset", engine.Action);
+        Assert.Equal(upload, engine.Csv);
+        Assert.Empty(engine.Observations!);
+        Assert.Empty(engine.Locations!);
+        var beforeValidation = engine.Calls;
+        Assert.Equal(400, await Request("/api/dataset-validation", "?asOf=2026-99-14", "POST", upload));
+        Assert.Equal(400, await Request("/api/dataset-validation", "?asOf=2026-08-14", "POST", ""));
+        Assert.Equal(400, await Request("/api/dataset-validation", "?asOf=2026-08-14", "POST", new string('x',2_000_001)));
+        Assert.Equal(beforeValidation, engine.Calls);
         Assert.Equal(200, await Request("/api/proposal", "?asOf=2026-08-14&truckPayloadT=8", "POST", upload));
         Assert.Equal(upload, engine.Csv);
         Assert.Empty(engine.Observations!);
@@ -105,6 +117,7 @@ public class ProposalEndpointTests
         engine.Reject = true;
         Assert.Equal(400, await Request("/api/proposal", "?asOf=2026-08-14", "POST", upload));
         Assert.Equal(400, await Request("/api/fill-state", "?asOf=2026-08-14"));
+        Assert.Equal(400, await Request("/api/dataset-validation", "?asOf=2026-08-14", "POST", upload));
         engine.Reject = false;
         var capacity = new CapacityScenarioRequest { Days = 14, AlternativeIntervalDays = 10,
             AlternativeContainers = new(2, 1, 3), Overrides = [new("A", "white", 1, 2)], ContainerCostPerMonthEuro = 12 };
@@ -143,6 +156,7 @@ public class ProposalEndpointTests
         Assert.Equal(upload, engine.Csv);
         Assert.Empty(engine.Observations!);
         engine.Unavailable = true;
+        Assert.Equal(503, await Request("/api/dataset-validation", "?asOf=2026-08-14", "POST", upload));
         Assert.Equal(503, await Request("/api/fill-state", "?asOf=2026-08-14"));
     }
 

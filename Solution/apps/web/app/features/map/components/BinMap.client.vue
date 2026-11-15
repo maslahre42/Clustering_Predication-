@@ -53,7 +53,7 @@ function draw() {
     }
 }
 onMounted(() => {
-    map = L.map(host.value!).setView([DEFAULT_WORKSPACE.depot.latitude, DEFAULT_WORKSPACE.depot.longitude], 13);
+    map = L.map(host.value!, { zoomAnimation: false }).setView([DEFAULT_WORKSPACE.depot.latitude, DEFAULT_WORKSPACE.depot.longitude], 13);
     tiles = L.tileLayer(basemap.url, {
         attribution: basemap.attribution, maxZoom: basemap.maxZoom,
     }).addTo(map);
@@ -66,7 +66,7 @@ onMounted(() => {
     draw();
 });
 watch(() => [props.locations, props.selected, props.route], draw);
-onBeforeUnmount(() => { resizeObserver?.disconnect(); map?.remove(); });
+onBeforeUnmount(() => { resizeObserver?.disconnect(); const previous = map; map = undefined; previous?.stop(); previous?.remove(); });
 </script>
 <template>
   <div class="map-wrapper">

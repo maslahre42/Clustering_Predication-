@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { ProposalDataset, DataIssue } from '~/shared/api/contracts/comparison';
+import type { ProposalDataset } from '~/shared/api/contracts/comparison';
 import { createScenarioComparison } from '../state/createScenarioComparison';
-import { createProposalDataset } from '../state/createProposalDataset';
 import type { ProposalSettings } from '~/shared/api/contracts/proposal';
 import { downloadCsv } from '~/shared/browser/download';
 import { useCollectionProposal } from '../composables/useCollectionProposal';
@@ -15,8 +14,6 @@ const plan = useCollectionPlan();
 // Applied settings survive switching between workspace modules.
 const stored = useState<ProposalSettings>('proposal-settings', () => ({ ...DEFAULT_PROPOSAL_SETTINGS }));
 const dataset = useState<ProposalDataset | null>('proposal-dataset', () => null);
-const upload = createProposalDataset(dataset);
-watch(dataset, () => plan.clearPlan(), { flush: 'sync' });
 const settings = createProposalSettings(stored.value, DEFAULT_PROPOSAL_SETTINGS);
 const { data, error, status, refresh, ready, problem } = useCollectionProposal(asOf, stored, dataset);
 
@@ -24,13 +21,6 @@ const scenarioContext = computed(() => JSON.stringify([asOf.value,dataset.value]
 const scenarios = createScenarioComparison(data,scenarioContext);
 const presenting = ref(false);
 watch([data,asOf,dataset,settings.dirty],() => { presenting.value = false }, { flush: 'sync' });
-const validationIssues = computed(() => (error.value?.data as { validation?: { errors: DataIssue[] } } | undefined)?.validation?.errors ?? []);
-async function selectFile(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (file) await upload.load(file);
-  input.value = '';
-}
 function apply() { if (settings.apply()) stored.value = { ...settings.applied.value }; }
 function reset() { settings.reset(); stored.value = { ...settings.applied.value }; }
 const summary = computed(() => data.value ? proposalSummary(data.value) : null);
@@ -58,20 +48,6 @@ function useAsPlan() {
       </div>
     </header>
     <section id="proposal-setup" class="proposal-setup" aria-label="Set your options">
-      <UiCard class="proposal-dataset">
-        <div class="proposal-dataset-current"><span class="eyebrow">DATA SOURCE</span><strong>{{ dataset ? dataset.name : 'Original collection records' }}</strong><span>History through {{ asOf }}</span></div>
-        <details class="proposal-disclosure">
-          <summary>Import a different CSV <span>Optional</span></summary>
-          <div class="proposal-disclosure-content">
-            <p>Use your own readings for routes, forecasts and simulation. The original inventory stays unchanged. Road routes require coordinates for each location; readings without coordinates can still be inspected and forecast.</p>
-            <label>Readings CSV (up to 2 MB)<input type="file" accept=".csv,text/csv" :disabled="upload.reading.value" @change="selectFile" /></label>
-            <p>Required columns: Location_id, material_type, date, fill_level_perc. Dates: YYYY-MM-DD. Materials: brown, green, white. Fill: integer 0–100 or overfull.</p>
-          </div>
-        </details>
-        <UiButton v-if="dataset" label="Use original dataset" mode="outline" @click="upload.clear" />
-        <p v-if="upload.error.value" role="alert">{{ upload.error.value }}</p>
-        <div v-if="validationIssues.length" role="alert"><p>Upload rejected. No rows were silently removed. Correct the file and upload it again.</p><ul><li v-for="(issue, i) in validationIssues" :key="i">Row {{ issue.row_number }} · {{ issue.rule_id }}: {{ issue.message }}</li></ul></div>
-      </UiCard>
       <ProposalSettingsForm :settings="settings.draft.value" :errors="settings.errors.value" :dirty="settings.dirty.value"
         @number="settings.setNumber" @flag="settings.setFlag" @apply="apply" @reset="reset" />
     </section>

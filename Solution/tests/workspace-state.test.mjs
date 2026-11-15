@@ -4,7 +4,7 @@ import { createRequire } from 'node:module'
 import { createWorkspaceModel } from '../apps/web/app/features/workspace/model.ts'
 const require = createRequire(new URL('../apps/web/package.json', import.meta.url))
 const { ref, effectScope } = require('vue')
-function fixture(t, configuration) {
+function fixture(t, configuration, analysisDataset) {
   const asOf = ref('2026-03-01')
   const snapshot = ref({ asOf: asOf.value, observationCount: 4, firstDate: '2026-02-01', lastDate: asOf.value, bins: [
     { locationId: 'A', material: 'brown', lastCollection: asOf.value, lastFillPercent: 80, collections: 1 },
@@ -16,7 +16,7 @@ function fixture(t, configuration) {
   const error = ref(null)
   const scope = effectScope()
   t.after(() => scope.stop())
-  return { model: scope.run(() => createWorkspaceModel(asOf, { snapshot, locations, error }, configuration)), asOf, snapshot, error }
+  return { model: scope.run(() => createWorkspaceModel(asOf, { snapshot, locations, error, analysisDataset }, configuration)), asOf, snapshot, error }
 }
 test('selects valid bins once, preserves fractions, and ignores unknown bin keys', t => {
   const { model: m } = fixture(t)
@@ -143,4 +143,12 @@ test('module navigation preserves the plan until the historical cutoff changes',
   asOf.value = '2026-02-01'
   assert.deepEqual(m.plan.selectedKeys.value, [])
   assert.equal(m.navigation.view.value, 'analytics')
+})
+
+test('analysis imports clear the active collection draft across modules while keeping original history',t=>{
+ const selected=ref(null),{model:m}=fixture(t,undefined,selected)
+ m.plan.toggleBin('A:brown',true);m.plan.notes.value.A='Gate';m.navigation.view.value='status'
+ selected.value={name:'uploaded.csv',csv:'new records'}
+ assert.deepEqual(m.plan.selectedKeys.value,[]);assert.deepEqual(m.plan.notes.value,{})
+ assert.equal(m.data.bins.value.length,4);assert.equal(m.navigation.view.value,'status')
 })

@@ -5,6 +5,21 @@ namespace GarbageCollector.Api.Tests;
 
 public class CollectionAnalyticsTests
 {
+    [Fact]
+    public void MonthlyDashboardCountsDistinctDaysAndExactFillBoundariesBeforeCutoff()
+    {
+        Observation[] rows = [
+            Row("A", "white", "2026-01-01", "100"), Row("B", "white", "2026-01-01", "overfull"),
+            Row("A", "white", "2026-01-02", "bad"), Row("A", "brown", "2026-01-01", "39"),
+            Row("B", "brown", "2026-01-01", "40"), Row("A", "white", "2026-01-03", "100")
+        ];
+        var result = CollectionAnalytics.Create(rows, "2026-01-02");
+        var white = result.Months.Single(m => m.Material == "white");
+        Assert.Equal(3, white.Collections); Assert.Equal(2, white.ActiveDays);
+        Assert.Equal(2, white.FullOrOverfullCount); Assert.Equal(0, white.PrematureCount);
+        var brown = result.Months.Single(m => m.Material == "brown");
+        Assert.Equal(1, brown.ActiveDays); Assert.Equal(1, brown.PrematureCount);
+    }
     private static Observation Row(string id, string color, string date, string fill) => new() { LocationId = id, Material = color, Date = date, FillLevel = fill };
     [Theory]
     [InlineData("overfull", true)] [InlineData(" OverFull ", true)] [InlineData("100", false)]

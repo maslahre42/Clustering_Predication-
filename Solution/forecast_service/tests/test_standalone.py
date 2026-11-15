@@ -9,7 +9,7 @@ import pytest
 from test_worker import payload
 
 
-@pytest.mark.parametrize('action', ['forecast', 'proposal', 'state', 'capacity', 'capacity-optimized'])
+@pytest.mark.parametrize('action', ['forecast', 'proposal', 'state', 'capacity', 'capacity-optimized', 'dataset'])
 def test_relocated_worker_uses_only_its_bundled_application_code(tmp_path, action):
     service = Path(__file__).resolve().parents[1]
     relocated = tmp_path / 'independent project' / 'forecast_service'
@@ -22,7 +22,9 @@ def test_relocated_worker_uses_only_its_bundled_application_code(tmp_path, actio
     (ambient / '__init__.py').write_text("raise RuntimeError('Unexpected external engine import')\n")
     request = payload()
     request['action'] = 'capacity' if action == 'capacity-optimized' else action
-    if action == 'forecast':
+    if action == 'dataset':
+        request['csv'] = 'Location_id,material_type,date,fill_level_perc\nUPLOAD,white,2026-01-01,80'
+    elif action == 'forecast':
         request.update(locationId='A',material='white',horizonDays=7)
     elif action in ('capacity','capacity-optimized'):
         request['observations'] = []
@@ -39,7 +41,9 @@ def test_relocated_worker_uses_only_its_bundled_application_code(tmp_path, actio
                             capture_output=True,cwd=unrelated,env=env,timeout=30)
     assert result.returncode == 0, result.stderr + result.stdout
     response = json.loads(result.stdout)
-    if action == 'forecast':
+    if action == 'dataset':
+        assert response['rows']==1 and response['locations']==1 and response['source']=='uploaded-csv'
+    elif action == 'forecast':
         assert response['locationId']=='A' and len(response['points'])==8
         assert all(row['date'] <= request['asOf'] for row in response['history'])
     elif action in ('capacity','capacity-optimized'):
